@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-E_PortfolioSystem.Web-c93c3ece-e339-4049-8107-e24820dfdfc8</UserSecretsId>
+    <RootNamespace>E_PortfolioSystem.Web</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\E-PortfolioSystem.Common\E-PortfolioSystem.Common.csproj" />
+    <ProjectReference Include="..\E-PortfolioSystem.Data.Models\E-PortfolioSystem.Data.Models.csproj" />
+    <ProjectReference Include="..\E-PortfolioSystem.Data\E-PortfolioSystem.Data.csproj" />
+    <ProjectReference Include="..\E-PortfolioSystem.Web.ViewModels\E-PortfolioSystem.Web.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>
