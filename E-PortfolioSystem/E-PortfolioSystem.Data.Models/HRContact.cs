@@ -1,6 +1,7 @@
 ﻿namespace E_PortfolioSystem.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
+    using static Common.EntityValidationConstants.HRContact;
     public class HRContact
     {
         [Key]
@@ -10,6 +11,8 @@
 
         public Guid StudentUserId { get; set; }
 
+        [Required]
+        [MaxLength(MessageMaxLength)]
         public string Message { get; set; } = null!;
 
         public DateTime SentAt { get; set; } = DateTime.UtcNow;

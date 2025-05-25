@@ -1,6 +1,7 @@
 ﻿namespace E_PortfolioSystem.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
+    using static Common.EntityValidationConstants.Chat;
     public class Chat
     {
         [Key]
@@ -10,6 +11,8 @@
 
         public Guid ReceiverId { get; set; }
 
+        [Required]
+        [MaxLength(MessageMaxLength)]
         public string Message { get; set; } = null!;
 
         public DateTime? SentAt { get; set; }

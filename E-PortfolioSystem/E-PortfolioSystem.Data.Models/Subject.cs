@@ -1,11 +1,13 @@
 ﻿namespace E_PortfolioSystem.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
+
+    using static Common.EntityValidationConstants.Subject;
     public class Subject
     {
         public Subject()
         {
-            this.Students = new HashSet<Student>();
+            this.StudentSubjects = new HashSet<StudentSubject>();
         }
 
         [Key]
@@ -17,6 +19,8 @@
 
         public Guid TeacherId { get; set; }
 
+        [Required]
+        [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
 
         public bool IsAdmitted { get; set; }
@@ -27,6 +31,6 @@
 
         public Teacher Teacher { get; set; } = null!;
 
-        public ICollection<Student> Students { get; set; }
+        public ICollection<StudentSubject> StudentSubjects { get; set; }
     }
 }

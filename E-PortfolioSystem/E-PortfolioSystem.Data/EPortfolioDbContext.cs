@@ -39,54 +39,6 @@
                                     ?? Assembly.GetExecutingAssembly();
 
             modelBuilder.ApplyConfigurationsFromAssembly(configAssembly);
-
-            //modelBuilder.Entity<Chat>()
-            //    .HasOne(c => c.Sender)
-            //    .WithMany()
-            //    .HasForeignKey(c => c.SenderId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //modelBuilder.Entity<Chat>()
-            //    .HasOne(c => c.Receiver)
-            //    .WithMany()
-            //    .HasForeignKey(c => c.ReceiverId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //modelBuilder.Entity<Email>()
-            //    .HasOne(e => e.FromUser)
-            //    .WithMany()
-            //    .HasForeignKey(e => e.FromUserId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //modelBuilder.Entity<Email>()
-            //    .HasOne(e => e.ToUser)
-            //    .WithMany()
-            //    .HasForeignKey(e => e.ToUserId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //modelBuilder.Entity<HRContact>()
-            //    .HasOne(h => h.HRUser)
-            //    .WithMany()
-            //    .HasForeignKey(h => h.HRUserId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //modelBuilder.Entity<HRContact>()
-            //    .HasOne(h => h.StudentUser)
-            //    .WithMany()
-            //    .HasForeignKey(h => h.StudentUserId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //modelBuilder.Entity<Recommendation>()
-            //    .HasOne(r => r.FromUser)
-            //    .WithMany()
-            //    .HasForeignKey(r => r.FromUserId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //modelBuilder.Entity<Recommendation>()
-            //    .HasOne(r => r.ToUser)
-            //    .WithMany()
-            //    .HasForeignKey(r => r.ToUserId)
-            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

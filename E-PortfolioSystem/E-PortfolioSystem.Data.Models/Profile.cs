@@ -14,12 +14,20 @@
         [MaxLength(FullNameMaxLength)]
         public string FullName { get; set; } = null!;
 
+        [Required]
+        [MaxLength(PhoneMaxLength)]
         public string Phone { get; set; } = null!;
 
+        [Required]
+        [MaxLength(BioMaxLength)]
         public string Bio { get; set; } = null!;
 
+        [Required]
+        [MaxLength(LocationMaxLength)]
         public string Location { get; set; } = null!;
 
+        [Required]
+        [MaxLength(ImageUrlMaxLength)]
         public string ImageUrl { get; set; } = null!;
 
         public bool IsPublic { get; set; } = false;

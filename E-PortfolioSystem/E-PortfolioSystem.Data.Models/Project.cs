@@ -1,6 +1,8 @@
 ﻿namespace E_PortfolioSystem.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
+
+    using static Common.EntityValidationConstants.Project;
     public class Project
     {
         [Key]
@@ -12,14 +14,20 @@
 
         public Guid? EvaluationId { get; set; }
 
+        [Required]
+        [MaxLength(TitleMaxLength)]
         public string Title { get; set; } = null!;
 
+        [MaxLength(DescriptionMaxLength)]
         public string? Description { get; set; }
 
+        [MaxLength(LinkMaxLength)]
         public string? Link { get; set; }
 
+        [MaxLength(FilePathMaxLength)]
         public string? FilePath { get; set; }
 
+        [MaxLength(ImageUrlMaxLength)]
         public string? ImageUrl { get; set; }
 
         public DateTime? Deadline { get; set; }
