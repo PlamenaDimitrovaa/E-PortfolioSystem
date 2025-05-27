@@ -5,6 +5,12 @@
     using static Common.EntityValidationConstants.AttachedDocument;
     public class AttachedDocument
     {
+        public AttachedDocument()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
+        [Key]
         public Guid Id { get; set; }
 
         public Guid? ProjectId { get; set; }

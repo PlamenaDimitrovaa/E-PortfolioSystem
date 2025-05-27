@@ -1,12 +1,12 @@
 ﻿namespace E_PortfolioSystem.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
-
     using static Common.EntityValidationConstants.Skill;
     public class Skill
     {
         public Skill()
         {
+            this.Id = Guid.NewGuid();
             this.StudentSkills = new HashSet<StudentSkill>();
         }
 

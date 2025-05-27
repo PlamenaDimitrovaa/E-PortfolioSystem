@@ -4,6 +4,11 @@
     using static Common.EntityValidationConstants.Evaluation;
     public class Evaluation
     {
+        public Evaluation()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
         [Key]
         public Guid Id { get; set; }
 
@@ -29,7 +34,7 @@
 
         public Project? Project { get; set; }
 
-        public ApplicationUser Teacher { get; set; } = null!;
+        public Teacher Teacher { get; set; } = null!;
 
         public Subject? Subject { get; set; }
     }

@@ -4,6 +4,11 @@
     using static Common.EntityValidationConstants.Chat;
     public class Chat
     {
+        public Chat()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
         [Key]
         public Guid Id { get; set; }
 

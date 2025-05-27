@@ -5,6 +5,11 @@
     using static Common.EntityValidationConstants.Certificate;
     public class Certificate
     {
+        public Certificate()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
         [Key]
         public Guid Id { get; set; }
 

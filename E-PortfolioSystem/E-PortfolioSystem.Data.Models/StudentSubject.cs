@@ -10,6 +10,6 @@
 
         public Subject Subject { get; set; } = null!;
 
-        public DateTime EnrolledOn { get; set; } = DateTime.UtcNow;
+        public DateTime? EnrolledOn { get; set; }
     }
 }

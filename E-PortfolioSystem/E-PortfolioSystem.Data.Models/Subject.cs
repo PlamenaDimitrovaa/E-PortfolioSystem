@@ -7,6 +7,7 @@
     {
         public Subject()
         {
+            this.Id = Guid.NewGuid();
             this.StudentSubjects = new HashSet<StudentSubject>();
         }
 

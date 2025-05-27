@@ -1,10 +1,14 @@
 ﻿namespace E_PortfolioSystem.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
-
     using static Common.EntityValidationConstants.Profile;
     public class Profile
     {
+        public Profile()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
         [Key]
         public Guid Id { get; set; }
 

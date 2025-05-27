@@ -4,6 +4,7 @@ using E_PortfolioSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_PortfolioSystem.Data.Migrations
 {
     [DbContext(typeof(EPortfolioDbContext))]
-    partial class EPortfolioDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250527214823_EvaluationTableTeacherChanged")]
+    partial class EvaluationTableTeacherChanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -472,68 +475,6 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.HasIndex("TeacherId");
 
                     b.ToTable("Evaluations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("777c1952-01ed-4cce-88c0-6b2a0610d351"),
-                            CreatedAt = new DateTime(2024, 6, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EvaluationType = "Финална",
-                            Feedback = "Отлична имплементация на концепции от Изкуствения интелект с изчистен потребителски интерфейс.",
-                            ProjectGrade = 5,
-                            ProjectId = new Guid("122bf74b-69b4-4b2b-81b3-f203cd889a11"),
-                            SubjectGrade = 6,
-                            SubjectId = new Guid("ec6942eb-7f50-4f4b-8011-891c5051eb32"),
-                            TeacherId = new Guid("99f1710c-97b3-4bd3-8171-e0dc986d313d")
-                        },
-                        new
-                        {
-                            Id = new Guid("6ad69f6e-7c4c-4a5b-aeb6-bb43d193bce5"),
-                            CreatedAt = new DateTime(2024, 7, 15, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EvaluationType = "Финална",
-                            Feedback = "Добре структурирано и с изчистен код",
-                            ProjectGrade = 5,
-                            ProjectId = new Guid("2f5b887d-3c46-45e1-b826-3dbbe8570dd8"),
-                            SubjectGrade = 5,
-                            SubjectId = new Guid("31bc0e6b-4f14-4212-b67e-9b61f3e58f73"),
-                            TeacherId = new Guid("be0087cd-b86f-47b0-bde4-1632f8fd632e")
-                        },
-                        new
-                        {
-                            Id = new Guid("f9d41ad3-6f3e-4861-82de-d0a0df68b798"),
-                            CreatedAt = new DateTime(2024, 7, 30, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EvaluationType = "Защита",
-                            Feedback = "Красив потребителски интерфейс, логически грешки, трябва да се поработи върху идеята.",
-                            ProjectGrade = 4,
-                            ProjectId = new Guid("1c83cafd-c4f7-4eb1-809c-2703df8c29c5"),
-                            SubjectGrade = 6,
-                            SubjectId = new Guid("8e3c0f29-c432-45c9-9e32-7a7a1df28523"),
-                            TeacherId = new Guid("c7f6b928-bbd3-4ae9-bad5-91e417b59a98")
-                        },
-                        new
-                        {
-                            Id = new Guid("8f74e0e4-3b4a-496a-a6d7-219d0108fc34"),
-                            CreatedAt = new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EvaluationType = "Защита",
-                            Feedback = "Креативна идея, трябват подобрения в UX.",
-                            ProjectGrade = 5,
-                            ProjectId = new Guid("c2e6dffd-19d4-4b80-bf3b-d5a69fae59b0"),
-                            SubjectGrade = 4,
-                            SubjectId = new Guid("7f489f70-911e-40a4-8b79-1d6c3315c8cb"),
-                            TeacherId = new Guid("b34045a7-94f6-4e32-a7e7-f36eb9a387e3")
-                        },
-                        new
-                        {
-                            Id = new Guid("c025b27d-74a4-419f-b61f-64f7ab94a0b5"),
-                            CreatedAt = new DateTime(2024, 9, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EvaluationType = "Финална",
-                            Feedback = "Прекрасна работа!",
-                            ProjectGrade = 6,
-                            ProjectId = new Guid("b79cb4a7-0ab0-4a7c-b86a-8b35c46a74fd"),
-                            SubjectGrade = 6,
-                            SubjectId = new Guid("c4c2079d-1ed1-4f5f-8e36-4b03cc6e71da"),
-                            TeacherId = new Guid("abdcf0bb-76b4-4a4d-a369-e2de9a6d4d65")
-                        });
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.HRContact", b =>
@@ -909,83 +850,6 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Projects");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("122bf74b-69b4-4b2b-81b3-f203cd889a11"),
-                            AttachedDocumentId = new Guid("60e7e4d1-7d77-4d3d-9792-bd02dcad8ef1"),
-                            CreatedAt = new DateTime(2025, 1, 1, 9, 0, 0, 0, DateTimeKind.Utc),
-                            Deadline = new DateTime(2025, 12, 31, 23, 59, 59, 0, DateTimeKind.Utc),
-                            Description = "Чатбот, който помага на потребителите с автоматизирани отговори с помощта на AI.",
-                            EvaluationId = new Guid("777c1952-01ed-4cce-88c0-6b2a0610d351"),
-                            FilePath = "/projects/student1/chatbot.zip",
-                            ImageUrl = "https://mma.prnewswire.com/media/2218114/Screenshots_AI_Chat.jpg",
-                            IsApproved = true,
-                            Link = "https://github.com/student1/ai-chatbot",
-                            Title = "AI Чатбот асистент",
-                            UserId = new Guid("b4e0dcf9-b1cb-45a1-93d6-d0dbb130f128")
-                        },
-                        new
-                        {
-                            Id = new Guid("2f5b887d-3c46-45e1-b826-3dbbe8570dd8"),
-                            AttachedDocumentId = new Guid("f3f2163a-24cb-43d0-a3e5-c0c34c18cc2c"),
-                            CreatedAt = new DateTime(2025, 2, 1, 10, 30, 0, 0, DateTimeKind.Utc),
-                            Deadline = new DateTime(2025, 11, 30, 18, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Базиран на ASP.NET уеб магазин с потребителска регистрация и количка.",
-                            EvaluationId = new Guid("6ad69f6e-7c4c-4a5b-aeb6-bb43d193bce5"),
-                            FilePath = "/projects/student2/ecommerce.zip",
-                            ImageUrl = "https://techvify-software.com/wp-content/uploads/2023/08/5-best-free-ecommerce-flatform.png",
-                            IsApproved = true,
-                            Link = "https://student2-shop.example.com",
-                            Title = "Платформа за онлайн търговия",
-                            UserId = new Guid("ed49c00b-2026-41e0-a97c-9f4f7e74cb79")
-                        },
-                        new
-                        {
-                            Id = new Guid("1c83cafd-c4f7-4eb1-809c-2703df8c29c5"),
-                            AttachedDocumentId = new Guid("9df4d32b-76d2-4c7f-8e42-ec4f7baf34cb"),
-                            CreatedAt = new DateTime(2025, 3, 1, 14, 0, 0, 0, DateTimeKind.Utc),
-                            Deadline = new DateTime(2025, 10, 15, 20, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Лично портфолио, създадено с React и Tailwind CSS.",
-                            EvaluationId = new Guid("f9d41ad3-6f3e-4861-82de-d0a0df68b798"),
-                            FilePath = "/projects/student3/portfolio.zip",
-                            ImageUrl = "https://i.ytimg.com/vi/Dtb3DdSvYRY/maxresdefault.jpg",
-                            IsApproved = false,
-                            Link = "https://student3.dev",
-                            Title = "Уебсайт за портфолио",
-                            UserId = new Guid("5c9225c4-f837-4e1e-8f33-b2c13b184951")
-                        },
-                        new
-                        {
-                            Id = new Guid("c2e6dffd-19d4-4b80-bf3b-d5a69fae59b0"),
-                            AttachedDocumentId = new Guid("bebf91e9-90aa-4b65-b0ff-1fa91f4c83e4"),
-                            CreatedAt = new DateTime(2025, 4, 1, 8, 0, 0, 0, DateTimeKind.Utc),
-                            Deadline = new DateTime(2025, 12, 1, 12, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Приложение за Android, което проследява навиците на потребителите.",
-                            EvaluationId = new Guid("8f74e0e4-3b4a-496a-a6d7-219d0108fc34"),
-                            FilePath = "/projects/student4/tracker.apk",
-                            ImageUrl = "https://images.ctfassets.net/jicu8fwm4fvs/49r9KDrN6wNy5S8a1XJOZZ/e69da8fb1fd10239c8a85e016400809b/16-mobile-tracker-thumbnail.png",
-                            IsApproved = true,
-                            Link = "https://play.google.com/store/apps/details?id=tracker.student4",
-                            Title = "Проследяване на мобилни приложения",
-                            UserId = new Guid("7f25fd3e-1719-43a5-8fbe-bad7f62be7a6")
-                        },
-                        new
-                        {
-                            Id = new Guid("b79cb4a7-0ab0-4a7c-b86a-8b35c46a74fd"),
-                            AttachedDocumentId = new Guid("d42e5cf4-e694-42e8-b388-34e529f383ab"),
-                            CreatedAt = new DateTime(2025, 4, 15, 16, 0, 0, 0, DateTimeKind.Utc),
-                            Deadline = new DateTime(2025, 11, 15, 15, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Инструмент, който анализира и подобрява производителността на SQL.",
-                            EvaluationId = new Guid("c025b27d-74a4-419f-b61f-64f7ab94a0b5"),
-                            FilePath = "/projects/student5/sqloptimizer.zip",
-                            ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgrwj1FJlzRTO3h10-jZWPm3fsoGwvstz7QA&s",
-                            IsApproved = false,
-                            Link = "https://student5-sqlopt.example.com",
-                            Title = "Оптимизатор на SQL заявки",
-                            UserId = new Guid("a1d7b600-4459-4f80-92d0-1b3e9f3b7234")
-                        });
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.Recommendation", b =>
@@ -1015,48 +879,6 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.HasIndex("ToUserId");
 
                     b.ToTable("Recommendations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("f0c502be-1144-4042-b607-06c3b8d527ff"),
-                            CreatedAt = new DateTime(2024, 5, 17, 16, 0, 0, 0, DateTimeKind.Utc),
-                            FromUserId = new Guid("61ba8c0d-1c34-4b68-8881-218f70632a09"),
-                            Text = "Иван демонстрира изключителни умения за анализ на данни и работа в екип.",
-                            ToUserId = new Guid("a1d7b600-4459-4f80-92d0-1b3e9f3b7234")
-                        },
-                        new
-                        {
-                            Id = new Guid("22939c60-f1ef-41aa-9c92-c74cd440a0e0"),
-                            CreatedAt = new DateTime(2024, 5, 20, 10, 30, 0, 0, DateTimeKind.Utc),
-                            FromUserId = new Guid("94b8a56e-4a0f-4f39-8e83-1ad38c207d30"),
-                            Text = "Мария има силно портфолио и отлични комуникационни умения.",
-                            ToUserId = new Guid("b4e0dcf9-b1cb-45a1-93d6-d0dbb130f128")
-                        },
-                        new
-                        {
-                            Id = new Guid("31c0a993-4307-46ef-a057-24ae70990c96"),
-                            CreatedAt = new DateTime(2024, 5, 24, 14, 0, 0, 0, DateTimeKind.Utc),
-                            FromUserId = new Guid("94b8a56e-4a0f-4f39-8e83-1ad38c207d30"),
-                            Text = "Дизайнерското мислене и UI/UX уменията на Елена са впечатляващи.",
-                            ToUserId = new Guid("ed49c00b-2026-41e0-a97c-9f4f7e74cb79")
-                        },
-                        new
-                        {
-                            Id = new Guid("9fd67d3a-2b35-472e-bfac-46ffec0e65bc"),
-                            CreatedAt = new DateTime(2024, 5, 22, 11, 0, 0, 0, DateTimeKind.Utc),
-                            FromUserId = new Guid("9cb5e4e7-8a6d-4f35-b3a2-973e1ec764f5"),
-                            Text = "Николай показа дълбоко разбиране на принципите на UX дизайна.",
-                            ToUserId = new Guid("5c9225c4-f837-4e1e-8f33-b2c13b184951")
-                        },
-                        new
-                        {
-                            Id = new Guid("d1604d93-dcfd-4460-9426-c92a86bbf683"),
-                            CreatedAt = new DateTime(2024, 5, 25, 9, 0, 0, 0, DateTimeKind.Utc),
-                            FromUserId = new Guid("9cb5e4e7-8a6d-4f35-b3a2-973e1ec764f5"),
-                            Text = "Георги е силно аналитичен и ориентиран към детайлите.",
-                            ToUserId = new Guid("7f25fd3e-1719-43a5-8fbe-bad7f62be7a6")
-                        });
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.Skill", b =>
@@ -1256,38 +1078,6 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.HasIndex("SubjectId");
 
                     b.ToTable("StudentsSubjects");
-
-                    b.HasData(
-                        new
-                        {
-                            StudentId = new Guid("5cfa1d36-7ae6-4c95-b3a4-e5a96b14b591"),
-                            SubjectId = new Guid("ec6942eb-7f50-4f4b-8011-891c5051eb32"),
-                            EnrolledOn = new DateTime(2024, 9, 15, 8, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            StudentId = new Guid("7f3cd066-6f98-43e2-bff1-17972e62f202"),
-                            SubjectId = new Guid("31bc0e6b-4f14-4212-b67e-9b61f3e58f73"),
-                            EnrolledOn = new DateTime(2024, 9, 16, 9, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            StudentId = new Guid("cb3c4c29-7a2b-4c98-91de-57b28f35b920"),
-                            SubjectId = new Guid("8e3c0f29-c432-45c9-9e32-7a7a1df28523"),
-                            EnrolledOn = new DateTime(2024, 9, 17, 10, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            StudentId = new Guid("b61b3a88-78d9-4044-a166-2b8754ec255e"),
-                            SubjectId = new Guid("7f489f70-911e-40a4-8b79-1d6c3315c8cb"),
-                            EnrolledOn = new DateTime(2024, 9, 18, 11, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            StudentId = new Guid("edb4d7d9-014b-4b2d-8124-6a5cd45f0b67"),
-                            SubjectId = new Guid("c4c2079d-1ed1-4f5f-8e36-4b03cc6e71da"),
-                            EnrolledOn = new DateTime(2024, 9, 19, 12, 0, 0, 0, DateTimeKind.Utc)
-                        });
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.Subject", b =>
@@ -1326,53 +1116,6 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.HasIndex("TeacherId");
 
                     b.ToTable("Subjects");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ec6942eb-7f50-4f4b-8011-891c5051eb32"),
-                            EvaluationId = new Guid("777c1952-01ed-4cce-88c0-6b2a0610d351"),
-                            IsAdmitted = true,
-                            Name = "Изкуствен интелект",
-                            ProjectId = new Guid("122bf74b-69b4-4b2b-81b3-f203cd889a11"),
-                            TeacherId = new Guid("99f1710c-97b3-4bd3-8171-e0dc986d313d")
-                        },
-                        new
-                        {
-                            Id = new Guid("31bc0e6b-4f14-4212-b67e-9b61f3e58f73"),
-                            EvaluationId = new Guid("6ad69f6e-7c4c-4a5b-aeb6-bb43d193bce5"),
-                            IsAdmitted = true,
-                            Name = "Системи за онлайн търговия",
-                            ProjectId = new Guid("2f5b887d-3c46-45e1-b826-3dbbe8570dd8"),
-                            TeacherId = new Guid("be0087cd-b86f-47b0-bde4-1632f8fd632e")
-                        },
-                        new
-                        {
-                            Id = new Guid("8e3c0f29-c432-45c9-9e32-7a7a1df28523"),
-                            EvaluationId = new Guid("f9d41ad3-6f3e-4861-82de-d0a0df68b798"),
-                            IsAdmitted = true,
-                            Name = "Дизайн на потребителския интерфейс",
-                            ProjectId = new Guid("1c83cafd-c4f7-4eb1-809c-2703df8c29c5"),
-                            TeacherId = new Guid("c7f6b928-bbd3-4ae9-bad5-91e417b59a98")
-                        },
-                        new
-                        {
-                            Id = new Guid("7f489f70-911e-40a4-8b79-1d6c3315c8cb"),
-                            EvaluationId = new Guid("8f74e0e4-3b4a-496a-a6d7-219d0108fc34"),
-                            IsAdmitted = true,
-                            Name = "Творчески технологии",
-                            ProjectId = new Guid("c2e6dffd-19d4-4b80-bf3b-d5a69fae59b0"),
-                            TeacherId = new Guid("b34045a7-94f6-4e32-a7e7-f36eb9a387e3")
-                        },
-                        new
-                        {
-                            Id = new Guid("c4c2079d-1ed1-4f5f-8e36-4b03cc6e71da"),
-                            EvaluationId = new Guid("c025b27d-74a4-419f-b61f-64f7ab94a0b5"),
-                            IsAdmitted = true,
-                            Name = "Оптимизация на алгоритми",
-                            ProjectId = new Guid("b79cb4a7-0ab0-4a7c-b86a-8b35c46a74fd"),
-                            TeacherId = new Guid("abdcf0bb-76b4-4a4d-a369-e2de9a6d4d65")
-                        });
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.Teacher", b =>

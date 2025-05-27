@@ -4,6 +4,11 @@
     using static Common.EntityValidationConstants.HRContact;
     public class HRContact
     {
+        public HRContact()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
         [Key]
         public Guid Id { get; set; }
 
@@ -15,7 +20,7 @@
         [MaxLength(MessageMaxLength)]
         public string Message { get; set; } = null!;
 
-        public DateTime SentAt { get; set; } = DateTime.UtcNow;
+        public DateTime? SentAt { get; set; }
 
         public ApplicationUser HRUser { get; set; } = null!;
 

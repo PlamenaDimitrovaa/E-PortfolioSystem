@@ -6,6 +6,7 @@
     {
         public Student()
         {
+            this.Id = Guid.NewGuid();
             this.StudentSkills = new HashSet<StudentSkill>();
             this.Projects = new HashSet<Project>();
             this.Educations = new HashSet<Education>();

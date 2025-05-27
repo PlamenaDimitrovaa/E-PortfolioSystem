@@ -4,6 +4,11 @@
     using static Common.EntityValidationConstants.Education;
     public class Education
     {
+        public Education()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
         [Key]
         public Guid Id { get; set; }
 

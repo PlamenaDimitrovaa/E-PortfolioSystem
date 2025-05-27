@@ -23,6 +23,23 @@
                 .HasForeignKey(c => c.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            //builder.HasData(this.GenerateChats());
+        }
+
+        private Chat[] GenerateChats()
+        {
+            ICollection<Chat> chats = new HashSet<Chat>();
+
+            Chat chat;
+
+            chat = new Chat()
+            {
+
+            };
+
+            chats.Add(chat);
+
+            return chats.ToArray();
         }
     }
 }

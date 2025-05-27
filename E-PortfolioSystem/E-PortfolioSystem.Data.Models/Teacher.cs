@@ -5,6 +5,7 @@
     {
         public Teacher()
         {
+            this.Id = Guid.NewGuid();
             this.Subjects = new HashSet<Subject>();
         }
 

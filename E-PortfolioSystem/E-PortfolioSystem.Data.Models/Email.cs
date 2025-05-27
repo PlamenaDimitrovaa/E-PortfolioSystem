@@ -4,6 +4,11 @@
     using static Common.EntityValidationConstants.Email;
     public class Email
     {
+        public Email()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
         [Key]
         public Guid Id { get; set; }
 

@@ -4,6 +4,7 @@ using E_PortfolioSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_PortfolioSystem.Data.Migrations
 {
     [DbContext(typeof(EPortfolioDbContext))]
-    partial class EPortfolioDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250527215259_SeedDataForSubjectsEvaluationsProjects")]
+    partial class SeedDataForSubjectsEvaluationsProjects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1015,48 +1018,6 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.HasIndex("ToUserId");
 
                     b.ToTable("Recommendations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("f0c502be-1144-4042-b607-06c3b8d527ff"),
-                            CreatedAt = new DateTime(2024, 5, 17, 16, 0, 0, 0, DateTimeKind.Utc),
-                            FromUserId = new Guid("61ba8c0d-1c34-4b68-8881-218f70632a09"),
-                            Text = "Иван демонстрира изключителни умения за анализ на данни и работа в екип.",
-                            ToUserId = new Guid("a1d7b600-4459-4f80-92d0-1b3e9f3b7234")
-                        },
-                        new
-                        {
-                            Id = new Guid("22939c60-f1ef-41aa-9c92-c74cd440a0e0"),
-                            CreatedAt = new DateTime(2024, 5, 20, 10, 30, 0, 0, DateTimeKind.Utc),
-                            FromUserId = new Guid("94b8a56e-4a0f-4f39-8e83-1ad38c207d30"),
-                            Text = "Мария има силно портфолио и отлични комуникационни умения.",
-                            ToUserId = new Guid("b4e0dcf9-b1cb-45a1-93d6-d0dbb130f128")
-                        },
-                        new
-                        {
-                            Id = new Guid("31c0a993-4307-46ef-a057-24ae70990c96"),
-                            CreatedAt = new DateTime(2024, 5, 24, 14, 0, 0, 0, DateTimeKind.Utc),
-                            FromUserId = new Guid("94b8a56e-4a0f-4f39-8e83-1ad38c207d30"),
-                            Text = "Дизайнерското мислене и UI/UX уменията на Елена са впечатляващи.",
-                            ToUserId = new Guid("ed49c00b-2026-41e0-a97c-9f4f7e74cb79")
-                        },
-                        new
-                        {
-                            Id = new Guid("9fd67d3a-2b35-472e-bfac-46ffec0e65bc"),
-                            CreatedAt = new DateTime(2024, 5, 22, 11, 0, 0, 0, DateTimeKind.Utc),
-                            FromUserId = new Guid("9cb5e4e7-8a6d-4f35-b3a2-973e1ec764f5"),
-                            Text = "Николай показа дълбоко разбиране на принципите на UX дизайна.",
-                            ToUserId = new Guid("5c9225c4-f837-4e1e-8f33-b2c13b184951")
-                        },
-                        new
-                        {
-                            Id = new Guid("d1604d93-dcfd-4460-9426-c92a86bbf683"),
-                            CreatedAt = new DateTime(2024, 5, 25, 9, 0, 0, 0, DateTimeKind.Utc),
-                            FromUserId = new Guid("9cb5e4e7-8a6d-4f35-b3a2-973e1ec764f5"),
-                            Text = "Георги е силно аналитичен и ориентиран към детайлите.",
-                            ToUserId = new Guid("7f25fd3e-1719-43a5-8fbe-bad7f62be7a6")
-                        });
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.Skill", b =>
@@ -1256,38 +1217,6 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.HasIndex("SubjectId");
 
                     b.ToTable("StudentsSubjects");
-
-                    b.HasData(
-                        new
-                        {
-                            StudentId = new Guid("5cfa1d36-7ae6-4c95-b3a4-e5a96b14b591"),
-                            SubjectId = new Guid("ec6942eb-7f50-4f4b-8011-891c5051eb32"),
-                            EnrolledOn = new DateTime(2024, 9, 15, 8, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            StudentId = new Guid("7f3cd066-6f98-43e2-bff1-17972e62f202"),
-                            SubjectId = new Guid("31bc0e6b-4f14-4212-b67e-9b61f3e58f73"),
-                            EnrolledOn = new DateTime(2024, 9, 16, 9, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            StudentId = new Guid("cb3c4c29-7a2b-4c98-91de-57b28f35b920"),
-                            SubjectId = new Guid("8e3c0f29-c432-45c9-9e32-7a7a1df28523"),
-                            EnrolledOn = new DateTime(2024, 9, 17, 10, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            StudentId = new Guid("b61b3a88-78d9-4044-a166-2b8754ec255e"),
-                            SubjectId = new Guid("7f489f70-911e-40a4-8b79-1d6c3315c8cb"),
-                            EnrolledOn = new DateTime(2024, 9, 18, 11, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            StudentId = new Guid("edb4d7d9-014b-4b2d-8124-6a5cd45f0b67"),
-                            SubjectId = new Guid("c4c2079d-1ed1-4f5f-8e36-4b03cc6e71da"),
-                            EnrolledOn = new DateTime(2024, 9, 19, 12, 0, 0, 0, DateTimeKind.Utc)
-                        });
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.Subject", b =>

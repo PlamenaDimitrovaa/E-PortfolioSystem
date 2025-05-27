@@ -4,6 +4,11 @@
     using static Common.EntityValidationConstants.Recommendation;
     public class Recommendation
     {
+        public Recommendation()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
         [Key]
         public Guid Id { get; set; }
 
@@ -15,7 +20,7 @@
         [MaxLength(TextMaxLength)]
         public string Text { get; set; } = null!;
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? CreatedAt { get; set; }
 
         public ApplicationUser FromUser { get; set; } = null!;
 
