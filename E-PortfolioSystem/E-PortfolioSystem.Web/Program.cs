@@ -2,6 +2,8 @@ namespace E_PortfolioSystem.Web
 {
     using E_PortfolioSystem.Data;
     using E_PortfolioSystem.Data.Models;
+    using E_PortfolioSystem.Services.Data.Interfaces;
+    using E_PortfolioSystem.Web.Infrastructure.Extensions;
     using Microsoft.EntityFrameworkCore;
 
     public class Program
@@ -30,6 +32,8 @@ namespace E_PortfolioSystem.Web
                             builder.Configuration.GetValue<int>("Identity:Password:RequiredLength");
             })
                 .AddEntityFrameworkStores<EPortfolioDbContext>();
+
+            builder.Services.AddApplicationServices(typeof(IProfileService));
 
             builder.Services.AddControllersWithViews();
 

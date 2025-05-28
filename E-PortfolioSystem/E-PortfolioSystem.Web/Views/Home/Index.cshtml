@@ -12,8 +12,24 @@
                 <div class="fs-3 fw-light text-muted">@YourPlaceTo</div>
                 <h1 class="display-3 fw-bolder mb-5"><span class="text-gradient d-inline">@EPortfolioManagement</span></h1>
                 <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
-                    @if (SignInManager.IsSignedIn(User))
+                    @if (User.Identity?.IsAuthenticated ?? false)
                     {
+                        @* if (User.IsInRole("Student"))
+                        {
+                            <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="Profile" asp-action="Resume">@Resume</a>
+                            <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="Project" asp-action="Projects">@Projects</a>
+                        }
+                        else if (User.IsInRole("Teacher"))
+                        {
+                            <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="Profile" asp-action="Resume">@Resume</a>
+                            <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="Project" asp-action="Projects">@Projects</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="Profile" asp-action="Resume">@Resume</a>
+                            <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="Project" asp-action="Projects">@Projects</a>
+                        } *@
+
                         <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="Profile" asp-action="Resume">@Resume</a>
                         <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="Project" asp-action="Projects">@Projects</a>
                     }
@@ -143,15 +159,46 @@
         <div class="row gx-5 justify-content-center">
             <div class="col-xxl-8">
                 <div class="text-center my-5">
-                    <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">About Me</span></h2>
-                    <p class="lead fw-light mb-4">My name is Start Bootstrap and I help brands grow.</p>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit dolorum itaque qui unde quisquam consequatur autem. Eveniet quasi nobis aliquid cumque officiis sed rem iure ipsa! Praesentium ratione atque dolorem?</p>
+                    <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">Студент</span></h2>
+                    <p class="lead fw-light mb-4">Добре дошъл в твоя дигитален свят на постижения!</p>
+                    <p class="text-muted">
+                        Управлявай своето електронно портфолио с лекота.
+                        Добавяй проекти, умения, сертификати и документи, за да представиш най-доброто от себе си пред преподаватели и бъдещи работодатели.
+                    </p>
                     <div class="d-flex justify-content-center fs-2 gap-4">
                         <a class="text-gradient" href="#!"><i class="bi bi-twitter"></i></a>
                         <a class="text-gradient" href="#!"><i class="bi bi-linkedin"></i></a>
                         <a class="text-gradient" href="#!"><i class="bi bi-github"></i></a>
                     </div>
                 </div>
+                @if (User.IsInRole("Teacher"))
+                {
+                    <div class="text-center my-5">
+                    <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">Учител</span></h2>
+                    <p class="lead fw-light mb-4">Подкрепи развитието на своите студенти чрез персонализирана обратна връзка.</p>
+                    <p class="text-muted">
+                        Преглеждай и оценявай студентски портфолиа, следи напредъка и помагай в изграждането на реални компетентности.
+                    </p>
+                    <div class="d-flex justify-content-center fs-2 gap-4">
+                        <a class="text-gradient" href="#!"><i class="bi bi-twitter"></i></a>
+                        <a class="text-gradient" href="#!"><i class="bi bi-linkedin"></i></a>
+                        <a class="text-gradient" href="#!"><i class="bi bi-github"></i></a>
+                    </div>
+                    </div>
+                }
+                @* <div class="text-center my-5">
+                    <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">Добре дошъл!</span></h2>
+                    <p class="lead fw-light mb-4">Разгледай вдъхновяващи студентски постижения.</p>
+                    <p class="text-muted">
+                        Имаш достъп до публично споделени портфолиа на млади таланти – запознай се с техните умения, проекти и амбиции.
+                        Създай свое собствено портфолио!
+                    </p>
+                    <div class="d-flex justify-content-center fs-2 gap-4">
+                        <a class="text-gradient" href="#!"><i class="bi bi-twitter"></i></a>
+                        <a class="text-gradient" href="#!"><i class="bi bi-linkedin"></i></a>
+                        <a class="text-gradient" href="#!"><i class="bi bi-github"></i></a>
+                    </div>
+                </div> *@
             </div>
         </div>
     </div>

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace E_PortfolioSystem.Web.Controllers
 {
     [Authorize]
-    public class ContactController : Controller
+    public class StudentController : Controller
     {
         public async Task<IActionResult> Index()
         {

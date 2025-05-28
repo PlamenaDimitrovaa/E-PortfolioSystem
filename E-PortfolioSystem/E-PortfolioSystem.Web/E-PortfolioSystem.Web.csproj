@@ -20,7 +20,24 @@
     <ProjectReference Include="..\E-PortfolioSystem.Common\E-PortfolioSystem.Common.csproj" />
     <ProjectReference Include="..\E-PortfolioSystem.Data.Models\E-PortfolioSystem.Data.Models.csproj" />
     <ProjectReference Include="..\E-PortfolioSystem.Data\E-PortfolioSystem.Data.csproj" />
+    <ProjectReference Include="..\E-PortfolioSystem.Services.Data\E-PortfolioSystem.Services.Data.csproj" />
+    <ProjectReference Include="..\E-PortfolioSystem.Web.Infrastructure\E-PortfolioSystem.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\E-PortfolioSystem.Web.ViewModels\E-PortfolioSystem.Web.ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\AttachedDocument\" />
+    <Folder Include="Views\Evaluation\" />
+    <Folder Include="Views\Email\" />
+    <Folder Include="Views\Education\" />
+    <Folder Include="Views\Chat\" />
+    <Folder Include="Views\Certificate\" />
+    <Folder Include="Views\Notification\" />
+    <Folder Include="Views\Recommendation\" />
+    <Folder Include="Views\Subject\" />
+    <Folder Include="Views\Student\" />
+    <Folder Include="Views\Teacher\" />
+    <Folder Include="Views\Skill\" />
   </ItemGroup>
 
 </Project>
