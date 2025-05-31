@@ -1,0 +1,31 @@
+﻿@model E_PortfolioSystem.Web.ViewModels.AttachedDocument.AttachedDocumentFormModel
+
+<form asp-action="UploadDocument" asp-controller="Documents" enctype="multipart/form-data" method="post" class="mb-5">
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-body p-4">
+            <h5 class="text-primary mb-4">Качи документ</h5>
+
+            <div class="mb-3">
+                <label asp-for="DocumentType" class="form-label">Тип на документа</label>
+                <input asp-for="DocumentType" class="form-control" placeholder="Пример: Сертификат, Доклад и др." />
+                <span asp-validation-for="DocumentType" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Описание (незадължително)</label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Описание на документа..."></textarea>
+                <span asp-validation-for="Description" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Избери файл</label>
+                <input type="file" name="uploadedFile" class="form-control" accept=".pdf,.doc,.docx,.jpg,.png" required />
+                <small class="text-muted">Поддържани формати: .pdf, .doc, .jpg, .png</small>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill">Качи документа</button>
+            </div>
+        </div>
+    </div>
+</form>

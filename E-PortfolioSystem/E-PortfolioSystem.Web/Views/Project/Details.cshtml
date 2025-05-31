@@ -1,0 +1,42 @@
+﻿@model E_PortfolioSystem.Web.ViewModels.Project.ProjectDetailsViewModel
+
+<section class="py-5">
+    <div class="container px-5">
+        <h1 class="display-4 fw-bolder">@Model.Title</h1>
+
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <p class="mt-4"><strong>Описание:</strong> @Model.Description</p>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.Link))
+        {
+            <p><strong>Линк:</strong> <a href="@Model.Link" target="_blank">@Model.Link</a></p>
+        }
+
+        @if (Model.Deadline.HasValue)
+        {
+            <p><strong>Краен срок:</strong> @Model.Deadline.Value.ToString("dd.MM.yyyy")</p>
+        }
+
+        @if (Model.CreatedAt.HasValue)
+        {
+            <p><strong>Създаден на:</strong> @Model.CreatedAt.Value.ToString("dd.MM.yyyy")</p>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <div class="mt-4">
+                <img src="@Model.ImageUrl" alt="Project image" class="img-fluid rounded shadow" />
+            </div>
+        }
+
+        @* Включваме partial view за качване на документ *@
+        <h4 class="text-secondary mb-3 mt-5">Прикачени документи към проекта</h4>
+        @await Html.PartialAsync("_AttachedDocumentDetails", Model.AttachedDocuments)
+
+        <div class="mt-5">
+            <a class="btn btn-secondary" asp-action="Projects" asp-controller="Project">Назад към проектите</a>
+        </div>
+    </div>
+</section>

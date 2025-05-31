@@ -1,0 +1,56 @@
+94B8A56E-4A0F-4F39-8E83-1AD38C207D30
+A1D7B600-4459-4F80-92D0-1B3E9F3B7234
+61BA8C0D-1C34-4B68-8881-218F70632A09
+13C96C70-F547-41F3-91E6-84B38E92E994
+9CB5E4E7-8A6D-4F35-B3A2-973E1EC764F5
+ED49C00B-2026-41E0-A97C-9F4F7E74CB79
+5C9225C4-F837-4E1E-8F33-B2C13B184951
+7F25FD3E-1719-43A5-8FBE-BAD7F62BE7A6
+B4E0DCF9-B1CB-45A1-93D6-D0DBB130F128
+DCBCF227-4302-4743-8C99-E216BC1A6AEF
+
+
+3AE62C8E-5F56-4ABA-9CFA-BCBC1D49C479
+fc5f0c0f-8e12-4c8d-b6d4-f0ad5a0fa61a
+
+бояна
+B647BB68-3A15-44F4-8C5C-A2FF27897F8C teacherid
+B1C9A54F-3681-4509-BF6A-5BD7865DF667 userid
+
+
+пламена
+75e7a763-8660-4291-8e7b-5d626aa698bb studentid
+3ae62c8e-5f56-4aba-9cfa-bcbc1d49c479 userid
+
+
+Основи на C#
+Microsoft
+https://img.freepik.com/free-psd/elegant-certificate-template-with-golden-details_69286-460.jpg
+60e7e4d1-7d77-4d3d-9792-bd02dcad8ef1
+2023-06-10 00:00:00.0000000
+
+ASP.NET Core Уеб програмиране
+Udemy
+https://img.freepik.com/free-psd/sign-that-says-certificate-approval-approval-it_69286-538.jpg
+9df4d32b-76d2-4c7f-8e42-ec4f7baf34cb
+2024-01-15 00:00:00.0000000
+
+
+
+Технически университет - София
+Бакалавър
+Компютърни системи и технологии
+Факултет по компютърни науки
+2021-10-01 00:00:00.0000000
+2025-06-30 00:00:00.0000000
+
+
+За да използвам toastr нотификациите добавям:
+using static Common.NotificationMessagesConstants;
+TempData[ErrorMessage] = "You have already added this skill";
+return this.RedirectToAction("Index", "Home");
+
+Във ViewModel-ите слагам атрибути за:
+-валидациите; [Required], stringlength и т.н.
+-display:
+[Display(Name = "Phone")]

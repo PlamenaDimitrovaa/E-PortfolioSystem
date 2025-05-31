@@ -1,0 +1,77 @@
+﻿@model E_PortfolioSystem.Web.ViewModels.Project.ProjectFormModel
+
+@{
+    ViewData["Title"] = "Добави проект";
+}
+
+<div class="container px-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h1 class="text-primary mb-4">Добави нов проект</h1>
+
+                    <form asp-action="Add" asp-controller="Project" method="post" enctype="multipart/form-data">
+                        @* <input asp-for="@Model.Id" type="hidden" /> *@
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label">Заглавие</label>
+                            <input asp-for="Title" class="form-control" placeholder="Заглавие на проекта" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Описание</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Кратко описание на проекта..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Link" class="form-label">Външен линк (ако има)</label>
+                            <input asp-for="Link" class="form-control" placeholder="https://..." />
+                            <span asp-validation-for="Link" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ImageUrl" class="form-label">URL на изображение (по избор)</label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="https://image.url..." />
+                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                        </div>
+
+                        @*   <div class="mb-3">
+                            <label asp-for="Deadline" class="form-label">Краен срок</label>
+                            <input asp-for="Deadline" class="form-control" type="date" />
+                            <span asp-validation-for="Deadline" class="text-danger small"></span>
+                        </div>
+ *@
+                        <hr class="my-5" />
+
+                        <h4 class="text-secondary mb-3">Прикачи документ към проекта (по избор)</h4>
+
+                        <div class="mb-3">
+                            <label asp-for="DocumentType" class="form-label">Тип на документа</label>
+                            <input asp-for="DocumentType" class="form-control" placeholder="Сертификат, Доклад и др." />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DocumentDescription" class="form-label">Описание</label>
+                            <textarea asp-for="DocumentDescription" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Избери файл</label>
+                            <input asp-for="File" type="file" class="form-control" accept=".pdf,.doc,.docx,.jpg,.png" />
+                        </div>
+
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill">Запази проекта</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,4 +11,16 @@
     <ProjectReference Include="..\E-PortfolioSystem.Common\E-PortfolioSystem.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Evaluation\" />
+    <Folder Include="Education\" />
+    <Folder Include="Skill\" />
+    <Folder Include="Subject\" />
+    <Folder Include="Profile\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+  </ItemGroup>
+
 </Project>

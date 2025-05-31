@@ -139,7 +139,7 @@ namespace E_PortfolioSystem.Common
             public const int DescriptionMaxLength = 250;
 
             public const int FileContentMinLength = 1;
-            public const int FileContentMaxLength = 150;
+            public const int FileContentMaxLength = 2048;
 
             public const int FileLocationMinLength = 1;
             public const int FileLocationMaxLength = 150;
