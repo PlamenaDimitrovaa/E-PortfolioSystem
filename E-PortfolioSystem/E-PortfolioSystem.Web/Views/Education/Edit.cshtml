@@ -1,0 +1,69 @@
+﻿@using E_PortfolioSystem.Web.ViewModels.Education
+@model EducationEditViewModel
+
+@{
+    ViewData["Title"] = "Редактирай образование";
+}
+
+<div class="container px-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="text-primary m-0">Редактирай образование</h1>
+                        <a asp-controller="Education" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Отказ</a>
+                    </div>
+
+                    <form asp-action="Edit" asp-controller="Education" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input asp-for="Id" type="hidden" />
+
+                        <div class="mb-3">
+                            <label asp-for="Institution" class="form-label">Учебно заведение</label>
+                            <input asp-for="Institution" class="form-control" placeholder="Име на институцията" />
+                            <span asp-validation-for="Institution" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Degree" class="form-label">Степен</label>
+                            <input asp-for="Degree" class="form-control" placeholder="Бакалавър, Магистър и др." />
+                            <span asp-validation-for="Degree" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Specialty" class="form-label">Специалност</label>
+                            <input asp-for="Specialty" class="form-control" placeholder="Специалност" />
+                            <span asp-validation-for="Specialty" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Faculty" class="form-label">Факултет</label>
+                            <input asp-for="Faculty" class="form-control" placeholder="Факултет" />
+                            <span asp-validation-for="Faculty" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="StartDate" class="form-label">Начална дата</label>
+                            <input asp-for="StartDate" class="form-control" type="date" />
+                            <span asp-validation-for="StartDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="EndDate" class="form-label">Крайна дата</label>
+                            <input asp-for="EndDate" class="form-control" type="date" />
+                            <span asp-validation-for="EndDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill">Запази образованието</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

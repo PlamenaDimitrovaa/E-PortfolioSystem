@@ -1,0 +1,40 @@
+﻿@model E_PortfolioSystem.Web.ViewModels.Skill.SkillEditViewModel
+
+@{
+    ViewData["Title"] = "Добави умение";
+}
+
+<div class="container px-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="text-primary m-0">Добави ново умение</h1>
+                        <a asp-controller="Profile" asp-action="Resume" class="btn btn-secondary">Назад</a>
+                    </div>
+
+                    <form asp-action="Add" asp-controller="Skill" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Име</label>
+                            <input asp-for="Name" class="form-control" placeholder="Пример: C#, Photoshop..." />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Level" class="form-label">Ниво</label>
+                            <input asp-for="Level" class="form-control" placeholder="Пример: Начинаещ, Средно, Напреднал" />
+                            <span asp-validation-for="Level" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill">Запази умението</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

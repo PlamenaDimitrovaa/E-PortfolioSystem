@@ -1,11 +1,9 @@
 ﻿namespace E_PortfolioSystem.Web.Controllers
 {
     using E_PortfolioSystem.Services.Data.Interfaces;
-    using E_PortfolioSystem.Services.Data.Services;
     using E_PortfolioSystem.Web.ViewModels.Project;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
     using System.Security.Claims;
     using static E_PortfolioSystem.Common.NotificationMessagesConstants;
 
@@ -45,7 +43,7 @@
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Add", "Project");
+                return View(model);
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -89,6 +87,34 @@
             project.AttachedDocuments = attachedDocuments;
 
             return View(project);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var model = await _projectService.GetProjectForEditAsync(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(ProjectEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await _projectService.UpdateProjectAsync(model);
+            TempData[SuccessMessage] = "Проектът е успешно редактиран.";
+            return RedirectToAction("Details", new { id = model.Id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _projectService.DeleteProjectAsync(id);
+            TempData[SuccessMessage] = "Проектът е изтрит успешно.";
+            return RedirectToAction("Projects");
         }
     }
 }

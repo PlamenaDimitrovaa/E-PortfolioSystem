@@ -2,5 +2,6 @@
 {
     public interface IStudentService
     {
+        Task<string> GetStudentIdByUserId(string userId);
     }
 }

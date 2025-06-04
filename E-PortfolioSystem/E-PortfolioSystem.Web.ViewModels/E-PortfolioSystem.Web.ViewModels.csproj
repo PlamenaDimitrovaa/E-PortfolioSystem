@@ -13,10 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Evaluation\" />
-    <Folder Include="Education\" />
-    <Folder Include="Skill\" />
     <Folder Include="Subject\" />
-    <Folder Include="Profile\" />
   </ItemGroup>
 
   <ItemGroup>

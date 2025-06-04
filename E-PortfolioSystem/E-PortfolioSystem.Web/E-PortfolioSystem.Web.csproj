@@ -14,6 +14,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5" />
+    <PackageReference Include="QuestPDF" Version="2025.5.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,7 +30,6 @@
     <Folder Include="Views\AttachedDocument\" />
     <Folder Include="Views\Evaluation\" />
     <Folder Include="Views\Email\" />
-    <Folder Include="Views\Education\" />
     <Folder Include="Views\Chat\" />
     <Folder Include="Views\Certificate\" />
     <Folder Include="Views\Notification\" />
@@ -37,7 +37,6 @@
     <Folder Include="Views\Subject\" />
     <Folder Include="Views\Student\" />
     <Folder Include="Views\Teacher\" />
-    <Folder Include="Views\Skill\" />
   </ItemGroup>
 
 </Project>

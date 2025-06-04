@@ -30,6 +30,7 @@
         public DbSet<StudentSkill> StudentsSkills { get; set; }
         public DbSet<StudentSubject> StudentsSubjects { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Experience> Experiences { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

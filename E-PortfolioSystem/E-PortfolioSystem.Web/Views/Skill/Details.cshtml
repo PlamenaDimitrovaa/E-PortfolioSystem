@@ -1,0 +1,56 @@
+﻿@using E_PortfolioSystem.Web.ViewModels.Skill
+@model SkillDetailsViewModel
+
+<div class="container px-5 my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-center mb-4">Детайли за умение</h2>
+        <div>
+            <a asp-controller="Skill" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">
+                Редактирай
+            </a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                Изтрий
+            </button>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-body p-5">
+            <h4 class="text-primary fw-bold mb-3">@Model.Name</h4>
+            <p><strong>Ниво:</strong> @Model.Level</p>
+
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <p><strong>Описание:</strong> @Model.Description</p>
+            }
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a asp-controller="Profile" asp-action="Resume" class="btn btn-secondary mb-4 mt-4">Назад</a>
+        <a asp-controller="Skill" asp-action="Add" class="btn btn-success me-2">Добави умение</a>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header bg-danger text-white rounded-top-4">
+                <h5 class="modal-title" id="confirmDeleteLabel">Потвърждение</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Затвори"></button>
+            </div>
+            <div class="modal-body">
+                Сигурни ли сте, че искате да изтриете това умение? Това действие е необратимо.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+
+                <form asp-action="Delete" asp-controller="Skill" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Да, изтрий</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

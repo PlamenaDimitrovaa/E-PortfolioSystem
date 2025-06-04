@@ -1,0 +1,66 @@
+﻿@model E_PortfolioSystem.Web.ViewModels.Experience.ExperienceEditViewModel
+
+@{
+    ViewData["Title"] = "Добави професионален опит";
+}
+
+<div class="container px-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="text-primary m-0">Добави професионален опит</h1>
+                        <a asp-controller="Profile" asp-action="Resume" class="btn btn-secondary">Отказ</a>
+                    </div>
+
+                    <form asp-action="Add" asp-controller="Experience" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="Profession" class="form-label">Професия</label>
+                            <input asp-for="Profession" class="form-control" placeholder="Софтуерен инженер" />
+                            <span asp-validation-for="Profession" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Company" class="form-label">Компания</label>
+                            <input asp-for="Company" class="form-control" placeholder="Tech Solutions Ltd." />
+                            <span asp-validation-for="Company" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Sector" class="form-label">Сектор</label>
+                            <input asp-for="Sector" class="form-control" placeholder="Информационни технологии" />
+                            <span asp-validation-for="Sector" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="StartDate" class="form-label">Начална дата</label>
+                            <input asp-for="StartDate" class="form-control" type="date" />
+                            <span asp-validation-for="StartDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="EndDate" class="form-label">Крайна дата</label>
+                            <input asp-for="EndDate" class="form-control" type="date" />
+                            <span asp-validation-for="EndDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Описание</label>
+                            <textarea asp-for="Description" class="form-control" placeholder="Работа по уеб приложения..." rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill">Добави</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

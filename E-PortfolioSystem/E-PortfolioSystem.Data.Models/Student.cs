@@ -12,6 +12,7 @@
             this.Educations = new HashSet<Education>();
             this.Certificates = new HashSet<Certificate>();
             this.StudentSubjects = new HashSet<StudentSubject>();
+            this.Experiences = new HashSet<Experience>();
         }
         [Key]
         public Guid Id { get; set; }
@@ -35,5 +36,7 @@
         public ICollection<Certificate> Certificates { get; set; }
 
         public ICollection<StudentSubject> StudentSubjects { get; set; }
+
+        public ICollection<Experience> Experiences { get; set; }
     }
 }

@@ -17,6 +17,18 @@
         public Guid StudentUserId { get; set; }
 
         [Required]
+        [MaxLength(NameMaxLength)]
+        public string Name { get; set; } = null!;
+
+        [Required]
+        [MaxLength(EmailMaxLength)]
+        public string Email { get; set; } = null!;
+
+        [Required]
+        [MaxLength(PhoneNumberMaxLength)]
+        public string PhoneNumber { get; set; } = null!;
+
+        [Required]
         [MaxLength(MessageMaxLength)]
         public string Message { get; set; } = null!;
 

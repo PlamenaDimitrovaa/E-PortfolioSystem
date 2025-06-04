@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace E_PortfolioSystem.Web.ViewModels.Project
 {
@@ -6,6 +7,7 @@ namespace E_PortfolioSystem.Web.ViewModels.Project
     {
         public string? Id { get; set; }
 
+        [Required(ErrorMessage = "Заглавието е задължително.")]
         public string Title { get; set; } = null!;
 
         public string? Description { get; set; }

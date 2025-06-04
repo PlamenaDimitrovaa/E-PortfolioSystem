@@ -28,6 +28,12 @@
                 .HasForeignKey(c => c.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder
+                .HasMany(s => s.Experiences)
+                .WithOne(c => c.Student)
+                .HasForeignKey(c => c.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.HasData(this.GenerateStudents());
         }
 

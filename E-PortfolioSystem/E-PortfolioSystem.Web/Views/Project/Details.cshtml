@@ -4,6 +4,17 @@
     <div class="container px-5">
         <h1 class="display-4 fw-bolder">@Model.Title</h1>
 
+        <div>
+            <a asp-action="Edit" asp-controller="Project" asp-route-id="@Model.Id" class="btn btn-primary me-2">
+                <i class="bi bi-pencil-square"></i> Редактирай
+            </a>
+            <form asp-action="Delete" asp-controller="Project" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този проект?');">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                    Изтрий проекта
+                </button>
+            </form>
+        </div>
+
         @if (!string.IsNullOrEmpty(Model.Description))
         {
             <p class="mt-4"><strong>Описание:</strong> @Model.Description</p>
@@ -39,4 +50,28 @@
             <a class="btn btn-secondary" asp-action="Projects" asp-controller="Project">Назад към проектите</a>
         </div>
     </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header bg-danger text-white rounded-top-4">
+                    <h5 class="modal-title" id="confirmDeleteLabel">Потвърждение</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Затвори"></button>
+                </div>
+                <div class="modal-body">
+                    Сигурни ли сте, че искате да изтриете този проект? Това действие е необратимо.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+
+                    <form id="deleteForm" asp-action="Delete" asp-controller="Project" asp-route-id="@Model.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">Да, изтрий</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </section>

@@ -113,6 +113,15 @@ namespace E_PortfolioSystem.Common
         {
             public const int MessageMinLength = 1;
             public const int MessageMaxLength = 500;
+
+            public const int NameMinLength = 1;
+            public const int NameMaxLength = 500;
+
+            public const int EmailMinLength = 4;
+            public const int EmailMaxLength = 254;
+
+            public const int PhoneNumberMinLength = 1;
+            public const int PhoneNumberMaxLength = 15;
         }
 
         public static class Chat
@@ -149,6 +158,21 @@ namespace E_PortfolioSystem.Common
         {
             public const int FacultyNumberMinLength = 8;
             public const int FacultyNumberMaxLength = 10;
+        }
+
+        public static class Experience
+        {
+            public const int ProfessionMinLength = 3;
+            public const int ProfessionMaxLength = 500;
+
+            public const int DescriptionMinLength = 3;
+            public const int DescriptionMaxLength = 500;
+
+            public const int CompanyMinLength = 3;
+            public const int CompanyMaxLength = 500;
+
+            public const int SectorMinLength = 3;
+            public const int SectorMaxLength = 500;
         }
     }
 }

@@ -105,8 +105,8 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.Property<string>("FileContent")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
 
                     b.Property<string>("FileLocation")
                         .IsRequired()
@@ -536,11 +536,58 @@ namespace E_PortfolioSystem.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("E_PortfolioSystem.Data.Models.Experience", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Company")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Profession")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Sector")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Experiences");
+                });
+
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.HRContact", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("nvarchar(254)");
 
                     b.Property<Guid>("HRUserId")
                         .HasColumnType("uniqueidentifier");
@@ -549,6 +596,16 @@ namespace E_PortfolioSystem.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime?>("SentAt")
                         .HasColumnType("datetime2");
@@ -1632,6 +1689,17 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.Navigation("Teacher");
                 });
 
+            modelBuilder.Entity("E_PortfolioSystem.Data.Models.Experience", b =>
+                {
+                    b.HasOne("E_PortfolioSystem.Data.Models.Student", "Student")
+                        .WithMany("Experiences")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.HRContact", b =>
                 {
                     b.HasOne("E_PortfolioSystem.Data.Models.ApplicationUser", "HRUser")
@@ -1875,6 +1943,8 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.Navigation("Certificates");
 
                     b.Navigation("Educations");
+
+                    b.Navigation("Experiences");
 
                     b.Navigation("Projects");
 

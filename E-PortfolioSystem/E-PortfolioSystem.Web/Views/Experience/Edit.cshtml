@@ -1,0 +1,73 @@
+﻿@model E_PortfolioSystem.Web.ViewModels.Experience.ExperienceEditViewModel
+
+@{
+    ViewData["Title"] = "Редактирай професионален опит";
+}
+
+<div class="container px-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="text-primary m-0">Редактирай професионален опит</h1>
+                        <a asp-controller="Experience" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Отказ</a>
+                    </div>
+
+                    <form asp-action="Edit" asp-controller="Experience" method="post">
+                        @Html.AntiForgeryToken()
+                        <input asp-for="Id" type="hidden" />
+
+                        <div class="mb-3">
+                            <label asp-for="Profession" class="form-label">Професия</label>
+                            <input asp-for="Profession" class="form-control" />
+                            <span asp-validation-for="Profession" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Company" class="form-label">Компания</label>
+                            <input asp-for="Company" class="form-control" />
+                            <span asp-validation-for="Company" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Sector" class="form-label">Сектор</label>
+                            <input asp-for="Sector" class="form-control" />
+                            <span asp-validation-for="Sector" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="StartDate" class="form-label">Начална дата</label>
+                            <input asp-for="StartDate" class="form-control" placeholder="мммм гггг (напр. юни 2023)" />
+                            <span asp-validation-for="StartDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="EndDate" class="form-label">Крайна дата</label>
+                            <input asp-for="EndDate" class="form-control" placeholder="мммм гггг или празно за настояще" />
+                            <span asp-validation-for="EndDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Описание</label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill">Запази промените</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
