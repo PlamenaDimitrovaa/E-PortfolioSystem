@@ -38,7 +38,7 @@
             var experiences = await experienceService.GetAllByUserIdAsync(id);
             var skills = await skillService.GetAllByUserIdAsync(id);
             var education = await educationService.GetAllByUserIdAsync(id);
-            //var certificates = await certificateService.GetAllByUserIdAsync(id);
+            var certificates = await certificateService.GetAllByUserIdAsync(id);
 
             var model = new ResumeViewModel
             {
@@ -47,7 +47,7 @@
                 Experiences = experiences,
                 Skills = skills,
                 Educations = education,
-                //Certificates = certificates
+                Cerificates = certificates
             };
 
             return View(model);
@@ -62,7 +62,7 @@
             var experiences = await experienceService.GetAllByUserIdAsync(id);
             var skills = await skillService.GetAllByUserIdAsync(id);
             var education = await educationService.GetAllByUserIdAsync(id);
-            //var certificates = await certificateService.GetAllByUserIdAsync(id);
+            var certificates = await certificateService.GetAllByUserIdAsync(id);
 
             var resume = new ResumeViewModel
             {
@@ -71,7 +71,7 @@
                 Experiences = experiences,
                 Skills = skills,
                 Educations = education,
-                //Certificates = certificates
+                Cerificates = certificates
             };
 
             if (resume == null)

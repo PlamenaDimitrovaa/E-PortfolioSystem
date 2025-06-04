@@ -31,7 +31,6 @@
     <Folder Include="Views\Evaluation\" />
     <Folder Include="Views\Email\" />
     <Folder Include="Views\Chat\" />
-    <Folder Include="Views\Certificate\" />
     <Folder Include="Views\Notification\" />
     <Folder Include="Views\Recommendation\" />
     <Folder Include="Views\Subject\" />

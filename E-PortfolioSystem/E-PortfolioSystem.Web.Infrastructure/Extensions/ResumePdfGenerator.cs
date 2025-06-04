@@ -1,4 +1,5 @@
-﻿using E_PortfolioSystem.Web.ViewModels.Profile;
+﻿using E_PortfolioSystem.Web.ViewModels.Certificate;
+using E_PortfolioSystem.Web.ViewModels.Profile;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -30,11 +31,9 @@ namespace E_PortfolioSystem.Web.Infrastructure.Extensions
             }
             catch
             {
-                // Игнориране на грешката и използване на placeholder
             }
 
-            // Вграден placeholder (пр. празно изображение 1x1 px)
-            return Placeholders.Image(200, 200); // Може да се замени с по-добър placeholder при нужда
+            return Placeholders.Image(200, 200);
         }
 
         public byte[] Generate()
@@ -49,7 +48,6 @@ namespace E_PortfolioSystem.Web.Infrastructure.Extensions
                 {
                     page.Margin(50);
 
-                    // Заглавие с допълнителен интервал след него
                     page.Header().Column(header =>
                     {
                         header.Item().AlignCenter().Text($"CV на {profile.FullName}")
@@ -57,19 +55,18 @@ namespace E_PortfolioSystem.Web.Infrastructure.Extensions
                             .Bold()
                             .FontColor(Colors.Blue.Medium);
 
-                        header.Item().PaddingBottom(20); // Разстояние под заглавието
+                        header.Item().PaddingBottom(20);
                     });
 
                     page.Content().Column(col =>
                     {
                         col.Spacing(20);
 
-                        // Профил секция (снимка + информация)
                         col.Item().Row(row =>
                         {
                             row.ConstantItem(200).Height(200).Image(imageData, ImageScaling.FitArea);
 
-                            row.RelativeItem().PaddingLeft(20).Column(info => // ⬅️ Добавено PaddingLeft(20)
+                            row.RelativeItem().PaddingLeft(20).Column(info => 
                             {
                                 info.Spacing(20);
                                 info.Item().Text($"Име: {profile.FullName}").FontSize(12).Bold();
@@ -79,6 +76,7 @@ namespace E_PortfolioSystem.Web.Infrastructure.Extensions
                                     .FontSize(10)
                                     .Italic()
                                     .FontColor(Colors.Grey.Darken2);
+                                col.Item().LineHorizontal(0.5f).LineColor(Colors.Grey.Lighten2);
                             });
                         });
 
@@ -126,11 +124,34 @@ namespace E_PortfolioSystem.Web.Infrastructure.Extensions
                             {
                                 col.Item().Text($"• {skill.Name} - Ниво: {skill.Level}")
                                     .FontSize(10);
+                                col.Item().LineHorizontal(0.5f).LineColor(Colors.Grey.Lighten2);
                             }
                         }
                         else
                         {
                             col.Item().Text("Няма добавени умения.");
+                        }
+
+                        //СЕРТИФИКАТИ
+                        col.Item().Text("Сертификати").Bold().FontSize(14).Underline();
+                        if (model.Cerificates.Any())
+                        {
+                            foreach (var cert in model.Cerificates)
+                            {
+                                col.Item().Text($"• {cert.Title}")
+                                    .FontSize(10);
+                                col.Item().Text($"Издаден от: {cert.Issuer}")
+                                    .FontSize(10);
+                                col.Item().Text($"Издаден на: {cert.IssuedDate?.ToString("dd.MM.yyyy") ?? "Неизвестна"}")
+                                    .FontSize(10);
+                                col.Item().Text($"Линк към сертификата: {cert.FilePath}")
+                                    .FontSize(10);
+                                col.Item().LineHorizontal(0.5f).LineColor(Colors.Grey.Lighten2);
+                            }
+                        }
+                        else
+                        {
+                            col.Item().Text("Няма добавени сертификати.");
                         }
                     });
 

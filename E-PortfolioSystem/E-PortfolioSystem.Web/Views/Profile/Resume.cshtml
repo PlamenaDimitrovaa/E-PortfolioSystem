@@ -136,6 +136,53 @@
                 </div>
             </section>
 
+            <!-- Certificates Section -->
+            <section class="mb-5">
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="mb-5">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="feature bg-secondary text-white rounded-3 me-3"><i class="bi bi-award-fill"></i></div>
+                                <h3 class="fw-bolder mb-0"><span class="text-gradient d-inline">Сертификати</span></h3>
+                            </div>
+                            @if (Model.Cerificates.Any())
+                            {
+                                @foreach (var cert in Model.Cerificates)
+                                {
+                                    <div class="card shadow border-0 rounded-4 mb-4">
+                                        <div class="card-body p-4">
+                                            <div class="row align-items-center gx-4">
+                                                <div class="col text-center text-lg-start mb-3 mb-lg-0">
+                                                    <div class="bg-light p-3 rounded-4">
+                                                        <div class="text-secondary fw-bolder mb-2">
+                                                            @cert.Title
+                                                        </div>
+                                                        <div class="small text-muted">Издаден от: @cert.Issuer</div>
+                                                        <div class="small text-muted">Дата: @(cert.IssuedDate?.ToString("dd.MM.yyyy") ?? "Неизвестна")</div>
+                                                        @if (!string.IsNullOrEmpty(cert.FilePath))
+                                                        {
+                                                            <a href="@cert.FilePath" target="_blank" class="btn btn-sm btn-outline-secondary mt-2 me-2">
+                                                                Виж документ
+                                                            </a>
+                                                            <a asp-controller="Certificate" asp-action="Details" asp-route-id="@cert.Id" class="btn btn-sm btn-outline-secondary mt-2">Детайли</a>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-muted">Няма добавени сертификати.</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
         </div>
     </div>
 </div>
