@@ -134,9 +134,9 @@ namespace E_PortfolioSystem.Web.Infrastructure.Extensions
 
                         //СЕРТИФИКАТИ
                         col.Item().Text("Сертификати").Bold().FontSize(14).Underline();
-                        if (model.Cerificates.Any())
+                        if (model.Certificates.Any())
                         {
-                            foreach (var cert in model.Cerificates)
+                            foreach (var cert in model.Certificates)
                             {
                                 col.Item().Text($"• {cert.Title}")
                                     .FontSize(10);

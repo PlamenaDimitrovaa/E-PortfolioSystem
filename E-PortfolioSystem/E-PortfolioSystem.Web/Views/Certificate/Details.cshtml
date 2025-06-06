@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-center mb-4">Детайли за сертификат</h2>
         <div>
-            <a asp-controller="Education" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">
+            <a asp-controller="Certificate" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">
                 Редактирай
             </a>
             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
@@ -31,6 +31,9 @@
             </div>
         </div>
     </div>
+    @* Включваме partial view за качване на документ *@
+    <h4 class="text-secondary mb-3 mt-5">Прикачени документи към проекта</h4>
+    @await Html.PartialAsync("_AttachedDocumentDetails", Model.AttachedDocuments)
 
     <div class="d-flex justify-content-between align-items-center mt-4">
         <a asp-controller="Profile" asp-action="Resume" class="btn btn-secondary">Назад</a>

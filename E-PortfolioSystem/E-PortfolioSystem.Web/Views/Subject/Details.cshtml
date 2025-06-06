@@ -1,0 +1,68 @@
+﻿@using E_PortfolioSystem.Web.ViewModels.Subject
+@model SubjectDetailsViewModel
+
+<section class="py-5">
+    <div class="container">
+        <div class="card shadow border-0 rounded-4 mx-auto" style="max-width: 800px;">
+            <div class="card-body p-5">
+                <h2 class="fw-bold mb-4 text-gradient">Детайли за предмет</h2>
+
+                <p><strong>Име на предмет:</strong> @Model.Name</p>
+                <p><strong>Преподавател:</strong> @Model.TeacherName</p>
+                <p><strong>Заверен:</strong> @(Model.IsAdmitted ? "Да" : "Не")</p>
+                @if (Model.EnrolledOn.HasValue)
+                {
+                    <p><strong>Записан на:</strong> @Model.EnrolledOn.Value.ToString("dd.MM.yyyy")</p>
+                }
+
+                @if (Model.SubjectGrade.HasValue)
+                {
+                    <hr />
+                    <h4 class="text-secondary">Оценяване</h4>
+                    <p><strong>Оценка по предмет:</strong> @Model.SubjectGrade</p>
+                    <p><strong>Оценка по проект:</strong> @Model.ProjectGrade</p>
+                    <p><strong>Тип:</strong> @Model.EvaluationType</p>
+                    <p><strong>Обратна връзка:</strong> @Model.Feedback</p>
+                    <p><strong>Оценено на:</strong> @Model.EvaluationDate?.ToString("dd.MM.yyyy")</p>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.ProjectTitle))
+                {
+                    <hr />
+                    <h4 class="text-primary">Проект</h4>
+                    <p><strong>Заглавие:</strong> @Model.ProjectTitle</p>
+                    <p><strong>Описание:</strong> @Model.ProjectDescription</p>
+                    @if (!string.IsNullOrWhiteSpace(Model.ProjectLink))
+                    {
+                        <p><strong>Линк:</strong> <a href="@Model.ProjectLink" target="_blank">@Model.ProjectLink</a></p>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.DocumentFilePath))
+                    {
+                        <p>
+                            <strong>Прикачен файл:</strong>
+                            <a class="btn btn-outline-secondary btn-sm"
+                               asp-controller="AttachedDocument"
+                               asp-action="Download"
+                               asp-route-id="@Model.DocumentId">
+                                @Model.DocumentFileName
+                            </a>
+                        </p>
+                    }
+                }
+                <div class="mt-4 d-flex justify-content-between">
+                    <a class="btn btn-secondary" asp-action="Subjects" asp-controller="Subject">
+                        Назад към предметите
+                    </a>
+
+                    <a asp-controller="Subject"
+                       asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-primary">
+                        Редактирай документ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

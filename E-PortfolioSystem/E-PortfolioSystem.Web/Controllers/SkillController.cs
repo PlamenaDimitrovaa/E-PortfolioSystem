@@ -98,7 +98,7 @@ namespace E_PortfolioSystem.Web.Controllers
             var userId = User.GetId();
             if (userId != null)
             {
-                var studentId = await studentService.GetStudentIdByUserId(userId);
+                var studentId = await studentService.GetStudentIdByUserIdAsync(userId);
                 var skillId = await skillService.AddAsync(model, Guid.Parse(userId), studentId);
                 return RedirectToAction("Details", new { id = skillId });
             }
@@ -113,7 +113,7 @@ namespace E_PortfolioSystem.Web.Controllers
             var userId = User.GetId();
             if (userId != null)
             {
-                var studentId = await studentService.GetStudentIdByUserId(userId);
+                var studentId = await studentService.GetStudentIdByUserIdAsync(userId);
                 await skillService.DeleteAsync(id, studentId);
             }
 

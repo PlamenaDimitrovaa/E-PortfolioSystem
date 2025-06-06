@@ -15,6 +15,6 @@ namespace E_PortfolioSystem.Web.ViewModels.Profile
         public IEnumerable<ExperienceViewModel> Experiences { get; set; } = new List<ExperienceViewModel>();
         public IEnumerable<EducationViewModel> Educations { get; set; } = new List<EducationViewModel>();
         public IEnumerable<SkillViewModel> Skills { get; set; } = new List<SkillViewModel>();
-        public IEnumerable<CertificateViewModel> Cerificates { get; set; } = new List<CertificateViewModel>();
+        public IEnumerable<CertificateViewModel> Certificates { get; set; } = new List<CertificateViewModel>();
     }
 }

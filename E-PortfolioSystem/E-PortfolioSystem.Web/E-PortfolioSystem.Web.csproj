@@ -33,7 +33,6 @@
     <Folder Include="Views\Chat\" />
     <Folder Include="Views\Notification\" />
     <Folder Include="Views\Recommendation\" />
-    <Folder Include="Views\Subject\" />
     <Folder Include="Views\Student\" />
     <Folder Include="Views\Teacher\" />
   </ItemGroup>

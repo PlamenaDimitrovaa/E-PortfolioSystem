@@ -1,0 +1,47 @@
+﻿@using E_PortfolioSystem.Web.ViewModels.Subject
+@model IEnumerable<SubjectViewModel>
+
+@{
+    ViewData["Title"] = "Предмети";
+}
+
+<section class="mb-5 d-flex justify-content-center">
+    <div class="card shadow border-0 rounded-4" style="max-width: 900px; width: 100%;">
+        <div class="card-body p-5">
+            <h3 class="fw-bolder mb-4 text-gradient text-center">Моите предмети</h3>
+
+            @if (!Model.Any())
+            {
+                <p class="text-muted text-center">Няма записани предмети.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Име на предмет</th>
+                                <th>Преподавател</th>
+                                <th class="text-center">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var subject in Model)
+                            {
+                                <tr>
+                                    <td>@subject.Name</td>
+                                    <td>@subject.TeacherFullName</td>
+                                    <td class="text-center">
+                                        <a asp-controller="Subject" asp-action="Details" asp-route-id="@subject.Id" class="btn btn-sm btn-outline-secondary">
+                                            Детайли
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</section>

@@ -12,7 +12,13 @@ namespace E_PortfolioSystem.Services.Data.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<string> GetStudentIdByUserId(string userId)
+        public string GetStudentIdByUserId(string userId)
+        {
+            return dbContext.Students
+              .Where(s => s.UserId.ToString() == userId).FirstOrDefault().Id.ToString();
+        }
+
+        public async Task<string> GetStudentIdByUserIdAsync(string userId)
         {
             return dbContext.Students
                 .Where(s => s.UserId.ToString() == userId).FirstOrDefault().Id.ToString();

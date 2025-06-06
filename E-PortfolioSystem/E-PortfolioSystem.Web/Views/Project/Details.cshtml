@@ -2,17 +2,19 @@
 
 <section class="py-5">
     <div class="container px-5">
-        <h1 class="display-4 fw-bolder">@Model.Title</h1>
-
-        <div>
-            <a asp-action="Edit" asp-controller="Project" asp-route-id="@Model.Id" class="btn btn-primary me-2">
-                <i class="bi bi-pencil-square"></i> Редактирай
-            </a>
-            <form asp-action="Delete" asp-controller="Project" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този проект?');">
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
-                    Изтрий проекта
-                </button>
-            </form>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-center m-0"><b>@Model.Title</b></h1>
+            <div>
+                <a asp-controller="Project" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">
+                    <i class="bi bi-pencil-square"></i>
+                    Редактирай
+                </a>
+                <form asp-action="Delete" asp-controller="Project" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този проект?');">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                        Изтрий
+                    </button>
+                </form>
+            </div>
         </div>
 
         @if (!string.IsNullOrEmpty(Model.Description))

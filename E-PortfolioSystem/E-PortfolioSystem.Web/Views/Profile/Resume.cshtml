@@ -5,20 +5,22 @@
     <div class="text-center mb-5">
         <h1 class="display-5 fw-bolder mb-0"><span class="text-gradient d-inline">@Resume на</span></h1>
         <h1 class="display-5 fw-bolder mb-0"><span class="text-gradient d-inline">@Model.FullName</span></h1>
+
+        <a class="btn btn-primary px-4 py-3 mt-4"
+           asp-controller="Profile"
+           asp-action="DownloadCV">
+            <i class="bi bi-download me-2"></i> @CVDownload
+        </a>
     </div>
 
     <div class="row gx-5 justify-content-center">
         <div class="col-lg-11 col-xl-9 col-xxl-8">
-
             <!-- Experience Section -->
             <section>
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="text-primary fw-bolder mb-0">@Experience</h2>
-                    <a class="btn btn-primary px-4 py-3"
-                       asp-controller="Profile"
-                       asp-action="DownloadCV">
-                        <div class="d-inline-block bi bi-download me-2"></div>
-                        @CVDownload
+                    <a asp-controller="Experience" asp-action="Add" class="btn btn-outline-success">
+                        Добави
                     </a>
                 </div>
 
@@ -60,7 +62,12 @@
 
             <!-- Education Section -->
             <section>
-                <h2 class="text-secondary fw-bolder mb-4">Образование</h2>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h2 class="text-secondary fw-bolder mb-0">Образование</h2>
+                    <a asp-controller="Education" asp-action="Add" class="btn btn-outline-success">
+                        Добави
+                    </a>
+                </div>
                 @if (Model.Educations.Any())
                 {
                     @foreach (var edu in Model.Educations)
@@ -109,9 +116,18 @@
                 <div class="card shadow border-0 rounded-4">
                     <div class="card-body p-5">
                         <div class="mb-5">
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="feature bg-primary text-white rounded-3 me-3"><i class="bi bi-tools"></i></div>
-                                <h3 class="fw-bolder mb-0"><span class="text-gradient d-inline">Умения</span></h3>
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="feature bg-primary text-white rounded-3 me-3">
+                                        <i class="bi bi-tools"></i>
+                                    </div>
+                                    <h3 class="fw-bolder mb-0">
+                                        <span class="text-gradient d-inline">Умения</span>
+                                    </h3>
+                                </div>
+                                <a asp-controller="Skill" asp-action="Add" class="btn btn-outline-success">
+                                    Добави
+                                </a>
                             </div>
                             <div class="row row-cols-1 row-cols-md-3">
                                 @if (Model.Skills.Any())
@@ -121,7 +137,7 @@
                                         <div class="col mb-4">
                                             <div class="d-flex align-items-center bg-light rounded-4 p-3 h-100">
                                                 @skill.Name (@skill.Level)
-                                                <a asp-controller="Skill" asp-action="Details" asp-route-id="@skill.Id" class="btn btn-sm btn-outline-success ms-4">Детайли</a>
+                                                <a asp-controller="Skill" asp-action="Details" asp-route-id="@skill.Id" class="btn btn-sm btn-outline-primary ms-4">Детайли</a>
                                             </div>
                                         </div>
                                     }
@@ -141,13 +157,23 @@
                 <div class="card shadow border-0 rounded-4">
                     <div class="card-body p-5">
                         <div class="mb-5">
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="feature bg-secondary text-white rounded-3 me-3"><i class="bi bi-award-fill"></i></div>
-                                <h3 class="fw-bolder mb-0"><span class="text-gradient d-inline">Сертификати</span></h3>
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="feature bg-secondary text-white rounded-3 me-3">
+                                        <i class="bi bi-award-fill"></i>
+                                    </div>
+                                    <h3 class="fw-bolder mb-0">
+                                        <span class="text-gradient d-inline">Сертификати</span>
+                                    </h3>
+                                </div>
+                                <a asp-controller="Certificate" asp-action="Add" class="btn btn-outline-success">
+                                    Добави
+                                </a>
                             </div>
-                            @if (Model.Cerificates.Any())
+
+                            @if (Model.Certificates.Any())
                             {
-                                @foreach (var cert in Model.Cerificates)
+                                @foreach (var cert in Model.Certificates)
                                 {
                                     <div class="card shadow border-0 rounded-4 mb-4">
                                         <div class="card-body p-4">
@@ -159,13 +185,8 @@
                                                         </div>
                                                         <div class="small text-muted">Издаден от: @cert.Issuer</div>
                                                         <div class="small text-muted">Дата: @(cert.IssuedDate?.ToString("dd.MM.yyyy") ?? "Неизвестна")</div>
-                                                        @if (!string.IsNullOrEmpty(cert.FilePath))
-                                                        {
-                                                            <a href="@cert.FilePath" target="_blank" class="btn btn-sm btn-outline-secondary mt-2 me-2">
-                                                                Виж документ
-                                                            </a>
-                                                            <a asp-controller="Certificate" asp-action="Details" asp-route-id="@cert.Id" class="btn btn-sm btn-outline-secondary mt-2">Детайли</a>
-                                                        }
+
+                                                        <a asp-controller="Certificate" asp-action="Details" asp-route-id="@cert.Id" class="btn btn-sm btn-outline-secondary mt-2">Детайли</a>
                                                     </div>
                                                 </div>
                                             </div>

@@ -1,0 +1,43 @@
+﻿@using E_PortfolioSystem.Web.ViewModels.Subject
+@model SubjectEditDocumentViewModel
+
+<div class="container mt-5">
+    <div class="card shadow border-0 rounded-4 col-md-8 offset-md-2">
+        <div class="card-body p-5">
+            <h2 class="mb-4 text-center text-gradient">Редактиране на документ към предмет</h2>
+
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="SubjectId" />
+
+                <div class="mb-3">
+                    <label class="form-label">Име на предмет</label>
+                    <input class="form-control" asp-for="Name" readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Преподавател</label>
+                    <input class="form-control" asp-for="TeacherFullName" readonly />
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.ExistingFilePath))
+                {
+                    <div class="mb-3">
+                        <label class="form-label">Съществуващ файл:</label><br />
+                        <a class="btn btn-outline-primary" asp-controller="AttachedDocument" asp-action="Download" asp-route-id="@Model.ExistingFileId">
+                            @Model.ExistingFileName
+                        </a>
+                    </div>
+                }
+
+                <div class="mb-3">
+                    <label class="form-label">Нов файл (ако желаете да подмените):</label>
+                    <input class="form-control" type="file" asp-for="NewFile" />
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Запази</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

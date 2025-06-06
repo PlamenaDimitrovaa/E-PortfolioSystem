@@ -47,7 +47,7 @@
                 Experiences = experiences,
                 Skills = skills,
                 Educations = education,
-                Cerificates = certificates
+                Certificates = certificates
             };
 
             return View(model);
@@ -71,7 +71,7 @@
                 Experiences = experiences,
                 Skills = skills,
                 Educations = education,
-                Cerificates = certificates
+                Certificates = certificates
             };
 
             if (resume == null)

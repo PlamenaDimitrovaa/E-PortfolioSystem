@@ -46,7 +46,7 @@ https://img.freepik.com/free-psd/sign-that-says-certificate-approval-approval-it
 
 
 За да използвам toastr нотификациите добавям:
-using static Common.NotificationMessagesConstants;
+using static E_PortfolioSystem.Common.NotificationMessagesConstants;
 TempData[ErrorMessage] = "You have already added this skill";
 return this.RedirectToAction("Index", "Home");
 
@@ -54,3 +54,15 @@ return this.RedirectToAction("Index", "Home");
 -валидациите; [Required], stringlength и т.н.
 -display:
 [Display(Name = "Phone")]
+
+
+https://www.template.net/certificates/pdf
+
+Да добавя валидации в ViewModel-ите и съобщения за грешка:
+[StringLength(TitleMaxLength, MinimumLength = TitleMinLength)]
+ValidationMessage = "Съобщение за валидация на български"
+
+var attachedDocument = dbContext.AttachedDocuments.Where(x => x.Id == project.AttachedDocumentId).FirstOrDefault();
+
+dbContext.AttachedDocuments.Remove(attachedDocument);
+
