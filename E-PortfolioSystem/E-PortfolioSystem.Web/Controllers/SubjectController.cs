@@ -76,7 +76,7 @@ namespace E_PortfolioSystem.Web.Controllers
                     SubjectId = subject.Id,
                     Name = subject.Name,
                     IsAdmitted = subject.IsAdmitted,
-                    TeacherFullName = subject.Teacher.User.UserName,
+                    TeacherFullName = subject.Teacher.User.FirstName + " " + subject.Teacher.User.LastName,
                     ExistingFilePath = subject.Project?.AttachedDocument?.FileLocation,
                     ExistingFileId = subject.Project?.AttachedDocument?.Id.ToString(),
                     ExistingFileName = subject.Project?.AttachedDocument?.FileName

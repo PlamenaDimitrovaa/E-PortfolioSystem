@@ -38,7 +38,7 @@ namespace E_PortfolioSystem.Web.Controllers
             
             // Добавяме името на потребителя, с когото чатим
             var otherUser = await userManager.FindByIdAsync(userId);
-            ViewBag.OtherUserName = otherUser?.UserName ?? "Потребител";
+            ViewBag.OtherUserName = otherUser?.FirstName + " " + otherUser?.LastName ?? "Потребител";
             
             return View(chatHistory);
         }

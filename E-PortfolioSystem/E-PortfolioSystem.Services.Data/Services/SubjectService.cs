@@ -24,7 +24,7 @@ namespace E_PortfolioSystem.Services.Data.Services
                 {
                     Id = ss.Subject.Id.ToString(),
                     Name = ss.Subject.Name,
-                    TeacherFullName = ss.Subject.Teacher.User.UserName
+                    TeacherFullName = ss.Subject.Teacher.User.FirstName + " " + ss.Subject.Teacher.User.LastName
                 })
                 .ToListAsync();
         }
@@ -48,7 +48,7 @@ namespace E_PortfolioSystem.Services.Data.Services
                 Id = subject.Id.ToString(),
                 Name = subject.Name,
                 IsAdmitted = subject.IsAdmitted,
-                TeacherName = subject.Teacher.User.UserName, //TODO ADD FULLNAME
+                TeacherName = subject.Teacher.User.FirstName + " " + subject.Teacher.User.LastName,
                 EnrolledOn = enrolledOn,
 
                 SubjectGrade = subject.Evaluation?.SubjectGrade,

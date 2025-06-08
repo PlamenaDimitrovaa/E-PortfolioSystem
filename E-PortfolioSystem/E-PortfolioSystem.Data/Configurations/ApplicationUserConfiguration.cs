@@ -9,6 +9,14 @@
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
+            builder
+                .Property(u => u.FirstName)
+                .HasDefaultValue("Test");
+
+            builder
+                .Property(u => u.LastName)
+                .HasDefaultValue("Testov");
+
             var hasher = new PasswordHasher<ApplicationUser>();
 
             var users = new List<ApplicationUser>
