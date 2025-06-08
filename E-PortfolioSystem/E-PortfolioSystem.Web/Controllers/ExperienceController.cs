@@ -24,34 +24,50 @@ namespace E_PortfolioSystem.Web.Controllers
 
         public async Task<IActionResult> Details(string id)
         {
-            var experience = await experienceService.GetByIdAsync(id);
-            if (experience == null)
+            try
             {
-                TempData[ErrorMessage] = "Данни за опит не са намерени!";
+                var experience = await experienceService.GetByIdAsync(id);
+                if (experience == null)
+                {
+                    TempData[ErrorMessage] = "Данни за опит не са намерени!";
+                    return RedirectToAction("Resume", "Profile");
+                }
+
+                return View(experience);
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на детайлите за опита.";
                 return RedirectToAction("Resume", "Profile");
             }
-
-            return View(experience);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            if (string.IsNullOrEmpty(id))
+            try
             {
-                TempData[ErrorMessage] = "Не са намерени данни за опита!";
+                if (string.IsNullOrEmpty(id))
+                {
+                    TempData[ErrorMessage] = "Не са намерени данни за опита!";
+                    return RedirectToAction("Resume", "Profile");
+                }
+
+                var experienceFormModel = await experienceService.GetForEditByIdAsync(id);
+
+                if (experienceFormModel == null)
+                {
+                    TempData[ErrorMessage] = "Не са намерени данни за опита!";
+                    return RedirectToAction("Resume", "Profile");
+                }
+
+                return View(experienceFormModel);
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на формата за редактиране.";
                 return RedirectToAction("Resume", "Profile");
             }
-
-            var experienceFormModel = await experienceService.GetForEditByIdAsync(id);
-
-            if (experienceFormModel == null)
-            {
-                TempData[ErrorMessage] = "Не са намерени данни за опита!";
-                return RedirectToAction("Resume", "Profile");
-            }
-
-            return View(experienceFormModel);
         }
 
         [HttpPost]
@@ -67,16 +83,24 @@ namespace E_PortfolioSystem.Web.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var success = await experienceService.UpdateAsync(id, model);
-
-            if (!success)
+            try
             {
-                TempData[ErrorMessage] = "Възникна грешка при редактирането на опита!";
-                return RedirectToAction("Resume", "Profile");
-            }
+                var success = await experienceService.UpdateAsync(id, model);
 
-            TempData[SuccessMessage] = "Опитът е успешно редактиран.";
-            return RedirectToAction("Details", new { id = model.Id });
+                if (!success)
+                {
+                    TempData[ErrorMessage] = "Възникна грешка при редактирането на опита!";
+                    return RedirectToAction("Resume", "Profile");
+                }
+
+                TempData[SuccessMessage] = "Опитът е успешно редактиран.";
+                return RedirectToAction("Details", new { id = model.Id });
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при редактирането на опита.";
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -100,10 +124,18 @@ namespace E_PortfolioSystem.Web.Controllers
                 return View(model);
             }
 
-            var userId = User.GetId();
-            await experienceService.AddAsync(model, userId!);
-            TempData[SuccessMessage] = "Опитът е успешно добавен.";
-            return RedirectToAction("Resume", "Profile");
+            try
+            {
+                var userId = User.GetId();
+                await experienceService.AddAsync(model, userId!);
+                TempData[SuccessMessage] = "Успешно добавихте опит!";
+                return RedirectToAction("Resume", "Profile");
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при добавянето на опита.";
+                return View(model);
+            }
         }
 
         [HttpPost]

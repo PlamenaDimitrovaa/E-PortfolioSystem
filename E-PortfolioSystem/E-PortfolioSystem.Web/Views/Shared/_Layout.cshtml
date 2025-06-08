@@ -51,11 +51,27 @@
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Начало</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark position-relative" asp-controller="Notification" asp-action="Index">
+                                    <i class="bi bi-bell"></i>
+                                    <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Начало</a>
+                            </li>
                             <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Subject" asp-action="Subjects">Университет</a></li>
                             <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Resume">Резюме</a></li>
                             <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Project" asp-action="Projects">Проекти</a></li>
                             <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="HRContact" asp-action="Send">Контакт</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark position-relative" asp-controller="Chat" asp-action="Index">
+                                    <i class="bi bi-chat"></i>
+                                    <span id="messages-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+                                    </span>
+                                </a>
+                            </li>
                         </ul>
                     }
                     <partial name="_LoginPartial" />
@@ -85,8 +101,8 @@
     </footer>
 
     <!-- Bootstrap core JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- Core theme JS -->
     <script src="~/js/scripts.js"></script>
 
@@ -94,5 +110,48 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <script>
+            function updateNotificationCount() {
+                $.get('@Url.Action("GetUnreadCount", "Notification")', function (response) {
+                    const count = response.count;
+                    const countElement = $('#notification-count');
+
+                    if (count > 0) {
+                        countElement.text(count);
+                        countElement.removeClass('d-none');
+                    } else {
+                        countElement.addClass('d-none');
+                    }
+                });
+            }
+
+            function updateMessagesCount() {
+                $.get('@Url.Action("GetUnreadCount", "Chat")', function (response) {
+                    const count = response.count;
+                    const countElement = $('#messages-count');
+
+                    if (count > 0) {
+                        countElement.text(count);
+                        countElement.removeClass('d-none');
+                    } else {
+                        countElement.addClass('d-none');
+                    }
+                });
+            }
+
+            // Обновяване при зареждане на страницата
+            $(document).ready(function () {
+                updateNotificationCount();
+                updateMessagesCount();
+
+                // Обновяване на всеки 10 секунди за съобщения и 5 минути за нотификации
+                setInterval(updateNotificationCount, 300000); // 5 минути
+                setInterval(updateMessagesCount, 10000);     // 10 секунди
+            });
+        </script>
+    }
 </body>
 </html>

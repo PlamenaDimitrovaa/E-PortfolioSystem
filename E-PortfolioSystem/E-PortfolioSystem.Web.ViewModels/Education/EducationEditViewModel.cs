@@ -8,19 +8,19 @@ namespace E_PortfolioSystem.Web.ViewModels.Education
         public string? Id { get; set; }
 
         [Required(ErrorMessage = "Полето 'Учебно заведение' е задължително.")]
-        [StringLength(InstitutionMaxLength)]
+        [StringLength(InstitutionMaxLength, MinimumLength = InstitutionMinLength)]
         public string Institution { get; set; } = null!;
 
         [Required(ErrorMessage = "Полето 'Степен' е задължително.")]
-        [StringLength(DegreeMaxLength)]
+        [StringLength(DegreeMaxLength, MinimumLength = DegreeMinLength)]
         public string Degree { get; set; } = null!;
 
         [Required(ErrorMessage = "Полето 'Специалност' е задължително.")]
-        [StringLength(SpecialtyMaxLength)]
+        [StringLength(SpecialtyMaxLength, MinimumLength = SpecialtyMinLength)]
         public string Specialty { get; set; } = null!;
 
         [Required(ErrorMessage = "Полето 'Факултет' е задължително.")]
-        [StringLength(FacultyMaxLength)]
+        [StringLength(FacultyMaxLength, MinimumLength = FacultyMinLength)]
         public string Faculty { get; set; } = null!;
 
         [Required(ErrorMessage = "Полето 'Начална дата' е задължително.")]

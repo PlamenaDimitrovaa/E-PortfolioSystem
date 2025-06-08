@@ -1,0 +1,178 @@
+@using System.Security.Claims
+@model IEnumerable<E_PortfolioSystem.Web.ViewModels.ChatMessageViewModel>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <a href="@Url.Action("Index")" class="btn btn-outline-primary btn-sm me-3">
+                            <i class="bi bi-arrow-left"></i>
+                        </a>
+                        <h5 class="mb-0" id="chatTitle">Чат с @ViewBag.OtherUserName</h5>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="chat-messages p-3" id="chatMessages" style="height: 400px; overflow-y: auto;">
+                        @if (!Model.Any())
+                        {
+                            <div class="text-center text-muted mt-5">
+                                <p>Няма съобщения. Започнете разговор!</p>
+                            </div>
+                        }
+                        @foreach (var message in Model)
+                        {
+                            <div class="message @(message.IsFromCurrentUser ? "text-end" : "")">
+                                <div class="message-content @(message.IsFromCurrentUser ? "bg-primary text-white" : "bg-light") p-2 mb-2 rounded d-inline-block" style="max-width: 75%;">
+                                    <div class="message-text">@message.Content</div>
+                                    <small class="@(message.IsFromCurrentUser ? "text-white-50" : "text-muted")">
+                                        @message.Timestamp.ToString("HH:mm")
+                                    </small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="chat-input p-3 border-top">
+                        <div class="input-group">
+                            <input type="text" id="messageInput" class="form-control" placeholder="Въведете съобщение...">
+                            <button class="btn btn-primary" id="sendButton">
+                                <i class="bi bi-send"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@@microsoft/signalr@7.0.12/dist/browser/signalr.min.js"></script>
+    <script>
+        // Функция за обновяване на брояча на непрочетени съобщения
+        function updateMessagesCount() {
+            $.get('@Url.Action("GetUnreadCount", "Chat")', function (response) {
+                const count = response.count;
+                const countElement = $('#messages-count');
+
+                if (count > 0) {
+                    countElement.text(count);
+                    countElement.removeClass('d-none');
+                } else {
+                    countElement.addClass('d-none');
+                }
+            });
+        }
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .withAutomaticReconnect([0, 2000, 5000, 10000, 20000]) // Retry intervals in milliseconds
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        const otherUserId = '@ViewBag.OtherUserId';
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+
+        // Актуализиране на заглавието с името на получателя
+        function updateChatTitle(userName) {
+            document.getElementById('chatTitle').textContent = 'Чат с ' + userName;
+        }
+
+        // Добавяне на съобщение в чата
+        function appendMessage(senderId, message, timestamp, isFromCurrentUser) {
+            const messageHtml = `
+                <div class="message ${isFromCurrentUser ? 'text-end' : ''}">
+                    <div class="message-content ${isFromCurrentUser ? 'bg-primary text-white' : 'bg-light'} p-2 mb-2 rounded d-inline-block" style="max-width: 75%;">
+                        <div class="message-text">${message}</div>
+                        <small class="${isFromCurrentUser ? 'text-white-50' : 'text-muted'}">
+                            ${new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </small>
+                    </div>
+                </div>`;
+            
+            chatMessages.insertAdjacentHTML('beforeend', messageHtml);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        connection.on("ReceiveMessage", function (senderId, message, timestamp) {
+            const isFromCurrentUser = senderId === '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
+            appendMessage(senderId, message, timestamp, isFromCurrentUser);
+            
+            // Ако съобщението е от другия потребител и чат прозорецът не е на фокус,
+            // обновяваме брояча на непрочетените съобщения
+            if (!isFromCurrentUser && !document.hasFocus()) {
+                updateMessagesCount();
+            }
+        });
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                try {
+                    await connection.invoke("SendMessage", otherUserId, message);
+                    messageInput.value = '';
+                } catch (err) {
+                    console.error(err);
+                    toastr.error('Грешка при изпращане на съобщението');
+                }
+            }
+        }
+
+        sendButton.addEventListener("click", sendMessage);
+        messageInput.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+
+        // Маркиране на съобщенията като прочетени
+        async function markMessagesAsRead() {
+            try {
+                await connection.invoke("MarkAsRead", otherUserId);
+                // Обновяваме брояча след маркиране като прочетени
+                updateMessagesCount();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        connection.onreconnecting((error) => {
+            console.log("Опит за повторно свързване с чат сървъра...", error);
+        });
+
+        connection.onreconnected((connectionId) => {
+            console.log("Успешно свързване с чат сървъра.", connectionId);
+            markMessagesAsRead();
+        });
+
+        connection.onclose((error) => {
+            console.log("Връзката е прекъсната.", error);
+            if (error) {
+                console.error("Връзката е прекъсната с грешка:", error);
+            }
+        });
+
+        // Свързване към хъба
+        connection.start()
+            .then(function () {
+                console.log("Успешно свързване с чат сървъра");
+                markMessagesAsRead();
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            })
+            .catch(function (err) {
+                console.error(err);
+                toastr.error('Грешка при свързване с чат сървъра');
+            });
+
+        // Автоматично маркиране като прочетено при фокус върху прозореца
+        window.addEventListener('focus', markMessagesAsRead);
+
+        // Фокусиране върху полето за въвеждане при зареждане
+        messageInput.focus();
+    </script>
+} 

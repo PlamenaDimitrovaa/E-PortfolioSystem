@@ -24,14 +24,22 @@ namespace E_PortfolioSystem.Web.Controllers
 
         public async Task<IActionResult> Details(string id)
         {
-            var skill = await skillService.GetByIdAsync(id);
-            if (skill == null)
+            try
             {
-                TempData[ErrorMessage] = "Умението не е намерено"!;
+                var skill = await skillService.GetByIdAsync(id);
+                if (skill == null)
+                {
+                    TempData[ErrorMessage] = "Умението не е намерено"!;
+                    return RedirectToAction("Resume", "Profile");
+                }
+
+                return View(skill);
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на детайлите за умението.";
                 return RedirectToAction("Resume", "Profile");
             }
-
-            return View(skill);
         }
         public async Task<IActionResult> Index()
         {
@@ -41,21 +49,29 @@ namespace E_PortfolioSystem.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            if (string.IsNullOrEmpty(id))
+            try
             {
-                TempData[ErrorMessage] = "Невалиден идентификатор на умението!";
+                if (string.IsNullOrEmpty(id))
+                {
+                    TempData[ErrorMessage] = "Невалиден идентификатор на умението!";
+                    return RedirectToAction("Resume", "Profile");
+                }
+
+                var model = await skillService.GetSkillForEditAsync(id);
+
+                if (model == null)
+                {
+                    TempData[ErrorMessage] = "Невалидно умение!";
+                    return RedirectToAction("Resume", "Profile");
+                }
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на формата за редактиране.";
                 return RedirectToAction("Resume", "Profile");
             }
-
-            var model = await skillService.GetSkillForEditAsync(id);
-
-            if (model == null)
-            {
-                TempData[ErrorMessage] = "Невалидно умение!";
-                return RedirectToAction("Resume", "Profile");
-            }
-
-            return View(model);
         }
 
         [HttpPost]
@@ -70,15 +86,14 @@ namespace E_PortfolioSystem.Web.Controllers
             try
             {
                 await skillService.UpdateSkillAsync(model);
+                TempData[SuccessMessage] = "Умението е успешно редактирано.";
+                return RedirectToAction("Details", new { id = model.Id });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 TempData[ErrorMessage] = "Неуспешно редактиране на умението!";
                 return View(model);
             }
-
-            TempData[SuccessMessage] = "Умението е успешно редактирано.";
-            return RedirectToAction("Details", new { id = model.Id });
         }
 
         [HttpGet]
@@ -95,30 +110,46 @@ namespace E_PortfolioSystem.Web.Controllers
                 return View(model);
             }
 
-            var userId = User.GetId();
-            if (userId != null)
+            try
             {
-                var studentId = await studentService.GetStudentIdByUserIdAsync(userId);
-                var skillId = await skillService.AddAsync(model, Guid.Parse(userId), studentId);
-                return RedirectToAction("Details", new { id = skillId });
-            }
+                var userId = User.GetId();
+                if (userId != null)
+                {
+                    var studentId = await studentService.GetStudentIdByUserIdAsync(userId);
+                    var skillId = await skillService.AddAsync(model, Guid.Parse(userId), studentId);
+                    TempData[SuccessMessage] = "Успешно добавено умение!";
+                    return RedirectToAction("Details", new { id = skillId });
+                }
 
-            TempData[SuccessMessage] = "Успешно добавено умение!";
-            return RedirectToAction("Resume", "Profile");
+                TempData[ErrorMessage] = "Невалиден потребител!";
+                return RedirectToAction("Resume", "Profile");
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при добавянето на умението.";
+                return View(model);
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
-            var userId = User.GetId();
-            if (userId != null)
+            try
             {
-                var studentId = await studentService.GetStudentIdByUserIdAsync(userId);
-                await skillService.DeleteAsync(id, studentId);
+                var userId = User.GetId();
+                if (userId != null)
+                {
+                    var studentId = await studentService.GetStudentIdByUserIdAsync(userId);
+                    await skillService.DeleteAsync(id, studentId);
+                    TempData[SuccessMessage] = "Умението е успешно изтрито.";
+                }
+                return RedirectToAction("Resume", "Profile");
             }
-
-            TempData[SuccessMessage] = "Успешно изтрито умение!";
-            return RedirectToAction("Resume", "Profile");
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при изтриването на умението.";
+                return RedirectToAction("Resume", "Profile");
+            }
         }
     }
 }

@@ -100,28 +100,33 @@ namespace E_PortfolioSystem.Services.Data.Services
                 var uploadPath = Path.Combine("wwwroot", "Uploaded", "Files");
                 Directory.CreateDirectory(uploadPath);
 
-                var filePath = Path.Combine(uploadPath, model.File.FileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                var uniqueFileName = Path.GetFileName(model.File.FileName);
+                var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                try
                 {
+                    using var stream = new FileStream(filePath, FileMode.Create);
                     await model.File.CopyToAsync(stream);
                 }
-
-                var fileBytes = await File.ReadAllBytesAsync(filePath);
-                var base64Content = Convert.ToBase64String(fileBytes);
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Неуспешно записване на файла.", ex);
+                }
 
                 var document = new AttachedDocument
                 {
                     Id = Guid.NewGuid(),
-                    FileName = model.File.FileName,
-                    FileContent = "File Content",
+                    FileName = uniqueFileName,
+                    FileContent = "File Content", // Може да се премахне, ако не се използва
                     UploadDate = DateTime.UtcNow,
-                    FileLocation = $"Uploads/Files/{model.File.FileName}",
+                    FileLocation = $"Uploaded/Files/{uniqueFileName}",
                     DocumentType = model.DocumentType ?? "Сертификат",
                     Description = model.DocumentDescription
                 };
 
                 certificate.AttachedDocumentId = document.Id;
                 certificate.AttachedDocument = document;
+                certificate.FilePath = document.FileLocation;
 
                 dbContext.AttachedDocuments.Add(document);
             }
@@ -143,6 +148,8 @@ namespace E_PortfolioSystem.Services.Data.Services
                 throw new InvalidOperationException("Сертификатът не е намерен.");
             }
 
+            var oldDocId = cert.AttachedDocumentId;
+
             cert.Title = model.Title;
             cert.Issuer = model.Issuer;
             cert.IssuedDate = model.IssuedDate;
@@ -152,7 +159,9 @@ namespace E_PortfolioSystem.Services.Data.Services
                 var uploadPath = Path.Combine("wwwroot", "Uploaded", "Files");
                 Directory.CreateDirectory(uploadPath);
 
-                var filePath = Path.Combine(uploadPath, model.File.FileName);
+                var uniqueFileName = Path.GetFileName(model.File.FileName);
+                var filePath = Path.Combine(uploadPath, uniqueFileName);
+
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await model.File.CopyToAsync(stream);
@@ -161,39 +170,18 @@ namespace E_PortfolioSystem.Services.Data.Services
                 var document = new AttachedDocument
                 {
                     Id = Guid.NewGuid(),
-                    FileName = model.File.FileName,
+                    FileName = uniqueFileName,
                     FileContent = "File Content",
                     UploadDate = DateTime.UtcNow,
-                    FileLocation = $"Uploaded/Files/{model.File.FileName}",
+                    FileLocation = $"Uploaded/Files/{uniqueFileName}",
                     DocumentType = model.DocumentType ?? "Сертификат",
                     Description = model.DocumentDescription
                 };
 
-                // Проверка дали старият AttachedDocument се използва другаде
-                if (cert.AttachedDocumentId != null)
-                {
-                    var currentDocId = cert.AttachedDocumentId;
-
-                    var isUsedInProjects = await dbContext.Projects
-                        .AnyAsync(p => p.AttachedDocumentId == currentDocId && p.Id != cert.Id);
-
-                    var isUsedInCertificates = await dbContext.Certificates
-                        .AnyAsync(c => c.AttachedDocumentId == currentDocId && c.Id != cert.Id);
-
-                    if (!isUsedInProjects && !isUsedInCertificates)
-                    {
-                        var oldDoc = await dbContext.AttachedDocuments.FindAsync(currentDocId);
-                        if (oldDoc != null)
-                        {
-                            dbContext.AttachedDocuments.Remove(oldDoc);
-                        }
-                    }
-                }
+                dbContext.AttachedDocuments.Add(document);
 
                 cert.AttachedDocumentId = document.Id;
                 cert.AttachedDocument = document;
-
-                dbContext.AttachedDocuments.Add(document);
             }
             else if (cert.AttachedDocument != null)
             {
@@ -202,7 +190,25 @@ namespace E_PortfolioSystem.Services.Data.Services
             }
 
             await dbContext.SaveChangesAsync();
+
+            // Изтрий стария документ, ако вече не се използва
+            if (oldDocId != null && oldDocId != cert.AttachedDocumentId)
+            {
+                var stillUsed = await dbContext.Projects.AnyAsync(p => p.AttachedDocumentId == oldDocId)
+                             || await dbContext.Certificates.AnyAsync(c => c.AttachedDocumentId == oldDocId);
+
+                if (!stillUsed)
+                {
+                    var oldDoc = await dbContext.AttachedDocuments.FindAsync(oldDocId);
+                    if (oldDoc != null)
+                    {
+                        dbContext.AttachedDocuments.Remove(oldDoc);
+                        await dbContext.SaveChangesAsync();
+                    }
+                }
+            }
         }
+
         public async Task DeleteCertificateAsync(Guid id)
         {
             var cert = await dbContext.Certificates

@@ -115,8 +115,8 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.Property<string>("FileName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<Guid?>("ProjectId")
                         .HasColumnType("uniqueidentifier");
@@ -126,7 +126,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AttachedDocuments");
+                    b.ToTable("AttachedDocuments", (string)null);
 
                     b.HasData(
                         new
@@ -216,7 +216,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Certificates");
+                    b.ToTable("Certificates", (string)null);
 
                     b.HasData(
                         new
@@ -271,16 +271,18 @@ namespace E_PortfolioSystem.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("E_PortfolioSystem.Data.Models.Chat", b =>
+            modelBuilder.Entity("E_PortfolioSystem.Data.Models.ChatMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Message")
+                    b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("ReceiverId")
                         .HasColumnType("uniqueidentifier");
@@ -288,7 +290,7 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("SentAt")
+                    b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -297,7 +299,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Chats");
+                    b.ToTable("ChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.Education", b =>
@@ -339,7 +341,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Educations");
+                    b.ToTable("Educations", (string)null);
 
                     b.HasData(
                         new
@@ -430,7 +432,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("ToUserId");
 
-                    b.ToTable("Emails");
+                    b.ToTable("Emails", (string)null);
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.Evaluation", b =>
@@ -471,7 +473,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Evaluations");
+                    b.ToTable("Evaluations", (string)null);
 
                     b.HasData(
                         new
@@ -575,7 +577,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Experiences");
+                    b.ToTable("Experiences", (string)null);
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.HRContact", b =>
@@ -619,7 +621,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("StudentUserId");
 
-                    b.ToTable("HRContacts");
+                    b.ToTable("HRContacts", (string)null);
                 });
 
             modelBuilder.Entity("E_PortfolioSystem.Data.Models.Notification", b =>
@@ -651,7 +653,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
 
                     b.HasData(
                         new
@@ -788,7 +790,7 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Profiles");
+                    b.ToTable("Profiles", (string)null);
 
                     b.HasData(
                         new
@@ -965,7 +967,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
 
                     b.HasData(
                         new
@@ -1071,7 +1073,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("ToUserId");
 
-                    b.ToTable("Recommendations");
+                    b.ToTable("Recommendations", (string)null);
 
                     b.HasData(
                         new
@@ -1134,7 +1136,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills");
+                    b.ToTable("Skills", (string)null);
 
                     b.HasData(
                         new
@@ -1190,7 +1192,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
 
                     b.HasData(
                         new
@@ -1242,7 +1244,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("SkillId");
 
-                    b.ToTable("StudentsSkills");
+                    b.ToTable("StudentsSkills", (string)null);
 
                     b.HasData(
                         new
@@ -1312,7 +1314,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("StudentsSubjects");
+                    b.ToTable("StudentsSubjects", (string)null);
 
                     b.HasData(
                         new
@@ -1382,7 +1384,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Subjects");
+                    b.ToTable("Subjects", (string)null);
 
                     b.HasData(
                         new
@@ -1445,7 +1447,7 @@ namespace E_PortfolioSystem.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
 
                     b.HasData(
                         new
@@ -1629,7 +1631,7 @@ namespace E_PortfolioSystem.Data.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("E_PortfolioSystem.Data.Models.Chat", b =>
+            modelBuilder.Entity("E_PortfolioSystem.Data.Models.ChatMessage", b =>
                 {
                     b.HasOne("E_PortfolioSystem.Data.Models.ApplicationUser", "Receiver")
                         .WithMany()

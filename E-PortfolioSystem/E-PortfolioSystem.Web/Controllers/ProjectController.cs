@@ -24,11 +24,19 @@
 
         public async Task<IActionResult> Projects()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var projects = await _projectService.GetAllByUserIdAsync(Guid.Parse(userId));
+                var projects = await _projectService.GetAllByUserIdAsync(Guid.Parse(userId));
 
-            return View(projects);
+                return View(projects);
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на проектите.";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]
@@ -46,54 +54,78 @@
                 return View(model);
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (model.File != null && model.File.Length > 0)
+            try
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploaded", "Files");
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (!Directory.Exists(uploadsFolder))
+                if (model.File != null && model.File.Length > 0)
                 {
-                    Directory.CreateDirectory(uploadsFolder);
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploaded", "Files");
+
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    var fileName = Path.GetFileName(model.File.FileName); // You can sanitize if needed
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(stream);
+                    }
                 }
 
-                var fileName = Path.GetFileName(model.File.FileName); // You can sanitize if needed
-                var filePath = Path.Combine(uploadsFolder, fileName);
+                await _projectService.SaveProject(model, userId);
+                TempData[SuccessMessage] = "Успешно добавен проект";
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await model.File.CopyToAsync(stream);
-                }
+                return RedirectToAction("Projects", "Project");
             }
-
-            await _projectService.SaveProject(model, userId);
-            TempData[SuccessMessage] = "Успешно добавен проект";
-
-            return RedirectToAction("Projects", "Project");
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при добавянето на проекта.";
+                return View(model);
+            }
         }
 
         public async Task<IActionResult> Details(Guid id)
         {
-            var project = await _projectService.GetByIdAsync(id);
-
-            if (project == null)
+            try
             {
-                TempData[ErrorMessage] = "Такъв проект не е намерен!";
-                return RedirectToPage("Projects", "Project");
+                var project = await _projectService.GetByIdAsync(id);
+
+                if (project == null)
+                {
+                    TempData[ErrorMessage] = "Такъв проект не е намерен!";
+                    return RedirectToAction("Projects", "Project");
+                }
+
+                var attachedDocuments = await _attachedDocumentService.GetAttachedDocumentsByProjectId(Guid.Parse(project.AttachedDocumentId));
+
+                project.AttachedDocuments = attachedDocuments;
+
+                return View(project);
             }
-
-            var attachedDocuments = await _attachedDocumentService.GetAttachedDocumentsByProjectId(Guid.Parse(project.AttachedDocumentId));
-
-            project.AttachedDocuments = attachedDocuments;
-
-            return View(project);
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на детайлите за проекта.";
+                return RedirectToAction("Projects");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var model = await _projectService.GetProjectForEditAsync(id);
-            return View(model);
+            try
+            {
+                var model = await _projectService.GetProjectForEditAsync(id);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на формата за редактиране.";
+                return RedirectToAction("Projects");
+            }
         }
 
         [HttpPost]
@@ -103,18 +135,34 @@
             if (!ModelState.IsValid)
                 return View(model);
 
-            await _projectService.UpdateProjectAsync(model);
-            TempData[SuccessMessage] = "Проектът е успешно редактиран.";
-            return RedirectToAction("Details", new { id = model.Id });
+            try
+            {
+                await _projectService.UpdateProjectAsync(model);
+                TempData[SuccessMessage] = "Проектът е успешно редактиран.";
+                return RedirectToAction("Details", new { id = model.Id });
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при редактирането на проекта.";
+                return View(model);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _projectService.DeleteProjectAsync(id);
-            TempData[SuccessMessage] = "Проектът е изтрит успешно.";
-            return RedirectToAction("Projects");
+            try
+            {
+                await _projectService.DeleteProjectAsync(id);
+                TempData[SuccessMessage] = "Проектът е изтрит успешно.";
+                return RedirectToAction("Projects");
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при изтриването на проекта.";
+                return RedirectToAction("Projects");
+            }
         }
     }
 }

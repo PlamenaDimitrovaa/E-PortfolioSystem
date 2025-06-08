@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static E_PortfolioSystem.Common.EntityValidationConstants.Experience;
 
 namespace E_PortfolioSystem.Web.ViewModels.Experience
 {
@@ -7,15 +8,15 @@ namespace E_PortfolioSystem.Web.ViewModels.Experience
         public string? Id { get; set; }
 
         [Required(ErrorMessage = "Полето 'Компания' е задължително.")]
-        [StringLength(100)]
+        [StringLength(CompanyMaxLength, MinimumLength = CompanyMinLength)]
         public string Company { get; set; } = null!;
 
         [Required(ErrorMessage = "Полето 'Професия' е задължително.")]
-        [StringLength(100)]
+        [StringLength(ProfessionMaxLength, MinimumLength = ProfessionMinLength)]
         public string Profession { get; set; } = null!;
-
         public string? Location { get; set; }
 
+        [StringLength(DescriptionMaxLength, MinimumLength = DescriptionMinLength)]
         public string? Description { get; set; }
 
         [Required(ErrorMessage = "Полето 'Начална дата' е задължително.")]

@@ -30,26 +30,35 @@ namespace E_PortfolioSystem.Web.Controllers
         {
             if (uploadedFile != null && uploadedFile.Length > 0)
             {
-                var fileName = Path.GetFileName(uploadedFile.FileName);
-                var relativePath = Path.Combine("Uploaded", "Files", fileName);
-                var absolutePath = Path.Combine(_environment.WebRootPath, relativePath);
-
-                Directory.CreateDirectory(Path.GetDirectoryName(absolutePath)!);
-
-                using (var stream = new FileStream(absolutePath, FileMode.Create))
+                try
                 {
-                    await uploadedFile.CopyToAsync(stream);
+                    var fileName = Path.GetFileName(uploadedFile.FileName);
+                    var relativePath = Path.Combine("Uploaded", "Files", fileName);
+                    var absolutePath = Path.Combine(_environment.WebRootPath, relativePath);
+
+                    Directory.CreateDirectory(Path.GetDirectoryName(absolutePath)!);
+
+                    using (var stream = new FileStream(absolutePath, FileMode.Create))
+                    {
+                        await uploadedFile.CopyToAsync(stream);
+                    }
+
+                    model.FileName = fileName;
+                    model.FileLocation = relativePath;
+                    model.FileContent = "Uploaded";
+                    model.UploadDate = DateTime.UtcNow;
+
+                    _attachedDocumentService.Add(model);
+
+                    TempData[SuccessMessage] = "Успешно прикачен документ";
+                    return RedirectToAction("Index", "Home");
                 }
-
-                model.FileName = fileName;
-                model.FileLocation = relativePath; // запиши относителния път!
-                model.FileContent = "Uploaded";
-                model.UploadDate = DateTime.UtcNow;
-
-                _attachedDocumentService.Add(model);
-
-                TempData[SuccessMessage] = "Успешно прикачен документ";
-                return RedirectToAction("Index", "Home");
+                catch (Exception ex)
+                {
+                    TempData[ErrorMessage] = "Възникна грешка при качването на документа.";
+                    ModelState.AddModelError("", "Възникна грешка при обработката на файла.");
+                    return View(model);
+                }
             }
 
             TempData[ErrorMessage] = "Невалиден файл!";
@@ -59,23 +68,31 @@ namespace E_PortfolioSystem.Web.Controllers
 
         public async Task<IActionResult> Download(Guid id)
         {
-            var document = await _attachedDocumentService.FindAsync(id);
-
-            if (document == null)
+            try
             {
-                TempData[ErrorMessage] = "Неуспешно изтегляне на документа!";
+                var document = await _attachedDocumentService.FindAsync(id);
+
+                if (document == null)
+                {
+                    TempData[ErrorMessage] = "Неуспешно изтегляне на документа!";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                var filePath = Path.Combine(_environment.WebRootPath, document.FileLocation);
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    return NotFound("Файлът не беше намерен на сървъра.");
+                }
+
+                var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                return File(fileBytes, "application/octet-stream", document.FileName);
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при изтеглянето на документа.";
                 return RedirectToAction("Index", "Home");
             }
-
-            var filePath = Path.Combine(_environment.WebRootPath, document.FileLocation);
-
-            if (!System.IO.File.Exists(filePath))
-            {
-                return NotFound("Файлът не беше намерен на сървъра.");
-            }
-
-            var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
-            return File(fileBytes, "application/octet-stream", document.FileName);
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿namespace E_PortfolioSystem.Data.Configurations
 {
+    using E_PortfolioSystem.Data.Models;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using E_PortfolioSystem.Data.Models;
 
-    public class ChatEntityConfiguration : IEntityTypeConfiguration<Chat>
+    public class ChatEntityConfiguration : IEntityTypeConfiguration<ChatMessage>
     {
-        public void Configure(EntityTypeBuilder<Chat> builder)
+        public void Configure(EntityTypeBuilder<ChatMessage> builder)
         {
             builder
                 .HasKey(c => c.Id);
@@ -26,13 +26,13 @@
             //builder.HasData(this.GenerateChats());
         }
 
-        private Chat[] GenerateChats()
+        private ChatMessage[] GenerateChats()
         {
-            ICollection<Chat> chats = new HashSet<Chat>();
+            ICollection<ChatMessage> chats = new HashSet<ChatMessage>();
 
-            Chat chat;
+            ChatMessage chat;
 
-            chat = new Chat()
+            chat = new ChatMessage()
             {
 
             };

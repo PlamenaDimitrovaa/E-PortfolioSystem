@@ -23,7 +23,7 @@
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Email> Emails { get; set; }
         public DbSet<HRContact> HRContacts { get; set; }
-        public DbSet<Chat> Chats { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<Recommendation> Recommendations { get; set; }
         public DbSet<AttachedDocument> AttachedDocuments { get; set; }
         public DbSet<Student> Students { get; set; }

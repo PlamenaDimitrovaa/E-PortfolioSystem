@@ -16,5 +16,7 @@
         public const string University = "Университет";
         public const string Projects = "Проекти";
         public const string Experience = "Опит";
+        public const string usersCookie = "isOnline";
+        public const int LastActivityBeforeOfflineMinutes = 10;
     }
 }

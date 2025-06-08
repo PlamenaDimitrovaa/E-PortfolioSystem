@@ -28,20 +28,26 @@ namespace E_PortfolioSystem.Web.Controllers
 
         public async Task<IActionResult> Details(string id)
         {
-            var certificate = await certificateService.GetByIdAsync(id);
-            if (certificate == null)
+            try
             {
-                TempData[ErrorMessage] = "Сертификатът не е намерен"!;
+                var certificate = await certificateService.GetByIdAsync(id);
+                if (certificate == null)
+                {
+                    TempData[ErrorMessage] = "Сертификатът не е намерен"!;
+                    return RedirectToAction("Resume", "Profile");
+                }
+
+                var attachedDocuments = await attachedDocumentService.GetAttachedDocumentsByProjectId(Guid.Parse(certificate.AttachedDocumentId));
+                certificate.AttachedDocuments = attachedDocuments;
+
+                return View(certificate);
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на детайлите за сертификата.";
                 return RedirectToAction("Resume", "Profile");
             }
-
-            var attachedDocuments = await attachedDocumentService.GetAttachedDocumentsByProjectId(Guid.Parse(certificate.AttachedDocumentId));
-
-            certificate.AttachedDocuments = attachedDocuments;
-
-            return View(certificate);
         }
-
 
         public IActionResult Add()
         {
@@ -100,16 +106,32 @@ namespace E_PortfolioSystem.Web.Controllers
                 return View(model);
             }
 
-            await certificateService.UpdateCertificateAsync(model);
-            TempData[SuccessMessage] = "Успешно редактирахте сертификат!";
-            return RedirectToAction("Details", new { id = model.Id });
+            try
+            {
+                await certificateService.UpdateCertificateAsync(model);
+                TempData[SuccessMessage] = "Успешно редактирахте сертификат!";
+                return RedirectToAction("Details", new { id = model.Id });
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при редактирането на сертификата.";
+                return View(model);
+            }
         }
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            await certificateService.DeleteCertificateAsync(id);
-            TempData[SuccessMessage] = "Успешно изтрихте сертификат!";
-            return RedirectToAction("Resume", "Profile");
+            try
+            {
+                await certificateService.DeleteCertificateAsync(id);
+                TempData[SuccessMessage] = "Успешно изтрихте сертификат!";
+                return RedirectToAction("Resume", "Profile");
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при изтриването на сертификата.";
+                return RedirectToAction("Resume", "Profile");
+            }
         }
     }
 }

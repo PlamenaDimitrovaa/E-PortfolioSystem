@@ -1,0 +1,87 @@
+@model IEnumerable<E_PortfolioSystem.Web.ViewModels.Notification.NotificationViewModel>
+
+@{
+    ViewData["Title"] = "Нотификации";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Нямате непрочетени нотификации.
+        </div>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var notification in Model)
+            {
+                <div class="list-group-item notification-item @(notification.IsRead ? "read" : "")" data-id="@notification.Id">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">@notification.SubjectName</h5>
+                        <small>@notification.CreatedOn.ToString("dd.MM.yyyy HH:mm")</small>
+                    </div>
+                    <p class="mb-1">@notification.Message</p>
+                    <small>Краен срок: @notification.ProjectDeadline.ToString("dd.MM.yyyy")</small>
+                    @if (!notification.IsRead)
+                    {
+                        <button class="btn btn-sm btn-primary mark-as-read float-end" data-id="@notification.Id">
+                            Маркирай като прочетено
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.mark-as-read').click(function () {
+                var button = $(this);
+                var notificationId = button.data('id');
+                
+                $.ajax({
+                    url: '@Url.Action("MarkAsRead")',
+                    type: 'POST',
+                    data: { id: notificationId },
+                    success: function (response) {
+                        if (response.success) {
+                            button.closest('.notification-item').addClass('read');
+                            button.remove();
+                            updateUnreadCount();
+                        } else {
+                            alert('Възникна грешка при маркирането на нотификацията като прочетена.');
+                        }
+                    },
+                    error: function () {
+                        alert('Възникна грешка при маркирането на нотификацията като прочетена.');
+                    }
+                });
+            });
+
+            function updateUnreadCount() {
+                $.get('@Url.Action("GetUnreadCount")', function (response) {
+                    $('#notification-count').text(response.count);
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .notification-item {
+            transition: background-color 0.3s;
+        }
+
+        .notification-item.read {
+            background-color: #f8f9fa;
+        }
+
+        .notification-item:hover {
+            background-color: #e9ecef;
+        }
+    </style>
+} 

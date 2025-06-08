@@ -83,6 +83,9 @@ namespace E_PortfolioSystem.Common
 
             public const int FilePathMinLength = 1;
             public const int FilePathMaxLength = 150;
+
+            public const int DescriptionMinLength = 1;
+            public const int DescriptionMaxLength = 400;
         }
 
         public static class Subject
@@ -142,7 +145,7 @@ namespace E_PortfolioSystem.Common
             public const int DocumentTypeMaxLength = 50;
 
             public const int FileNameMinLength = 1;
-            public const int FileNameMaxLength = 50;
+            public const int FileNameMaxLength = 500;
 
             public const int DescriptionMinLength = 1;
             public const int DescriptionMaxLength = 250;

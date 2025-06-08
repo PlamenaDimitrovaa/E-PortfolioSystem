@@ -19,15 +19,24 @@ namespace E_PortfolioSystem.Web.Controllers
 
         public async Task<IActionResult> Details(string id)
         {
-            var education = await educationService.GetByIdAsync(id);
-            if (education == null)
+            try
             {
-                TempData[ErrorMessage] = "Данни за това образование не бяха намерени!";
+                var education = await educationService.GetByIdAsync(id);
+                if (education == null)
+                {
+                    TempData[ErrorMessage] = "Данни за това образование не бяха намерени!";
+                    return RedirectToAction("Resume", "Profile");
+                }
+
+                return View(education);
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на детайлите за образованието.";
                 return RedirectToAction("Resume", "Profile");
             }
-
-            return View(education);
         }
+
         public async Task<IActionResult> Index()
         {
             return View();
@@ -36,19 +45,27 @@ namespace E_PortfolioSystem.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            if (string.IsNullOrEmpty(id))
+            try
             {
-                return BadRequest();
+                if (string.IsNullOrEmpty(id))
+                {
+                    return BadRequest();
+                }
+
+                var model = await educationService.GetEducationForEditAsync(id);
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                return View(model);
             }
-
-            var model = await educationService.GetEducationForEditAsync(id);
-
-            if (model == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на формата за редактиране.";
+                return RedirectToAction("Resume", "Profile");
             }
-
-            return View(model);
         }
 
         [HttpPost]
@@ -63,15 +80,14 @@ namespace E_PortfolioSystem.Web.Controllers
             try
             {
                 await educationService.UpdateEducationAsync(model);
+                TempData[SuccessMessage] = "Образованието е успешно редактирано.";
+                return RedirectToAction("Details", new { id = model.Id });
             }
             catch (Exception ex)
             {
                 TempData[ErrorMessage] = "Неуспешно редактиране на образованието";
                 return RedirectToAction("Resume", "Profile");
             }
-
-            TempData[SuccessMessage] = "Образованието е успешно редактирано.";
-            return RedirectToAction("Details", new { id = model.Id });
         }
 
         public IActionResult Add()
@@ -94,11 +110,18 @@ namespace E_PortfolioSystem.Web.Controllers
                 return View(model);
             }
 
-            string userId = User.GetId();
-
-            await this.educationService.AddEducationAsync(model, userId);
-            TempData[SuccessMessage] = "Успешно добавихте образование!";
-            return RedirectToAction("Resume", "Profile");
+            try
+            {
+                string userId = User.GetId();
+                await this.educationService.AddEducationAsync(model, userId);
+                TempData[SuccessMessage] = "Успешно добавихте образование!";
+                return RedirectToAction("Resume", "Profile");
+            }
+            catch (Exception ex)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при добавянето на образованието.";
+                return View(model);
+            }
         }
 
         [HttpPost]
