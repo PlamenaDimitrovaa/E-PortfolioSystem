@@ -16,6 +16,7 @@ namespace E_PortfolioSystem.Web
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.DependencyInjection;
+    using static E_PortfolioSystem.Common.GeneralApplicationConstants;
 
     public class Program
     {
@@ -90,6 +91,8 @@ namespace E_PortfolioSystem.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.SeedAdministrator(DevelopmentAdminEmail);
 
             app.MapStaticAssets();
             app.MapControllerRoute(

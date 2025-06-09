@@ -18,5 +18,12 @@
         public const string Experience = "Опит";
         public const string usersCookie = "isOnline";
         public const int LastActivityBeforeOfflineMinutes = 10;
+
+        public const string AdminRoleName = "Administrator";
+        public const string DevelopmentAdminEmail = "admin@abv.bg";
+        public const string StudentRoleName = "Student";
+        public const string TeacherRoleName = "Teacher";
+        public const string HRRoleName = "HR";
+        public const string UserRoleName = "User";
     }
 }
