@@ -42,6 +42,11 @@
                 var skills = await skillService.GetAllByUserIdAsync(id);
                 var education = await educationService.GetAllByUserIdAsync(id);
                 var certificates = await certificateService.GetAllByUserIdAsync(id);
+                if (profile == null)
+                {
+                    TempData[ErrorMessage] = "Възникна грешка при зареждането на резюмето.";
+                    return RedirectToAction("Index", "Home");
+                }
 
                 var model = new ResumeViewModel
                 {

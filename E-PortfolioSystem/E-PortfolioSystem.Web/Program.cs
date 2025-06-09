@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using E_PortfolioSystem.Data;
 namespace E_PortfolioSystem.Web
 {
     using E_PortfolioSystem.Data;
@@ -45,6 +48,11 @@ namespace E_PortfolioSystem.Web
             builder.Services.AddScoped<RoleManager<IdentityRole<Guid>>>();
 
             builder.Services.AddApplicationServices(typeof(IProfileService));
+
+            builder.Services.ConfigureApplicationCookie(cfg =>
+            { 
+                cfg.LoginPath = "/User/Login";
+            });
 
             // Add Hangfire services
             builder.Services.AddHangfire(config => config
