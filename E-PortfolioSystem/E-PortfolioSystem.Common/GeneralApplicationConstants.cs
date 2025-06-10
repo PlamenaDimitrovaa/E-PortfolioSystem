@@ -4,6 +4,8 @@
     {
         public const int ReleaseYear = 2025;
         public const string Title = "Система за управление на електронно портфолио";
+        
+        // Student constants
         public const string CVMaker = "Създаване на CV";
         public const string CVDownload = "Свали CV";
         public const string Communication = "Комуникация";
@@ -16,14 +18,23 @@
         public const string University = "Университет";
         public const string Projects = "Проекти";
         public const string Experience = "Опит";
+
+        // Teacher constants
+        public const string TeacherCVMaker = "Оценяване";
+        public const string TeacherCommunication = "Обратна връзка";
+        public const string TeacherYourPlaceTo = "Вашето място за";
+        public const string TeacherPortfolioManagement = "Управление на студентски портфолиа";
+        public const string TeacherUniversity = "Предмети";
+        public const string TeacherProjects = "Задания";
+
         public const string usersCookie = "isOnline";
         public const int LastActivityBeforeOfflineMinutes = 10;
 
-        public const string AdminRoleName = "Administrator";
         public const string DevelopmentAdminEmail = "admin@abv.bg";
+
+        public const string AdminRoleName = "Administrator";
         public const string StudentRoleName = "Student";
         public const string TeacherRoleName = "Teacher";
         public const string HRRoleName = "HR";
-        public const string UserRoleName = "User";
     }
 }

@@ -106,5 +106,99 @@
                 return RedirectToAction("Resume");
             }
         }
+
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                var userId = User.GetId();
+                var profile = await profileService.GetProfileByUserIdAsync(userId);
+
+                if (profile == null)
+                {
+                    TempData[ErrorMessage] = "Възникна грешка при зареждането на профила.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                return View(profile);
+            }
+            catch (Exception)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на профила.";
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit()
+        {
+            try
+            {
+                var userId = User.GetId();
+                var profile = await profileService.GetProfileByUserIdAsync(userId);
+
+                if (profile == null)
+                {
+                    TempData[ErrorMessage] = "Възникна грешка при зареждането на профила.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                return View(profile);
+            }
+            catch (Exception)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на профила.";
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(ProfileViewModel model, IFormFile? imageFile)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                string imageUrl = model.ImageUrl;
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    // Save the image and get its URL
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "profiles");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+
+                    imageUrl = "/images/profiles/" + uniqueFileName;
+                }
+
+                await profileService.UpdateProfileAsync(
+                    Guid.Parse(model.UserId),
+                    model.Phone,
+                    model.Bio,
+                    model.Location,
+                    imageUrl,
+                    model.IsPublic);
+
+                TempData[SuccessMessage] = "Профилът е успешно обновен.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при обновяването на профила.";
+                return View(model);
+            }
+        }
     }
 }

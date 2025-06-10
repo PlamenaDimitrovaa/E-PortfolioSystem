@@ -72,5 +72,40 @@ namespace E_PortfolioSystem.Web.Infrastructure.Extensions
 
             return app;
         }
+
+        public static IApplicationBuilder SeedRoles(this IApplicationBuilder app)
+        {
+            using IServiceScope scopedServices = app.ApplicationServices.CreateScope();
+
+            IServiceProvider serviceProvider = scopedServices.ServiceProvider;
+
+            RoleManager<IdentityRole<Guid>> roleManager = 
+                serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+            Task.Run(async () =>
+            {
+                if (!await roleManager.RoleExistsAsync(StudentRoleName))
+                {
+                    IdentityRole<Guid> studentRole = new IdentityRole<Guid>(StudentRoleName);
+                    await roleManager.CreateAsync(studentRole);
+                }
+
+                if (!await roleManager.RoleExistsAsync(TeacherRoleName))
+                {
+                    IdentityRole<Guid> teacherRole = new IdentityRole<Guid>(TeacherRoleName);
+                    await roleManager.CreateAsync(teacherRole);
+                }
+
+                if (!await roleManager.RoleExistsAsync(HRRoleName))
+                {
+                    IdentityRole<Guid> hrRole = new IdentityRole<Guid>(HRRoleName);
+                    await roleManager.CreateAsync(hrRole);
+                }
+            })
+            .GetAwaiter()
+            .GetResult();
+
+            return app;
+        }
     }
 }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Администраторски панел</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="~/assets/admin-favicon.ico" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="bg-dark text-white" style="width: 280px; min-height: 100vh;">
+            <div class="d-flex flex-column p-3">
+                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <i class="bi bi-shield-lock me-2 fs-4"></i>
+                    <span class="fs-4">Админ панел</span>
+                </a>
+                <hr>
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="nav-link text-white @(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">
+                            <i class="bi bi-speedometer2 me-2"></i>
+                            Начално табло
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="User" asp-action="Manage" class="nav-link text-white @(ViewContext.RouteData.Values["Action"].ToString() == "Manage" ? "active" : "")">
+                            <i class="bi bi-people me-2"></i>
+                            Управление на потребители
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="User" asp-action="Online" class="nav-link text-white @(ViewContext.RouteData.Values["Action"].ToString() == "Online" ? "active" : "")">
+                            <i class="bi bi-person-check me-2"></i>
+                            Онлайн потребители
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <div>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex-grow-1">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index">Админ панел</a></li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </nav>
+
+            <main role="main" class="p-4">
+                <partial name="_NotificationsPartial" />
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> 

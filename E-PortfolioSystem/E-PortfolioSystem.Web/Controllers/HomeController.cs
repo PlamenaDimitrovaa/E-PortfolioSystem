@@ -3,6 +3,8 @@ namespace E_PortfolioSystem.Web.Controllers
     using E_PortfolioSystem.Web.ViewModels.Home;
     using Microsoft.AspNetCore.Mvc;
     using System.Diagnostics;
+    using static E_PortfolioSystem.Common.GeneralApplicationConstants;
+
     public class HomeController : Controller
     {
         public HomeController()
@@ -11,6 +13,14 @@ namespace E_PortfolioSystem.Web.Controllers
 
         public IActionResult Index()
         {
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                if (User.IsInRole(AdminRoleName))
+                {
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
+                }
+            }
+
             return View();
         }
 

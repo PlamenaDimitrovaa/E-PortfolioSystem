@@ -8,6 +8,7 @@ namespace E_PortfolioSystem.Web
     using E_PortfolioSystem.Services.Data.Interfaces;
     using E_PortfolioSystem.Web.Infrastructure.Extensions;
     using E_PortfolioSystem.Web.Infrastructure.ModelBinders;
+    using E_PortfolioSystem.Web.Infrastructure.Middlewares;
     using Microsoft.EntityFrameworkCore;
     using Hangfire;
     using Hangfire.Dashboard;
@@ -29,6 +30,8 @@ namespace E_PortfolioSystem.Web
 
             builder.Services.AddDbContext<EPortfolioDbContext>(options =>
                 options.UseSqlServer(connectionString));
+
+            builder.Services.AddMemoryCache();
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
             {
@@ -87,20 +90,25 @@ namespace E_PortfolioSystem.Web
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.SeedAdministrator(DevelopmentAdminEmail);
+            // Add OnlineUsersMiddleware after authentication but before endpoints
+            app.UseMiddleware<OnlineUsersMiddleware>();
 
-            app.MapStaticAssets();
+            app.SeedAdministrator(DevelopmentAdminEmail);
+            app.SeedRoles();
+
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
-                .WithStaticAssets();
-            app.MapRazorPages()
-               .WithStaticAssets();
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapRazorPages();
 
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {

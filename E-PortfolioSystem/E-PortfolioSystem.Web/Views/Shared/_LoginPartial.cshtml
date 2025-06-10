@@ -8,35 +8,77 @@
 
 @{
     string userFullName = await UserService.GetFullNameByEmailAsync(User.Identity?.Name!);
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
+    var roleDisplay = roles.Any() ? $"({string.Join(", ", roles.Select(r => r.ToFriendlyName()))})" : string.Empty;
+    bool isAdminArea = Context.Request.Path.StartsWithSegments("/Admin");
 }
 
-<ul class="navbar-nav">
-    @if (SignInManager.IsSignedIn(User))
+@if (SignInManager.IsSignedIn(User))
+{
+    @if (isAdminArea)
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
-                <i class="bi bi-person"></i> @userFullName
-            </a>
-        </li>
-        <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link text-dark">
-                    <i class="bi bi-box-arrow-right"></i> Изход
-                </button>
-            </form>
-        </li>
+        <div class="text-white mb-2">
+            <i class="bi bi-person"></i> @userFullName @roleDisplay
+        </div>
+        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button type="submit" class="btn btn-outline-light w-100">
+                <i class="bi bi-box-arrow-right"></i> Изход
+            </button>
+        </form>
     }
     else
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle"></i> @userFullName @roleDisplay
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li>
+                        <a class="dropdown-item" asp-controller="Profile" asp-action="Index">
+                            <i class="bi bi-gear"></i> Настройки
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="bi bi-box-arrow-right"></i> Изход
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    }
+}
+else
+{
+    @if (isAdminArea)
+    {
+        <div class="d-grid gap-2">
+            <a asp-area="" asp-controller="User" asp-action="Register" class="btn btn-outline-light">
                 <i class="bi bi-person-plus"></i> Регистрация
             </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">
+            <a asp-area="" asp-controller="User" asp-action="Login" class="btn btn-outline-light">
                 <i class="bi bi-box-arrow-in-right"></i> Вход
             </a>
-        </li>
+        </div>
     }
-</ul>
+    else
+    {
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item me-2">
+                <a class="btn btn-outline-primary rounded-pill px-4" asp-area="" asp-controller="User" asp-action="Register">
+                    <i class="bi bi-person-plus"></i> Регистрация
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-primary rounded-pill px-4" asp-area="" asp-controller="User" asp-action="Login">
+                    <i class="bi bi-box-arrow-in-right"></i> Вход
+                </a>
+            </li>
+        </ul>
+    }
+}

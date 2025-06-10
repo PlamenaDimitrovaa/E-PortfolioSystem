@@ -12,7 +12,7 @@ namespace E_PortfolioSystem.Web.ViewModels.User
         [DataType(DataType.Password)]
         public string Password { get; set; } = null!;
 
-        [Display(Name = "Запомни ме?")]
+        [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
 
         public string? ReturnUrl { get; set; }

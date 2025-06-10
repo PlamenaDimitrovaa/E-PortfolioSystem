@@ -4,20 +4,25 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using static E_PortfolioSystem.Common.NotificationMessagesConstants;
+using static E_PortfolioSystem.Common.GeneralApplicationConstants;
+using E_PortfolioSystem.Services.Data.Interfaces;
 
 namespace E_PortfolioSystem.Web.Controllers
 {
     public class UserController : Controller
-    {
+    {   
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IProfileService profileService;
 
         public UserController(
             SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IProfileService profileService)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.profileService = profileService;
         }
 
         [HttpGet]
@@ -34,30 +39,33 @@ namespace E_PortfolioSystem.Web.Controllers
                 return View(model);
             }
 
-            ApplicationUser user = new ApplicationUser()
+            var user = new ApplicationUser
             {
+                UserName = model.Email,
+                Email = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName
             };
 
-            await this.userManager.SetEmailAsync(user, model.Email);
-            await this.userManager.SetUserNameAsync(user, model.Email);
+            var result = await userManager.CreateAsync(user, model.Password);
 
-            IdentityResult result =
-                await this.userManager.CreateAsync(user, model.Password);
-
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                // Create profile with basic info
+                await profileService.CreateProfileAsync(
+                    user.Id, 
+                    $"{model.FirstName} {model.LastName}");
 
-                return View(model);
+                await signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("Index", "Home");
             }
 
-            await this.signInManager.SignInAsync(user, false);
-            return RedirectToAction("Index", "Home");
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
         }
 
         [HttpGet]
@@ -88,6 +96,13 @@ namespace E_PortfolioSystem.Web.Controllers
             {
                 TempData[ErrorMessage] = "Възникна грешка при входа в приложението!";
                 return View(model);
+            }
+
+            // Проверяваме дали потребителят е администратор
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (await userManager.IsInRoleAsync(user, AdminRoleName))
+            {
+                return RedirectToAction("Index", "Home", new { area = "Admin" });
             }
 
             return this.Redirect(model.ReturnUrl ?? "/Home/Index");

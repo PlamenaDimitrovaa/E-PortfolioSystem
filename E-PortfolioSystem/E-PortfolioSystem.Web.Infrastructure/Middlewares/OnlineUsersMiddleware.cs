@@ -28,25 +28,22 @@ namespace E_PortfolioSystem.Web.Infrastructure.Middlewares
         {
             if (context.User.Identity?.IsAuthenticated ?? false)
             {
-                if (!context.Request.Cookies.TryGetValue(this.cookieName, out string userId))
-                {
-                    userId = context.User.GetId()!;
+                var userId = context.User.GetId()!;
 
-                    context.Response.Cookies.Append(this.cookieName, userId, new CookieOptions() { HttpOnly = true, MaxAge = TimeSpan.FromDays(30) });
-                }
+                // Винаги обновяваме cookie-то при всяка заявка
+                context.Response.Cookies.Append(this.cookieName, userId, new CookieOptions() 
+                { 
+                    HttpOnly = true, 
+                    MaxAge = TimeSpan.FromDays(30) 
+                });
+
+                // Директно добавяме или обновяваме статуса на потребителя
+                AllKeys.AddOrUpdate(userId, true, (key, oldValue) => true);
 
                 memoryCache.GetOrCreate(userId, cacheEntry =>
                 {
-                    if (!AllKeys.TryAdd(userId, true))
-                    {
-                        cacheEntry.AbsoluteExpiration = DateTimeOffset.MinValue;
-                    }
-                    else
-                    {
-                        cacheEntry.SlidingExpiration = TimeSpan.FromMinutes(this.lastActivityMinutes);
-                        cacheEntry.RegisterPostEvictionCallback(this.RemoveKeyWhenExpired);
-                    }
-
+                    cacheEntry.SlidingExpiration = TimeSpan.FromMinutes(this.lastActivityMinutes);
+                    cacheEntry.RegisterPostEvictionCallback(this.RemoveKeyWhenExpired);
                     return string.Empty;
                 });
             }
@@ -54,11 +51,7 @@ namespace E_PortfolioSystem.Web.Infrastructure.Middlewares
             {
                 if (context.Request.Cookies.TryGetValue(this.cookieName, out string userId))
                 {
-                    if (!AllKeys.TryRemove(userId, out _))
-                    {
-                        AllKeys.TryUpdate(userId, false, true);
-                    }
-
+                    AllKeys.TryRemove(userId, out _);
                     context.Response.Cookies.Delete(this.cookieName);
                 }
             }
@@ -68,19 +61,13 @@ namespace E_PortfolioSystem.Web.Infrastructure.Middlewares
 
         public static bool CheckIfUserIsOnline(string userId)
         {
-            bool valueTaken = AllKeys.TryGetValue(userId.ToLower(), out bool success);
-
-            return success && valueTaken;
+            return AllKeys.ContainsKey(userId);
         }
 
         private void RemoveKeyWhenExpired(object key, object value, EvictionReason reason, object state)
         {
-            string keyStr = (string)key;
-
-            if (!AllKeys.TryRemove(keyStr, out _))
-            {
-                AllKeys.TryUpdate(keyStr, false, true);
-            }
+            string userId = (string)key;
+            AllKeys.TryRemove(userId, out _);
         }
     }
 }
