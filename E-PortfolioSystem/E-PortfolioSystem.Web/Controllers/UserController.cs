@@ -105,7 +105,7 @@ namespace E_PortfolioSystem.Web.Controllers
                 return RedirectToAction("Index", "Home", new { area = "Admin" });
             }
 
-            return this.Redirect(model.ReturnUrl ?? "/Home/Index");
+            return Redirect(model.ReturnUrl ?? "/Home/Index");
         }
     }
 }

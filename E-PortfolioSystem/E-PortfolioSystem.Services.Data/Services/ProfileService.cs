@@ -47,7 +47,7 @@ namespace E_PortfolioSystem.Services.Data.Services
                 Phone = string.Empty,
                 Bio = string.Empty,
                 Location = string.Empty,
-                ImageUrl = "/assets/default-profile.jpg",
+                ImageUrl = "~/assets/profile.png",
                 IsPublic = false
             };
 
@@ -60,12 +60,13 @@ namespace E_PortfolioSystem.Services.Data.Services
             return await dbContext.Profiles.AnyAsync(p => p.UserId == userId);
         }
 
-        public async Task UpdateProfileAsync(Guid userId, string phone, string bio, string location, string imageUrl, bool isPublic)
+        public async Task UpdateProfileAsync(Guid userId, string fullName, string phone, string bio, string location, string imageUrl, bool isPublic)
         {
             var profile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.UserId == userId);
             
             if (profile != null)
             {
+                profile.FullName = fullName;
                 profile.Phone = phone;
                 profile.Bio = bio;
                 profile.Location = location;

@@ -42,7 +42,7 @@
                         }
                         else if (User.IsInRole(TeacherRoleName))
                         {
-                            <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="Subject" asp-action="Subjects">
+                            <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="TeacherSubject" asp-action="Subjects">
                                 <i class="bi bi-book"></i> @TeacherUniversity
                             </a>
                             <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="Student" asp-action="Index">
@@ -60,9 +60,18 @@
         </div>
         <div class="col-xxl-7">
             <div class="d-flex justify-content-center mt-5 mt-xxl-0">
-                <div class="profile bg-gradient-primary-to-secondary">
-                    <img class="profile-img" src="assets/profile.png" alt="..." />
-                </div>
+                @if (User.IsInRole(TeacherRoleName))
+                {
+                    <div class="profile bg-gradient-primary-to-secondary">
+                        <img class="profile-img" src="~/assets/teacher.jpg" alt="..." />
+                    </div>
+                }
+                else
+                {
+                    <div class="profile bg-gradient-primary-to-secondary">
+                        <img class="profile-img" src="~/assets/student.jpg" alt="..." />
+                    </div>
+                }
             </div>
         </div>
     </div>

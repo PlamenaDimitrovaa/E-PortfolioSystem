@@ -1,4 +1,5 @@
 using E_PortfolioSystem.Data.Models;
+using E_PortfolioSystem.Services.Data.Interfaces;
 using E_PortfolioSystem.Web.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,13 +18,19 @@ namespace E_PortfolioSystem.Web.Areas.Admin.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<IdentityRole<Guid>> roleManager;
+        private readonly IStudentService studentService;
+        private readonly ITeacherService teacherService;
 
         public UserController(
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager)
+            RoleManager<IdentityRole<Guid>> roleManager,
+            IStudentService studentService,
+            ITeacherService teacherService)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
+            this.studentService = studentService;
+            this.teacherService = teacherService;
         }
 
         [HttpGet]
@@ -63,14 +70,34 @@ namespace E_PortfolioSystem.Web.Areas.Admin.Controllers
                 return BadRequest("Невалидна роля!");
             }
 
-            // Премахваме всички текущи роли на потребителя
-            var currentRoles = await userManager.GetRolesAsync(user);
-            await userManager.RemoveFromRolesAsync(user, currentRoles);
+            try
+            {
+                // Премахваме всички текущи роли на потребителя
+                var currentRoles = await userManager.GetRolesAsync(user);
+                await userManager.RemoveFromRolesAsync(user, currentRoles);
 
-            // Задаваме новата роля
-            await userManager.AddToRoleAsync(user, role);
+                // Задаваме новата роля
+                await userManager.AddToRoleAsync(user, role);
 
-            return RedirectToAction(nameof(Manage));
+                // Ако ролята е Студент, създаваме запис в таблицата Students
+                if (role == StudentRoleName)
+                {
+                    await studentService.CreateStudentAsync(user.Id);
+                }
+                // Ако ролята е Преподавател, създаваме запис в таблицата Teachers
+                else if (role == TeacherRoleName)
+                {
+                    await teacherService.CreateTeacherAsync(user.Id);
+                }
+
+                return RedirectToAction(nameof(Manage));
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Ако възникне грешка при създаването на студент или преподавател, връщаме съобщение за грешка
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Manage));
+            }
         }
 
         [HttpGet]

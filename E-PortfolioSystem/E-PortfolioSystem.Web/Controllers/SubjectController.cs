@@ -64,6 +64,9 @@ namespace E_PortfolioSystem.Web.Controllers
         {
             try
             {
+                var userId = User.GetId();
+                var studentId = await studentService.GetStudentIdByUserIdAsync(userId);
+
                 var subject = await subjectService.GetSubjectWithDocumentAsync(id);
 
                 if (subject == null)
@@ -104,26 +107,33 @@ namespace E_PortfolioSystem.Web.Controllers
                 if (model.NewFile != null && model.NewFile.Length > 0)
                 {
                     var fileName = Path.GetFileName(model.NewFile.FileName);
+                    var uploadDirectory = Path.Combine(_environment.WebRootPath, "Uploaded", "Files");
 
-                    var relativePath = Path.Combine("Uploaded", "Files", fileName);
-                    var absolutePath = Path.Combine(_environment.WebRootPath, relativePath);
+                    // Създаваме директорията, ако не съществува
+                    if (!Directory.Exists(uploadDirectory))
+                    {
+                        Directory.CreateDirectory(uploadDirectory);
+                    }
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(absolutePath)!);
+                    var filePath = Path.Combine("Uploaded", "Files", fileName);
+                    var absolutePath = Path.Combine(_environment.WebRootPath, filePath);
 
                     using (var stream = new FileStream(absolutePath, FileMode.Create))
                     {
                         await model.NewFile.CopyToAsync(stream);
                     }
 
-                    await subjectService.UpdateSubjectAttachedDocumentAsync(model.SubjectId, fileName, relativePath);
+                    await subjectService.UpdateSubjectAttachedDocumentAsync(model.SubjectId, fileName, filePath);
+
+                    TempData[SuccessMessage] = "Документът беше успешно качен.";
+                    return RedirectToAction("Details", new { id = model.SubjectId });
                 }
 
-                TempData[SuccessMessage] = "Предметът е успешно редактиран.";
                 return RedirectToAction("Details", new { id = model.SubjectId });
             }
             catch (Exception ex)
             {
-                TempData[ErrorMessage] = "Възникна грешка при редактирането на предмета.";
+                TempData[ErrorMessage] = $"Възникна грешка при редактирането на предмета: {ex.Message}";
                 return View(model);
             }
         }

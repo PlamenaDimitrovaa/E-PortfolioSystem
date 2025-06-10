@@ -5,6 +5,8 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System.Globalization;
 using System.Net.Http;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace E_PortfolioSystem.Web.Infrastructure.Extensions
 {
@@ -12,11 +14,13 @@ namespace E_PortfolioSystem.Web.Infrastructure.Extensions
     {
         private readonly ResumeViewModel model;
         private readonly ProfileViewModel profile;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public ResumePdfGenerator(ResumeViewModel model, ProfileViewModel profile)
+        public ResumePdfGenerator(ResumeViewModel model, ProfileViewModel profile, IWebHostEnvironment webHostEnvironment)
         {
             this.model = model;
             this.profile = profile;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         private byte[] GetImageOrPlaceholder(string? imageUrl)
@@ -25,12 +29,27 @@ namespace E_PortfolioSystem.Web.Infrastructure.Extensions
             {
                 if (!string.IsNullOrWhiteSpace(imageUrl))
                 {
-                    using var httpClient = new HttpClient();
-                    return httpClient.GetByteArrayAsync(imageUrl).Result;
+                    if (imageUrl.StartsWith("~") || imageUrl.StartsWith("/"))
+                    {
+                        // Handle relative path
+                        var relativePath = imageUrl.TrimStart('~', '/');
+                        var fullPath = Path.Combine(webHostEnvironment.WebRootPath, relativePath);
+                        if (File.Exists(fullPath))
+                        {
+                            return File.ReadAllBytes(fullPath);
+                        }
+                    }
+                    else if (imageUrl.StartsWith("http"))
+                    {
+                        // Handle absolute URL
+                        using var httpClient = new HttpClient();
+                        return httpClient.GetByteArrayAsync(imageUrl).Result;
+                    }
                 }
             }
             catch
             {
+                // Log error if needed
             }
 
             return Placeholders.Image(200, 200);

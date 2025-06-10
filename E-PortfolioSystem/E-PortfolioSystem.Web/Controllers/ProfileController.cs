@@ -7,6 +7,9 @@
     using Microsoft.AspNetCore.Mvc;
     using static E_PortfolioSystem.Web.Infrastructure.Extensions.ClaimsPrincipalExtensions;
     using static E_PortfolioSystem.Common.NotificationMessagesConstants;
+    using Microsoft.AspNetCore.Identity;
+    using E_PortfolioSystem.Data.Models;
+    using Microsoft.AspNetCore.Hosting;
 
     [Authorize]
     public class ProfileController : Controller
@@ -16,19 +19,25 @@
         private readonly ISkillService skillService;
         private readonly IEducationService educationService;
         private readonly ICertificateService certificateService;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
         public ProfileController(
              IProfileService profileService,
              IExperienceService experienceService,
              ISkillService skillService,
              IEducationService educationService,
-             ICertificateService certificateService)
+             ICertificateService certificateService,
+             UserManager<ApplicationUser> userManager,
+             IWebHostEnvironment webHostEnvironment)
         {
             this.profileService = profileService;
             this.experienceService = experienceService;
             this.skillService = skillService;
             this.educationService = educationService;
             this.certificateService = certificateService;
+            this.userManager = userManager;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> Resume()
@@ -80,6 +89,11 @@
                 var education = await educationService.GetAllByUserIdAsync(id);
                 var certificates = await certificateService.GetAllByUserIdAsync(id);
 
+                if (profile == null)
+                {
+                    return NotFound();
+                }
+
                 var resume = new ResumeViewModel
                 {
                     Id = profile.Id,
@@ -90,12 +104,7 @@
                     Certificates = certificates
                 };
 
-                if (resume == null)
-                {
-                    return NotFound();
-                }
-
-                var generator = new ResumePdfGenerator(resume, profile);
+                var generator = new ResumePdfGenerator(resume, profile, webHostEnvironment);
                 var pdfBytes = generator.Generate();
 
                 return File(pdfBytes, "application/pdf", "CVDocument.pdf");
@@ -112,6 +121,15 @@
             try
             {
                 var userId = User.GetId();
+
+                if (!await profileService.ExistsByUserIdAsync(Guid.Parse(userId)))
+                {
+                    var user = await userManager.FindByIdAsync(userId);
+                    await profileService.CreateProfileAsync(
+                        Guid.Parse(userId),
+                        $"{user.FirstName} {user.LastName}");
+                }
+
                 var profile = await profileService.GetProfileByUserIdAsync(userId);
 
                 if (profile == null)
@@ -153,52 +171,37 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(ProfileViewModel model, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(ProfileViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            try
+            var userId = User.GetId();
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
             {
-                string imageUrl = model.ImageUrl;
-                if (imageFile != null && imageFile.Length > 0)
-                {
-                    // Save the image and get its URL
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "profiles");
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await imageFile.CopyToAsync(stream);
-                    }
-
-                    imageUrl = "/images/profiles/" + uniqueFileName;
-                }
-
-                await profileService.UpdateProfileAsync(
-                    Guid.Parse(model.UserId),
-                    model.Phone,
-                    model.Bio,
-                    model.Location,
-                    imageUrl,
-                    model.IsPublic);
-
-                TempData[SuccessMessage] = "Профилът е успешно обновен.";
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch (Exception)
-            {
-                TempData[ErrorMessage] = "Възникна грешка при обновяването на профила.";
-                return View(model);
-            }
+
+            var names = model.FullName.Split(' ', 2);
+            user.FirstName = names[0];
+            user.LastName = names.Length > 1 ? names[1] : string.Empty;
+            await userManager.UpdateAsync(user);
+
+            await profileService.UpdateProfileAsync(
+                Guid.Parse(userId),
+                model.FullName,
+                model.Phone,
+                model.Bio,
+                model.Location,
+                model.ImageUrl,
+                model.IsPublic);
+
+            TempData[SuccessMessage] = "Профилът е успешно обновен.";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

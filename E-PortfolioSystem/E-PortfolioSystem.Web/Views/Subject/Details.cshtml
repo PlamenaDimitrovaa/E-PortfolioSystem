@@ -48,6 +48,13 @@
                                 @Model.DocumentFileName
                             </a>
                         </p>
+                        
+                    <a asp-controller="Subject"
+                       asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-primary">
+                        Редактирай документ
+                    </a>
                     }
                 }
                 <div class="mt-4 d-flex justify-content-between">
@@ -55,12 +62,6 @@
                         Назад към предметите
                     </a>
 
-                    <a asp-controller="Subject"
-                       asp-action="Edit"
-                       asp-route-id="@Model.Id"
-                       class="btn btn-primary">
-                        Редактирай документ
-                    </a>
                 </div>
             </div>
         </div>

@@ -28,17 +28,22 @@ namespace E_PortfolioSystem.Services.Data.Services
                 })
                 .ToListAsync();
         }
+
         public async Task<SubjectDetailsViewModel?> GetSubjectDetailsAsync(Guid subjectId, Guid studentId)
         {
             var subject = await dbContext.Subjects
-                .Include(s => s.Teacher).ThenInclude(t => t.User)
+                .Include(s => s.Teacher)
+                    .ThenInclude(t => t.User)
                 .Include(s => s.Evaluation)
-                .Include(s => s.Project).ThenInclude(p => p.AttachedDocument)
+                .Include(s => s.Project)
+                    .ThenInclude(p => p!.AttachedDocument)
                 .Include(s => s.StudentSubjects)
                 .FirstOrDefaultAsync(s => s.Id == subjectId);
 
-            if (subject == null)
+            if (subject == null || subject.Teacher == null || subject.Teacher.User == null)
+            {
                 return null;
+            }
 
             var enrolledOn = subject.StudentSubjects
                 .FirstOrDefault(ss => ss.StudentId == studentId)?.EnrolledOn;
@@ -108,11 +113,68 @@ namespace E_PortfolioSystem.Services.Data.Services
         public async Task<Subject?> GetSubjectWithDocumentAsync(Guid subjectId)
         {
             return await dbContext.Subjects
-                .Include(s => s.Teacher)
-                    .ThenInclude(t => t.User)
                 .Include(s => s.Project)
-                    .ThenInclude(p => p.AttachedDocument)
+                .ThenInclude(p => p.AttachedDocument)
+                .Include(s => s.Teacher)
+                .ThenInclude(t => t.User)
                 .FirstOrDefaultAsync(s => s.Id == subjectId);
+        }
+
+        public async Task<IEnumerable<TeacherSubjectViewModel>> GetSubjectsByTeacherAsync(string teacherId)
+        {
+            return await dbContext.Subjects
+                .Where(s => s.TeacherId.ToString() == teacherId)
+                .Select(s => new TeacherSubjectViewModel
+                {
+                    Id = s.Id.ToString(),
+                    Name = s.Name,
+                    IsAdmitted = s.IsAdmitted,
+                    EnrolledStudentsCount = s.StudentSubjects.Count
+                })
+                .ToListAsync();
+        }
+
+        public async Task<bool> IsTeacherOfSubjectAsync(string teacherId, string subjectId)
+        {
+            if (!Guid.TryParse(subjectId, out var parsedSubjectId))
+            {
+                return false;
+            }
+
+            return await dbContext.Subjects
+                .AnyAsync(s => s.Id == parsedSubjectId && s.TeacherId.ToString() == teacherId);
+        }
+
+        public async Task CreateAsync(SubjectFormModel model, string teacherId)
+        {
+            var subject = new Subject
+            {
+                Name = model.Name,
+                IsAdmitted = true,
+                TeacherId = Guid.Parse(teacherId)
+            };
+
+            await dbContext.Subjects.AddAsync(subject);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(SubjectFormModel model, string teacherId)
+        {
+            if (!Guid.TryParse(model.Id, out var subjectId))
+            {
+                throw new ArgumentException("Невалиден идентификатор на предмет.");
+            }
+
+            var subject = await dbContext.Subjects.FindAsync(subjectId);
+
+            if (subject == null)
+            {
+                throw new InvalidOperationException("Предметът не е намерен.");
+            }
+
+            subject.Name = model.Name;
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

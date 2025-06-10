@@ -1,0 +1,94 @@
+@using E_PortfolioSystem.Web.ViewModels.Subject
+@model SubjectDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>@Model.Name</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-controller="TeacherSubjectStudents" asp-action="Manage" asp-route-id="@Model.Id" class="btn btn-primary">
+                <i class="bi bi-people"></i> Управление на студенти
+            </a>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Информация за предмета</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted">Преподавател: @Model.TeacherName</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.ProjectTitle != null)
+    {
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Проект</h5>
+            </div>
+            <div class="card-body">
+                <h6>@Model.ProjectTitle</h6>
+                <p>@Model.ProjectDescription</p>
+                @if (!string.IsNullOrEmpty(Model.ProjectLink))
+                {
+                    <p><strong>Линк:</strong> <a href="@Model.ProjectLink" target="_blank">@Model.ProjectLink</a></p>
+                }
+                @if (!string.IsNullOrEmpty(Model.DocumentFileName))
+                {
+                    <p><strong>Прикачен документ:</strong> @Model.DocumentFileName</p>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.EvaluationDate.HasValue)
+    {
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Оценяване</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <p><strong>Оценка по предмета:</strong> @Model.SubjectGrade</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Оценка на проекта:</strong> @Model.ProjectGrade</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Дата на оценяване:</strong> @Model.EvaluationDate?.ToShortDateString()</p>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Feedback))
+                {
+                    <div class="mt-3">
+                        <strong>Обратна връзка:</strong>
+                        <p class="mt-2">@Model.Feedback</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+        <a asp-action="Subjects" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Назад към списъка
+        </a>
+        <a asp-controller="TeacherSubject"
+           asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-primary">
+            Редактирай предмет
+        </a>
+    </div>
+</div> 

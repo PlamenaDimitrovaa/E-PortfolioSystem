@@ -4,30 +4,30 @@ namespace E_PortfolioSystem.Web.ViewModels.User
 {
     public class RegisterFormModel
     {
-        [Required]
+        [Required(ErrorMessage = "Първо име е задължително!")]
         [StringLength(50, MinimumLength = 2)]
-        [Display(Name = "First Name")]
+        [Display(Name = "Първо име")]
         public string FirstName { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Фамилно име е задължително!")]
         [StringLength(50, MinimumLength = 2)]
-        [Display(Name = "Last Name")]
+        [Display(Name = "Фамилно име")]
         public string LastName { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Имейлът е задължителен!")]
         [EmailAddress]
-        [Display(Name = "Email")]
+        [Display(Name = "Имейл")]
         public string Email { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Паролата е задължителна!")]
         [StringLength(100, MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Парола")]
         public string Password { get; set; } = null!;
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Потвърди парола")]
+        [Compare("Password", ErrorMessage = "Парола и потвърди парола не съвпадат.")]
         public string ConfirmPassword { get; set; } = null!;
     }
 }
