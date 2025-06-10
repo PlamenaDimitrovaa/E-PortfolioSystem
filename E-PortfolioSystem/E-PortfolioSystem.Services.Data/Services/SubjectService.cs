@@ -176,5 +176,32 @@ namespace E_PortfolioSystem.Services.Data.Services
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task DeleteSubjectAsync(Guid subjectId)
+        {
+            var subject = await dbContext.Subjects
+                .Include(s => s.StudentSubjects)
+                .Include(s => s.Evaluation)
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
+            {
+                throw new InvalidOperationException("Предметът не съществува.");
+            }
+
+            if (subject.StudentSubjects.Any())
+            {
+                dbContext.StudentsSubjects.RemoveRange(subject.StudentSubjects);
+            }
+
+            if (subject.Evaluation != null)
+            {
+                dbContext.Evaluations.Remove(subject.Evaluation);
+            }
+
+            dbContext.Subjects.Remove(subject);
+
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

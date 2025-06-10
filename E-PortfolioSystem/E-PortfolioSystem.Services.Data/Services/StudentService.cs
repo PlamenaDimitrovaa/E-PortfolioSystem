@@ -85,8 +85,8 @@ namespace E_PortfolioSystem.Services.Data.Services
         public async Task RemoveStudentFromSubjectAsync(string studentId, string subjectId)
         {
             var studentSubject = await dbContext.StudentsSubjects
-                .FirstOrDefaultAsync(ss => 
-                    ss.StudentId.ToString() == studentId && 
+                .FirstOrDefaultAsync(ss =>
+                    ss.StudentId.ToString() == studentId &&
                     ss.SubjectId.ToString() == subjectId);
 
             if (studentSubject != null)
@@ -99,8 +99,8 @@ namespace E_PortfolioSystem.Services.Data.Services
         public async Task<bool> IsStudentEnrolledInSubjectAsync(string studentId, string subjectId)
         {
             return await dbContext.StudentsSubjects
-                .AnyAsync(ss => 
-                    ss.StudentId.ToString() == studentId && 
+                .AnyAsync(ss =>
+                    ss.StudentId.ToString() == studentId &&
                     ss.SubjectId.ToString() == subjectId);
         }
 
@@ -119,13 +119,26 @@ namespace E_PortfolioSystem.Services.Data.Services
 
         private string GenerateFacultyNumber()
         {
-            // Генерира факултетен номер във формат: година + 5 случайни цифри
-            // Например: 23XXXXX
             var year = DateTime.UtcNow.Year.ToString().Substring(2);
             var random = new Random();
             var number = random.Next(10000, 99999);
 
             return $"{year}{number}";
+        }
+
+        public async Task<IEnumerable<StudentListViewModel>> GetStudentsByTeacherAsync(Guid teacherId)
+        {
+            return await dbContext.Students
+                .Where(s => s.StudentSubjects
+                    .Any(ss => ss.Subject.TeacherId == teacherId))
+                .Select(s => new StudentListViewModel
+                {
+                    Id = s.Id.ToString(),
+                    FullName = s.User.FirstName + " " + s.User.LastName,
+                    FacultyNumber = s.FacultyNumber,
+                    IsEnrolled = true 
+                })
+                .ToListAsync();
         }
     }
 }

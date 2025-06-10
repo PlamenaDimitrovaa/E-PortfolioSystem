@@ -1,5 +1,4 @@
 using E_PortfolioSystem.Services.Data.Interfaces;
-using E_PortfolioSystem.Services.Data.Services;
 using E_PortfolioSystem.Web.Infrastructure.Extensions;
 using E_PortfolioSystem.Web.ViewModels.Subject;
 using Microsoft.AspNetCore.Authorization;
@@ -49,14 +48,13 @@ namespace E_PortfolioSystem.Web.Controllers
                 var userId = User.GetId()!;
                 var teacherId = await teacherService.GetTeacherIdByUserIdAsync(userId);
 
-                // Проверяваме дали преподавателят има достъп до този предмет
                 if (!await subjectService.IsTeacherOfSubjectAsync(teacherId, id))
                 {
                     return Unauthorized();
                 }
 
                 var subjectId = Guid.Parse(id);
-                var studentId = Guid.Empty; // За преподавателския изглед не ни трябва студентско ID
+                var studentId = Guid.Empty;
                 var subject = await subjectService.GetSubjectDetailsAsync(subjectId, studentId);
 
                 if (subject == null)
@@ -157,6 +155,22 @@ namespace E_PortfolioSystem.Web.Controllers
                 TempData[ErrorMessage] = "Възникна грешка при редактрирането на предмета.";
                 return View(model);
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            try
+            {
+                await subjectService.DeleteSubjectAsync(id);
+                TempData["SuccessMessage"] = "Предметът и свързаните записи бяха успешно изтрити.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Грешка при изтриването";
+            }
+
+            return RedirectToAction("Subjects", "TeacherSubject");
         }
     }
 }

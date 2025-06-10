@@ -186,9 +186,12 @@
                 return NotFound();
             }
 
-            var names = model.FullName.Split(' ', 2);
-            user.FirstName = names[0];
-            user.LastName = names.Length > 1 ? names[1] : string.Empty;
+            var names = model.FullName
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            user.FirstName = names.Length > 0 ? names[0] : string.Empty;
+            user.LastName = names.Length > 1 ? names[^1] : string.Empty; // Последният елемент
+
             await userManager.UpdateAsync(user);
 
             await profileService.UpdateProfileAsync(

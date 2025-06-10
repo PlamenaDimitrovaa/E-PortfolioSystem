@@ -13,5 +13,6 @@ namespace E_PortfolioSystem.Services.Data.Interfaces
         Task<bool> IsTeacherOfSubjectAsync(string teacherId, string subjectId);
         Task CreateAsync(SubjectFormModel model, string teacherId);
         Task UpdateAsync(SubjectFormModel model, string teacherId);
+        Task DeleteSubjectAsync(Guid subjectId);
     }
 }
