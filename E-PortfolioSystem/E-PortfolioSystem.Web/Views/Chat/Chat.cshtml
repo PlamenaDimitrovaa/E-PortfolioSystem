@@ -1,4 +1,4 @@
-@using System.Security.Claims
+﻿@using System.Security.Claims
 @model IEnumerable<E_PortfolioSystem.Web.ViewModels.ChatMessageViewModel>
 
 <div class="container mt-4">
@@ -94,7 +94,7 @@
                         </small>
                     </div>
                 </div>`;
-            
+
             chatMessages.insertAdjacentHTML('beforeend', messageHtml);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -102,7 +102,7 @@
         connection.on("ReceiveMessage", function (senderId, message, timestamp) {
             const isFromCurrentUser = senderId === '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
             appendMessage(senderId, message, timestamp, isFromCurrentUser);
-            
+
             // Ако съобщението е от другия потребител и чат прозорецът не е на фокус,
             // обновяваме брояча на непрочетените съобщения
             if (!isFromCurrentUser && !document.hasFocus()) {
@@ -175,4 +175,4 @@
         // Фокусиране върху полето за въвеждане при зареждане
         messageInput.focus();
     </script>
-} 
+}
