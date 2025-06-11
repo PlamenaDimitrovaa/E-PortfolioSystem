@@ -203,5 +203,18 @@ namespace E_PortfolioSystem.Services.Data.Services
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<SubjectViewModel>> GetSubjectsByTeacherAndStudentAsync(Guid teacherId, Guid studentId)
+        {
+            return await dbContext.StudentsSubjects
+                .Where(ss => ss.StudentId == studentId && ss.Subject.TeacherId == teacherId)
+                .Select(ss => new SubjectViewModel
+                {
+                    Id = ss.Subject.Id.ToString(),
+                    Name = ss.Subject.Name,
+                    TeacherFullName = ss.Subject.Teacher.User.FirstName + " " + ss.Subject.Teacher.User.LastName
+                })
+                .ToListAsync();
+        }
     }
 }

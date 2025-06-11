@@ -1,3 +1,4 @@
+using E_PortfolioSystem.Web.ViewModels.Subject;
 using System.ComponentModel.DataAnnotations;
 
 namespace E_PortfolioSystem.Web.ViewModels.Student
@@ -11,5 +12,7 @@ namespace E_PortfolioSystem.Web.ViewModels.Student
         public string FacultyNumber { get; set; } = null!;
 
         public bool IsEnrolled { get; set; }
+
+        public List<SubjectSimpleViewModel> Subjects { get; set; } = new();
     }
 } 

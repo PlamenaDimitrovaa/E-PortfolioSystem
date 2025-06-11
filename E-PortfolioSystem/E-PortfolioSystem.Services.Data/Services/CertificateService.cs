@@ -152,6 +152,7 @@ namespace E_PortfolioSystem.Services.Data.Services
 
             cert.Title = model.Title;
             cert.Issuer = model.Issuer;
+            cert.FilePath = model.FilePath;
             cert.IssuedDate = model.IssuedDate;
 
             if (model.File != null && model.File.Length > 0)

@@ -1,5 +1,7 @@
 ﻿using E_PortfolioSystem.Services.Data.Interfaces;
 using E_PortfolioSystem.Web.Infrastructure.Extensions;
+using E_PortfolioSystem.Web.ViewModels.Student;
+using E_PortfolioSystem.Web.ViewModels.Subject;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static E_PortfolioSystem.Common.NotificationMessagesConstants;
@@ -32,8 +34,27 @@ namespace E_PortfolioSystem.Web.Controllers
                 var teacherId = await teacherService.GetTeacherIdByUserIdAsync(userId);
 
                 var students = await studentService.GetStudentsByTeacherAsync(Guid.Parse(teacherId));
+                var model = new List<StudentListViewModel>();
 
-                return View(students);
+                foreach (var student in students)
+                {
+                    var subjects = await subjectService.GetSubjectsByTeacherAndStudentAsync(Guid.Parse(teacherId), Guid.Parse(student.Id));
+
+                    model.Add(new StudentListViewModel
+                    {
+                        Id = student.Id,
+                        FullName = student.FullName,
+                        FacultyNumber = student.FacultyNumber,
+                        IsEnrolled = student.IsEnrolled,
+                        Subjects = subjects.Select(sub => new SubjectSimpleViewModel
+                        {
+                            Id = sub.Id.ToString(),
+                            Name = sub.Name
+                        }).ToList()
+                    });
+                }
+
+                return View(model);
             }
             catch (InvalidOperationException)
             {

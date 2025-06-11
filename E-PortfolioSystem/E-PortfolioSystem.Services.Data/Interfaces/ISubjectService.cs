@@ -14,5 +14,6 @@ namespace E_PortfolioSystem.Services.Data.Interfaces
         Task CreateAsync(SubjectFormModel model, string teacherId);
         Task UpdateAsync(SubjectFormModel model, string teacherId);
         Task DeleteSubjectAsync(Guid subjectId);
+        Task<IEnumerable<SubjectViewModel>> GetSubjectsByTeacherAndStudentAsync(Guid teacherId, Guid studentId);
     }
 }

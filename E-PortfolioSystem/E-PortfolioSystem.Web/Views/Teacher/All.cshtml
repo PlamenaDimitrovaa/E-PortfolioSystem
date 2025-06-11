@@ -22,6 +22,7 @@
                     <tr>
                         <th>Име</th>
                         <th>Факултетен номер</th>
+                        <th>Оценяване</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,6 +31,15 @@
                         <tr>
                             <td>@student.FullName</td>
                             <td>@student.FacultyNumber</td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-success"
+                                        data-student-id="@student.Id"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#subjectSelectModal">
+                                    Оцени
+                                </button>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -42,4 +52,74 @@
             <i class="bi bi-arrow-left"></i> Назад
         </a>
     </div>
-</div> 
+</div>
+
+<!-- Модал за избор на предмет -->
+<div class="modal fade" id="subjectSelectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Избор на предмет за оценяване</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="subjectForm">
+                    <input type="hidden" id="selectedStudentId" name="studentId" />
+                    <input type="hidden" id="selectedSubjectsJson" value='@Html.Raw(Json.Serialize(Model.ToDictionary(s => s.Id, s => s.Subjects)))' />
+
+                    <div class="mb-3">
+                        <label for="subjectSelect" class="form-label">Избери предмет</label>
+                        <select class="form-select" id="subjectSelect" name="subjectId" required>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+                <button type="button" class="btn btn-primary" id="confirmEvaluationBtn">Продължи</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let studentSubjects = JSON.parse(document.getElementById('selectedSubjectsJson').value);
+        const subjectSelectModal = document.getElementById('subjectSelectModal');
+
+        subjectSelectModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const studentId = button.getAttribute('data-student-id');
+
+            document.getElementById('selectedStudentId').value = studentId;
+
+            const subjectSelect = document.getElementById('subjectSelect');
+            subjectSelect.innerHTML = '';
+
+            const subjects = studentSubjects[studentId];
+            if (subjects && subjects.length > 0) {
+                subjects.forEach(s => {
+                    const option = document.createElement('option');
+                    option.value = s.id;
+                    option.text = s.name;
+                    subjectSelect.appendChild(option);
+                });
+            } else {
+                const option = document.createElement('option');
+                option.text = "Няма предмети";
+                subjectSelect.appendChild(option);
+            }
+        });
+
+        document.getElementById('confirmEvaluationBtn').addEventListener('click', function () {
+            const studentId = document.getElementById('selectedStudentId').value;
+            const subjectId = document.getElementById('subjectSelect').value;
+            const url = `/Evaluation/Evaluate?studentId=${studentId}&subjectId=${subjectId}`;
+            window.location.href = url;
+        });
+    </script>
+}

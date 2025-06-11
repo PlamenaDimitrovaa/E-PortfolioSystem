@@ -1,0 +1,70 @@
+﻿@model E_PortfolioSystem.Web.ViewModels.Evaluation.StudentEvaluationViewModel
+
+@{
+    ViewData["Title"] = "Оценяване на студент";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <form asp-action="Evaluate" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="StudentId" />
+        <input type="hidden" asp-for="SubjectId" />
+
+        <div class="form-group mb-3">
+            <label asp-for="StudentName"></label>
+            <input asp-for="StudentName" class="form-control" readonly />
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="FacultyNumber"></label>
+            <input asp-for="FacultyNumber" class="form-control" readonly />
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="ProjectTitle"></label>
+            <input asp-for="ProjectTitle" class="form-control" readonly />
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.AttachedDocumentUrl))
+        {
+            <div class="form-group mb-3">
+                <label>Прикачен документ:</label>
+                <a class="btn btn-outline-primary" href="@Model.AttachedDocumentUrl" target="_blank">Преглед</a>
+            </div>
+        }
+
+        <div class="form-group mb-3">
+            <label asp-for="SubjectGrade"></label>
+            <input asp-for="SubjectGrade" class="form-control" />
+            <span asp-validation-for="SubjectGrade" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="ProjectGrade"></label>
+            <input asp-for="ProjectGrade" class="form-control" />
+            <span asp-validation-for="ProjectGrade" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Feedback"></label>
+            <textarea asp-for="Feedback" class="form-control"></textarea>
+            <span asp-validation-for="Feedback" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="EvaluationType"></label>
+            <input asp-for="EvaluationType" class="form-control" />
+            <span asp-validation-for="EvaluationType" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Запази оценката</button>
+        <a asp-controller="Teacher" asp-action="All" class="btn btn-secondary ms-2">Назад</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

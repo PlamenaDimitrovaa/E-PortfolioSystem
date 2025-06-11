@@ -32,6 +32,12 @@
                         </div>
 
                         <div class="mb-3">
+                            <label asp-for="FilePath" class="form-label">Линк към сертификат</label>
+                            <input asp-for="FilePath" class="form-control" rows="4" placeholder="Линк към сертификата..." />
+                            <span asp-validation-for="FilePath" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
                             <label asp-for="IssuedDate" class="form-label"></label>
                             <input asp-for="IssuedDate" class="form-control" type="date" />
                             <span asp-validation-for="IssuedDate" class="text-danger"></span>
