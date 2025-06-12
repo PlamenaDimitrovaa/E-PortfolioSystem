@@ -3,6 +3,7 @@ using E_PortfolioSystem.Data.Models;
 using E_PortfolioSystem.Services.Data.Interfaces;
 using E_PortfolioSystem.Web.ViewModels.AttachedDocument;
 using E_PortfolioSystem.Web.ViewModels.Project;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_PortfolioSystem.Services.Data.Services
@@ -55,6 +56,41 @@ namespace E_PortfolioSystem.Services.Data.Services
                UploadDate = p.UploadDate
            })
            .ToListAsync();
+        }
+
+        public async Task<AttachedDocument> SaveDocumentAsync(IFormFile file, string documentType, string? description = null)
+        {
+            if (file == null || file.Length == 0)
+            {
+                throw new ArgumentException("Невалиден файл.");
+            }
+
+            var fileName = Path.GetFileName(file.FileName);
+            var relativePath = Path.Combine("Uploaded", "Files", fileName);
+            var uploadPath = Path.Combine("wwwroot", relativePath);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(uploadPath)!);
+
+            using (var stream = new FileStream(uploadPath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var document = new AttachedDocument
+            {
+                Id = Guid.NewGuid(),
+                FileName = fileName,
+                FileContent = "File Content",
+                UploadDate = DateTime.UtcNow,
+                FileLocation = relativePath.Replace('\\', '/'),
+                DocumentType = documentType,
+                Description = description
+            };
+
+            dbContext.AttachedDocuments.Add(document);
+            await dbContext.SaveChangesAsync();
+
+            return document;
         }
     }
 }

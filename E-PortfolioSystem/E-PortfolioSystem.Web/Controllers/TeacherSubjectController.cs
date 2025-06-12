@@ -54,8 +54,7 @@ namespace E_PortfolioSystem.Web.Controllers
                 }
 
                 var subjectId = Guid.Parse(id);
-                var studentId = Guid.Empty;
-                var subject = await subjectService.GetSubjectDetailsAsync(subjectId, studentId);
+                var subject = await subjectService.GetTeacherSubjectDetailsAsync(subjectId);
 
                 if (subject == null)
                 {

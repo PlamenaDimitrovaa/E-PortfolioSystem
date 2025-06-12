@@ -40,7 +40,7 @@ namespace E_PortfolioSystem.Web.Controllers
             await evaluationService.SubmitEvaluationAsync(model, Guid.Parse(teacherId));
 
             TempData["SuccessMessage"] = "Оценката е запазена успешно.";
-            return RedirectToAction("Subjects", "Teacher");
+            return RedirectToAction("Subjects", "TeacherSubject");
         }
     }
 }

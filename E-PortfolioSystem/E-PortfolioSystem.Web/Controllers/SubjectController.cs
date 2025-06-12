@@ -3,6 +3,7 @@ using E_PortfolioSystem.Services.Data.Services;
 using E_PortfolioSystem.Web.Infrastructure.Extensions;
 using E_PortfolioSystem.Web.ViewModels.Subject;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static E_PortfolioSystem.Common.NotificationMessagesConstants;
 
@@ -56,6 +57,65 @@ namespace E_PortfolioSystem.Web.Controllers
             {
                 TempData[ErrorMessage] = "Възникна грешка при зареждането на детайлите за предмета.";
                 return RedirectToAction("Subjects");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddProject(Guid id)
+        {
+            try
+            {
+                var userId = User.GetId();
+                var studentId = await studentService.GetStudentIdByUserIdAsync(userId);
+                var subject = await subjectService.GetSubjectDetailsAsync(id, Guid.Parse(studentId));
+
+                if (subject == null)
+                {
+                    TempData[ErrorMessage] = "Предметът не е намерен.";
+                    return RedirectToAction(nameof(Subjects));
+                }
+
+                if (!string.IsNullOrEmpty(subject.ProjectTitle))
+                {
+                    TempData[ErrorMessage] = "Вече има добавен проект към този предмет.";
+                    return RedirectToAction(nameof(Details), new { id });
+                }
+
+                var model = new SubjectProjectFormModel
+                {
+                    SubjectId = id.ToString(),
+                    SubjectName = subject.Name
+                };
+
+                return View(model);
+            }
+            catch (Exception)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на формата.";
+                return RedirectToAction(nameof(Subjects));
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddProject(SubjectProjectFormModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                var userId = User.GetId();
+                await subjectService.AddProjectToSubjectAsync(model, userId);
+
+                TempData[SuccessMessage] = "Проектът беше добавен успешно!";
+                return RedirectToAction(nameof(Details), new { id = model.SubjectId });
+            }
+            catch (Exception)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при добавянето на проекта.";
+                return View(model);
             }
         }
 

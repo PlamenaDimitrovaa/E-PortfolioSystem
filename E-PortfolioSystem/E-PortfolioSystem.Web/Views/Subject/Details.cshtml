@@ -57,6 +57,19 @@
                     </a>
                     }
                 }
+                else
+                {
+                    <hr />
+                    <div class="text-center">
+                        <p class="text-muted mb-3">Все още няма добавен проект към този предмет.</p>
+                        <a asp-controller="Subject"
+                           asp-action="AddProject"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Добави проект
+                        </a>
+                    </div>
+                }
                 <div class="mt-4 d-flex justify-content-between">
                     <a class="btn btn-secondary" asp-action="Subjects" asp-controller="Subject">
                         Назад към предметите

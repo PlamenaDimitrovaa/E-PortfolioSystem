@@ -101,5 +101,37 @@ namespace E_PortfolioSystem.Web.Controllers
                 return RedirectToAction(nameof(Manage), new { id = subjectId });
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> StudentDetails(string subjectId, string studentId)
+        {
+            try
+            {
+                var userId = User.GetId()!;
+                var teacherId = await teacherService.GetTeacherIdByUserIdAsync(userId);
+
+                if (!await subjectService.IsTeacherOfSubjectAsync(teacherId, subjectId))
+                {
+                    return Unauthorized();
+                }
+
+                var details = await subjectService.GetStudentSubjectDetailsAsync(
+                    Guid.Parse(subjectId),
+                    Guid.Parse(studentId));
+
+                if (details == null)
+                {
+                    TempData[ErrorMessage] = "Студентът не е намерен в този предмет.";
+                    return RedirectToAction(nameof(Manage), new { id = subjectId });
+                }
+
+                return View(details);
+            }
+            catch (InvalidOperationException)
+            {
+                TempData[ErrorMessage] = "Възникна грешка при зареждането на детайлите за студента.";
+                return RedirectToAction("Subjects", "TeacherSubject");
+            }
+        }
     }
 } 

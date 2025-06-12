@@ -20,8 +20,20 @@ namespace E_PortfolioSystem.Services.Data.Services
                 .Include(s => s.User)
                 .FirstOrDefaultAsync(s => s.Id == studentId);
 
-            var project = await dbContext.Projects
-                .FirstOrDefaultAsync(p => p.UserId == student.UserId && p.Evaluation.SubjectId == subjectId);
+            if (student == null || student.User == null)
+            {
+                throw new InvalidOperationException("Студентът не е намерен.");
+            }
+
+            var subject = await dbContext.Subjects
+                .Include(s => s.Project)
+                    .ThenInclude(p => p!.AttachedDocument)
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
+            {
+                throw new InvalidOperationException("Предметът не е намерен.");
+            }
 
             return new StudentEvaluationViewModel
             {
@@ -29,8 +41,8 @@ namespace E_PortfolioSystem.Services.Data.Services
                 SubjectId = subjectId.ToString(),
                 StudentName = student.User.FirstName + " " + student.User.LastName,
                 FacultyNumber = student.FacultyNumber,
-                ProjectTitle = project?.Title ?? "Няма проект",
-                AttachedDocumentUrl = project?.AttachedDocument?.FileLocation
+                ProjectTitle = subject.Project?.Title,
+                AttachedDocumentUrl = subject.Project?.AttachedDocument?.FileLocation
             };
         }
 

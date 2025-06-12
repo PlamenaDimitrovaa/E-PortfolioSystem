@@ -2,6 +2,7 @@
 using E_PortfolioSystem.Data.Models;
 using E_PortfolioSystem.Services.Data.Interfaces;
 using E_PortfolioSystem.Web.ViewModels.Subject;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_PortfolioSystem.Services.Data.Services
@@ -9,10 +10,12 @@ namespace E_PortfolioSystem.Services.Data.Services
     public class SubjectService : ISubjectService
     {
         private readonly EPortfolioDbContext dbContext;
+        private readonly IAttachedDocumentService attachedDocumentService;
 
-        public SubjectService(EPortfolioDbContext dbContext)
+        public SubjectService(EPortfolioDbContext dbContext, IAttachedDocumentService attachedDocumentService)
         {
             this.dbContext = dbContext;
+            this.attachedDocumentService = attachedDocumentService;
         }
 
         public async Task<IEnumerable<SubjectViewModel>> GetSubjectsByStudentAsync(string studentId)
@@ -206,15 +209,122 @@ namespace E_PortfolioSystem.Services.Data.Services
 
         public async Task<IEnumerable<SubjectViewModel>> GetSubjectsByTeacherAndStudentAsync(Guid teacherId, Guid studentId)
         {
-            return await dbContext.StudentsSubjects
-                .Where(ss => ss.StudentId == studentId && ss.Subject.TeacherId == teacherId)
-                .Select(ss => new SubjectViewModel
+            return await dbContext.Subjects
+                .Where(s => s.TeacherId == teacherId)
+                .Select(s => new SubjectViewModel
                 {
-                    Id = ss.Subject.Id.ToString(),
-                    Name = ss.Subject.Name,
-                    TeacherFullName = ss.Subject.Teacher.User.FirstName + " " + ss.Subject.Teacher.User.LastName
+                    Id = s.Id.ToString(),
+                    Name = s.Name,
+                    TeacherFullName = s.Teacher.User.FirstName + " " + s.Teacher.User.LastName
                 })
                 .ToListAsync();
+        }
+
+        public async Task AddProjectToSubjectAsync(SubjectProjectFormModel model, string userId)
+        {
+            var project = new Project
+            {
+                UserId = Guid.Parse(userId),
+                Title = model.Title,
+                Description = model.Description,
+                Link = model.Link,
+                CreatedAt = DateTime.UtcNow,
+                IsApproved = true // Автоматично одобряваме проекта, тъй като е към предмет
+            };
+
+            if (model.AttachedFile != null)
+            {
+                var document = await attachedDocumentService.SaveDocumentAsync(
+                    model.AttachedFile,
+                    "Проект",
+                    "Прикачен файл към проект");
+
+                project.AttachedDocumentId = document.Id;
+            }
+
+            var subject = await dbContext.Subjects.FindAsync(Guid.Parse(model.SubjectId));
+            if (subject == null)
+            {
+                throw new ArgumentException("Предметът не е намерен.");
+            }
+
+            subject.ProjectId = project.Id;
+            await dbContext.Projects.AddAsync(project);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<TeacherSubjectDetailsViewModel?> GetTeacherSubjectDetailsAsync(Guid subjectId)
+        {
+            var subject = await dbContext.Subjects
+                .Include(s => s.Teacher)
+                    .ThenInclude(t => t.User)
+                .Include(s => s.StudentSubjects)
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null || subject.Teacher == null || subject.Teacher.User == null)
+            {
+                return null;
+            }
+
+            return new TeacherSubjectDetailsViewModel
+            {
+                Id = subject.Id.ToString(),
+                Name = subject.Name,
+                IsAdmitted = subject.IsAdmitted,
+                TeacherName = subject.Teacher.User.FirstName + " " + subject.Teacher.User.LastName,
+                EnrolledStudentsCount = subject.StudentSubjects.Count
+            };
+        }
+
+        public async Task<StudentSubjectDetailsViewModel?> GetStudentSubjectDetailsAsync(Guid subjectId, Guid studentId)
+        {
+            var subject = await dbContext.Subjects
+                .Include(s => s.StudentSubjects)
+                .Include(s => s.Project)
+                    .ThenInclude(p => p!.AttachedDocument)
+                .Include(s => s.Evaluation)
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
+            {
+                return null;
+            }
+
+            var studentSubject = subject.StudentSubjects
+                .FirstOrDefault(ss => ss.StudentId == studentId);
+
+            if (studentSubject == null)
+            {
+                return null;
+            }
+
+            var student = await dbContext.Students
+                .Include(s => s.User)
+                .FirstOrDefaultAsync(s => s.Id == studentId);
+
+            if (student == null || student.User == null)
+            {
+                return null;
+            }
+
+            return new StudentSubjectDetailsViewModel
+            {
+                StudentId = student.Id.ToString(),
+                StudentName = $"{student.User.FirstName} {student.User.LastName}",
+                SubjectId = subject.Id.ToString(),
+                SubjectName = subject.Name,
+                EnrolledOn = studentSubject.EnrolledOn,
+                ProjectTitle = subject.Project?.Title,
+                ProjectDescription = subject.Project?.Description,
+                ProjectLink = subject.Project?.Link,
+                DocumentFileName = subject.Project?.AttachedDocument?.FileName,
+                DocumentFilePath = subject.Project?.AttachedDocument?.FileLocation,
+                SubjectGrade = subject.Evaluation?.SubjectGrade,
+                ProjectGrade = subject.Evaluation?.ProjectGrade,
+                Feedback = subject.Evaluation?.Feedback,
+                EvaluationType = subject.Evaluation?.EvaluationType,
+                EvaluationDate = subject.Evaluation?.CreatedAt
+            };
         }
     }
 }
