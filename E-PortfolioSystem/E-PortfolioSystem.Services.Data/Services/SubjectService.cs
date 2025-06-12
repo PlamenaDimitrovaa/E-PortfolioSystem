@@ -11,11 +11,13 @@ namespace E_PortfolioSystem.Services.Data.Services
     {
         private readonly EPortfolioDbContext dbContext;
         private readonly IAttachedDocumentService attachedDocumentService;
+        private readonly INotificationService notificationService;
 
-        public SubjectService(EPortfolioDbContext dbContext, IAttachedDocumentService attachedDocumentService)
+        public SubjectService(EPortfolioDbContext dbContext, IAttachedDocumentService attachedDocumentService, INotificationService notificationService)
         {
             this.dbContext = dbContext;
             this.attachedDocumentService = attachedDocumentService;
+            this.notificationService = notificationService;
         }
 
         public async Task<IEnumerable<SubjectViewModel>> GetSubjectsByStudentAsync(string studentId)
@@ -37,9 +39,6 @@ namespace E_PortfolioSystem.Services.Data.Services
             var subject = await dbContext.Subjects
                 .Include(s => s.Teacher)
                     .ThenInclude(t => t.User)
-                .Include(s => s.Evaluation)
-                .Include(s => s.Project)
-                    .ThenInclude(p => p!.AttachedDocument)
                 .Include(s => s.StudentSubjects)
                 .FirstOrDefaultAsync(s => s.Id == subjectId);
 
@@ -48,9 +47,18 @@ namespace E_PortfolioSystem.Services.Data.Services
                 return null;
             }
 
-            var enrolledOn = subject.StudentSubjects
-                .FirstOrDefault(ss => ss.StudentId == studentId)?.EnrolledOn;
-
+            var studentSubject = subject.StudentSubjects.FirstOrDefault(ss => ss.StudentId == studentId);
+            var enrolledOn = studentSubject?.EnrolledOn;
+            Project? studentProject = null;
+            Evaluation? evaluation = null;
+            if (studentSubject?.ProjectId != null)
+            {
+                studentProject = await dbContext.Projects.Include(p => p.AttachedDocument).FirstOrDefaultAsync(p => p.Id == studentSubject.ProjectId);
+            }
+            if (studentSubject?.EvaluationId != null)
+            {
+                evaluation = await dbContext.Evaluations.FirstOrDefaultAsync(e => e.Id == studentSubject.EvaluationId);
+            }
             var vm = new SubjectDetailsViewModel
             {
                 Id = subject.Id.ToString(),
@@ -58,21 +66,18 @@ namespace E_PortfolioSystem.Services.Data.Services
                 IsAdmitted = subject.IsAdmitted,
                 TeacherName = subject.Teacher.User.FirstName + " " + subject.Teacher.User.LastName,
                 EnrolledOn = enrolledOn,
-
-                SubjectGrade = subject.Evaluation?.SubjectGrade,
-                ProjectGrade = subject.Evaluation?.ProjectGrade,
-                Feedback = subject.Evaluation?.Feedback,
-                EvaluationType = subject.Evaluation?.EvaluationType,
-                EvaluationDate = subject.Evaluation?.CreatedAt,
-
-                ProjectTitle = subject.Project?.Title,
-                ProjectDescription = subject.Project?.Description,
-                ProjectLink = subject.Project?.Link,
-                DocumentFilePath = subject.Project?.AttachedDocument?.FileLocation,
-                DocumentFileName = subject.Project?.AttachedDocument?.FileName,
-                DocumentId = subject.Project?.AttachedDocument?.Id.ToString()
+                SubjectGrade = evaluation?.SubjectGrade,
+                ProjectGrade = evaluation?.ProjectGrade,
+                Feedback = evaluation?.Feedback,
+                EvaluationType = evaluation?.EvaluationType,
+                EvaluationDate = evaluation?.CreatedAt,
+                ProjectTitle = studentProject?.Title,
+                ProjectDescription = studentProject?.Description,
+                ProjectLink = studentProject?.Link,
+                DocumentFilePath = studentProject?.AttachedDocument?.FileLocation,
+                DocumentFileName = studentProject?.AttachedDocument?.FileName,
+                DocumentId = studentProject?.AttachedDocument?.Id.ToString()
             };
-
             return vm;
         }
 
@@ -220,8 +225,33 @@ namespace E_PortfolioSystem.Services.Data.Services
                 .ToListAsync();
         }
 
-        public async Task AddProjectToSubjectAsync(SubjectProjectFormModel model, string userId)
+        private async Task<Guid> GetStudentIdByUserIdAsync(string userId)
         {
+            var student = await dbContext.Students
+                .FirstOrDefaultAsync(s => s.UserId.ToString() == userId);
+
+            if (student == null)
+            {
+                throw new InvalidOperationException("Студентът не е намерен.");
+            }
+
+            return student.Id;
+        }
+
+        public async Task<bool> AddProjectToSubjectAsync(Guid subjectId, SubjectProjectFormModel model, string userId)
+        {
+            var subject = await dbContext.Subjects.Include(s => s.Teacher).ThenInclude(t => t.User).FirstOrDefaultAsync(s => s.Id == subjectId);
+            if (subject == null)
+                throw new InvalidOperationException("Предметът не е намерен.");
+            if (subject.Teacher == null)
+                throw new InvalidOperationException("Няма преподавател за този предмет.");
+            if (subject.Teacher.User == null)
+                throw new InvalidOperationException("Преподавателят няма свързан потребителски профил.");
+
+            var studentId = await GetStudentIdByUserIdAsync(userId);
+            var student = await dbContext.Students.Include(s => s.User).FirstOrDefaultAsync(s => s.Id == studentId);
+
+            // Създай проекта
             var project = new Project
             {
                 UserId = Guid.Parse(userId),
@@ -229,28 +259,35 @@ namespace E_PortfolioSystem.Services.Data.Services
                 Description = model.Description,
                 Link = model.Link,
                 CreatedAt = DateTime.UtcNow,
-                IsApproved = true // Автоматично одобряваме проекта, тъй като е към предмет
+                IsApproved = true
             };
-
             if (model.AttachedFile != null)
             {
                 var document = await attachedDocumentService.SaveDocumentAsync(
                     model.AttachedFile,
                     "Проект",
                     "Прикачен файл към проект");
-
                 project.AttachedDocumentId = document.Id;
             }
+            dbContext.Projects.Add(project);
+            await dbContext.SaveChangesAsync();
 
-            var subject = await dbContext.Subjects.FindAsync(Guid.Parse(model.SubjectId));
-            if (subject == null)
+            // Запиши ProjectId в StudentSubject
+            var studentSubject = await dbContext.StudentsSubjects.FirstOrDefaultAsync(ss => ss.StudentId == studentId && ss.SubjectId == subjectId);
+            if (studentSubject != null)
             {
-                throw new ArgumentException("Предметът не е намерен.");
+                studentSubject.ProjectId = project.Id;
+                await dbContext.SaveChangesAsync();
             }
 
-            subject.ProjectId = project.Id;
-            await dbContext.Projects.AddAsync(project);
-            await dbContext.SaveChangesAsync();
+            // Изпрати Notification на преподавателя
+            if (subject.Teacher != null && subject.Teacher.User != null && student?.User != null)
+            {
+                string title = $"Нов проект по предмет: {subject.Name}";
+                string content = $"Студент {student.User.FirstName} {student.User.LastName} добави нов проект по предмет {subject.Name}.";
+                await notificationService.CreateNotificationAsync(subject.Teacher.UserId, title, content);
+            }
+            return true;
         }
 
         public async Task<TeacherSubjectDetailsViewModel?> GetTeacherSubjectDetailsAsync(Guid subjectId)
@@ -280,9 +317,6 @@ namespace E_PortfolioSystem.Services.Data.Services
         {
             var subject = await dbContext.Subjects
                 .Include(s => s.StudentSubjects)
-                .Include(s => s.Project)
-                    .ThenInclude(p => p!.AttachedDocument)
-                .Include(s => s.Evaluation)
                 .FirstOrDefaultAsync(s => s.Id == subjectId);
 
             if (subject == null)
@@ -307,6 +341,22 @@ namespace E_PortfolioSystem.Services.Data.Services
                 return null;
             }
 
+            // Вземи проекта на студента за този предмет
+            Project? studentProject = null;
+            if (studentSubject.ProjectId != null)
+            {
+                studentProject = await dbContext.Projects
+                    .Include(p => p.AttachedDocument)
+                    .FirstOrDefaultAsync(p => p.Id == studentSubject.ProjectId);
+            }
+
+            // Вземи индивидуалната оценка за този студент и предмет
+            Evaluation? evaluation = null;
+            if (studentSubject.EvaluationId != null)
+            {
+                evaluation = await dbContext.Evaluations.FirstOrDefaultAsync(e => e.Id == studentSubject.EvaluationId);
+            }
+
             return new StudentSubjectDetailsViewModel
             {
                 StudentId = student.Id.ToString(),
@@ -314,17 +364,26 @@ namespace E_PortfolioSystem.Services.Data.Services
                 SubjectId = subject.Id.ToString(),
                 SubjectName = subject.Name,
                 EnrolledOn = studentSubject.EnrolledOn,
-                ProjectTitle = subject.Project?.Title,
-                ProjectDescription = subject.Project?.Description,
-                ProjectLink = subject.Project?.Link,
-                DocumentFileName = subject.Project?.AttachedDocument?.FileName,
-                DocumentFilePath = subject.Project?.AttachedDocument?.FileLocation,
-                SubjectGrade = subject.Evaluation?.SubjectGrade,
-                ProjectGrade = subject.Evaluation?.ProjectGrade,
-                Feedback = subject.Evaluation?.Feedback,
-                EvaluationType = subject.Evaluation?.EvaluationType,
-                EvaluationDate = subject.Evaluation?.CreatedAt
+                ProjectTitle = studentProject?.Title,
+                ProjectDescription = studentProject?.Description,
+                ProjectLink = studentProject?.Link,
+                DocumentFileName = studentProject?.AttachedDocument?.FileName,
+                DocumentFilePath = studentProject?.AttachedDocument?.FileLocation,
+                SubjectGrade = evaluation?.SubjectGrade,
+                ProjectGrade = evaluation?.ProjectGrade,
+                Feedback = evaluation?.Feedback,
+                EvaluationType = evaluation?.EvaluationType,
+                EvaluationDate = evaluation?.CreatedAt
             };
+        }
+
+        public async Task AddProjectToSubjectAsync(SubjectProjectFormModel model, string userId)
+        {
+            if (!Guid.TryParse(model.SubjectId, out var subjectId))
+            {
+                throw new ArgumentException("SubjectId is invalid.");
+            }
+            await AddProjectToSubjectAsync(subjectId, model, userId);
         }
     }
 }

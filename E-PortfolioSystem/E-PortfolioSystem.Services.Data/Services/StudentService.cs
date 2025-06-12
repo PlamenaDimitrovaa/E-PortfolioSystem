@@ -9,10 +9,12 @@ namespace E_PortfolioSystem.Services.Data.Services
     public class StudentService : IStudentService
     {
         private readonly EPortfolioDbContext dbContext;
+        private readonly INotificationService notificationService;
 
-        public StudentService(EPortfolioDbContext dbContext)
+        public StudentService(EPortfolioDbContext dbContext, INotificationService notificationService)
         {
             this.dbContext = dbContext;
+            this.notificationService = notificationService;
         }
 
         public async Task<string> GetStudentIdByUserIdAsync(string userId)
@@ -80,6 +82,16 @@ namespace E_PortfolioSystem.Services.Data.Services
 
             await dbContext.StudentsSubjects.AddAsync(studentSubject);
             await dbContext.SaveChangesAsync();
+
+            // Изпрати Notification на студента
+            var student = await dbContext.Students.Include(s => s.User).FirstOrDefaultAsync(s => s.Id == studentSubject.StudentId);
+            var subject = await dbContext.Subjects.FirstOrDefaultAsync(s => s.Id == studentSubject.SubjectId);
+            if (student != null && subject != null)
+            {
+                string title = $"Записване в предмет: {subject.Name}";
+                string content = $"Вие бяхте успешно записан(а) в предмет {subject.Name}.";
+                await notificationService.CreateNotificationAsync(student.UserId, title, content);
+            }
         }
 
         public async Task RemoveStudentFromSubjectAsync(string studentId, string subjectId)
@@ -91,8 +103,20 @@ namespace E_PortfolioSystem.Services.Data.Services
 
             if (studentSubject != null)
             {
+                // Вземи студента и предмета за нотификация
+                var student = await dbContext.Students.Include(s => s.User).FirstOrDefaultAsync(s => s.Id == studentSubject.StudentId);
+                var subject = await dbContext.Subjects.FirstOrDefaultAsync(s => s.Id == studentSubject.SubjectId);
+
                 dbContext.StudentsSubjects.Remove(studentSubject);
                 await dbContext.SaveChangesAsync();
+
+                // Изпрати Notification на студента
+                if (student != null && subject != null)
+                {
+                    string title = $"Отписване от предмет: {subject.Name}";
+                    string content = $"Вие бяхте отписан(а) от предмет {subject.Name}.";
+                    await notificationService.CreateNotificationAsync(student.UserId, title, content);
+                }
             }
         }
 

@@ -11,5 +11,9 @@
         public Subject Subject { get; set; } = null!;
 
         public DateTime? EnrolledOn { get; set; }
+
+        public Guid? ProjectId { get; set; }
+
+        public Guid? EvaluationId { get; set; }
     }
 }

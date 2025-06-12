@@ -9,10 +9,12 @@ namespace E_PortfolioSystem.Services.Data.Services
     public class EvaluationService : IEvaluationService
     {
         private readonly EPortfolioDbContext dbContext;
+        private readonly INotificationService notificationService;
 
-        public EvaluationService(EPortfolioDbContext dbContext)
+        public EvaluationService(EPortfolioDbContext dbContext, INotificationService notificationService)
         {
             this.dbContext = dbContext;
+            this.notificationService = notificationService;
         }
         public async Task<StudentEvaluationViewModel> GetEvaluationFormAsync(Guid subjectId, Guid studentId)
         {
@@ -25,14 +27,16 @@ namespace E_PortfolioSystem.Services.Data.Services
                 throw new InvalidOperationException("Студентът не е намерен.");
             }
 
-            var subject = await dbContext.Subjects
-                .Include(s => s.Project)
-                    .ThenInclude(p => p!.AttachedDocument)
-                .FirstOrDefaultAsync(s => s.Id == subjectId);
+            // Вземи StudentSubject и ProjectId
+            var studentSubject = await dbContext.StudentsSubjects
+                .FirstOrDefaultAsync(ss => ss.StudentId == studentId && ss.SubjectId == subjectId);
 
-            if (subject == null)
+            Project? studentProject = null;
+            if (studentSubject?.ProjectId != null)
             {
-                throw new InvalidOperationException("Предметът не е намерен.");
+                studentProject = await dbContext.Projects
+                    .Include(p => p.AttachedDocument)
+                    .FirstOrDefaultAsync(p => p.Id == studentSubject.ProjectId);
             }
 
             return new StudentEvaluationViewModel
@@ -41,43 +45,67 @@ namespace E_PortfolioSystem.Services.Data.Services
                 SubjectId = subjectId.ToString(),
                 StudentName = student.User.FirstName + " " + student.User.LastName,
                 FacultyNumber = student.FacultyNumber,
-                ProjectTitle = subject.Project?.Title,
-                AttachedDocumentUrl = subject.Project?.AttachedDocument?.FileLocation
+                ProjectTitle = studentProject?.Title,
+                AttachedDocumentUrl = studentProject?.AttachedDocument?.FileLocation
             };
+        }
+
+        private async Task<Guid> GetStudentUserIdAsync(Guid studentId)
+        {
+            var student = await dbContext.Students
+                .FirstOrDefaultAsync(s => s.Id == studentId);
+
+            if (student == null)
+            {
+                throw new InvalidOperationException("Студентът не е намерен.");
+            }
+
+            return student.UserId;
         }
 
         public async Task SubmitEvaluationAsync(StudentEvaluationViewModel model, Guid teacherId)
         {
+            var subjectId = Guid.Parse(model.SubjectId);
+            var studentId = Guid.Parse(model.StudentId);
+
+            // Вземи StudentSubject
+            var studentSubject = await dbContext.StudentsSubjects.FirstOrDefaultAsync(ss => ss.StudentId == studentId && ss.SubjectId == subjectId);
+            if (studentSubject == null || studentSubject.ProjectId == null)
+            {
+                throw new InvalidOperationException("Няма проект за този студент по този предмет.");
+            }
+            var project = await dbContext.Projects.FirstOrDefaultAsync(p => p.Id == studentSubject.ProjectId);
+            if (project == null)
+            {
+                throw new InvalidOperationException("Проектът не е намерен.");
+            }
             var evaluation = new Evaluation
             {
                 Id = Guid.NewGuid(),
                 TeacherId = teacherId,
-                SubjectId = Guid.Parse(model.SubjectId),
+                SubjectId = subjectId,
+                ProjectId = project.Id,
                 SubjectGrade = model.SubjectGrade,
                 ProjectGrade = model.ProjectGrade,
                 Feedback = model.Feedback,
                 EvaluationType = model.EvaluationType,
                 CreatedAt = DateTime.UtcNow
             };
-
-            var subject = await dbContext.Subjects.FirstAsync(s => s.Id.ToString() == model.SubjectId);
-            var student = await dbContext.Students
-                .Include(s => s.Projects)
-                .FirstAsync(s => s.Id.ToString() == model.StudentId);
-            var project = student.Projects.FirstOrDefault(p => p.Evaluation?.SubjectId == subject.Id);
-
-            if (project != null)
-            {
-                project.Evaluation = evaluation;
-                project.EvaluationId = evaluation.Id;
-                evaluation.ProjectId = project.Id;
-            }
-
-            subject.Evaluation = evaluation;
-            subject.EvaluationId = evaluation.Id;
-
             dbContext.Evaluations.Add(evaluation);
+            project.EvaluationId = evaluation.Id;
+            // Запиши EvaluationId в StudentSubject
+            studentSubject.EvaluationId = evaluation.Id;
             await dbContext.SaveChangesAsync();
+
+            // Изпрати Notification на студента
+            var student = await dbContext.Students.Include(s => s.User).FirstOrDefaultAsync(s => s.Id == studentId);
+            var subject = await dbContext.Subjects.FirstOrDefaultAsync(s => s.Id == subjectId);
+            if (student != null && subject != null)
+            {
+                string title = $"Оценка по предмет: {subject.Name}";
+                string content = $"Получихте нова оценка по предмет {subject.Name}.";
+                await notificationService.CreateNotificationAsync(student.UserId, title, content);
+            }
         }
     }
 }

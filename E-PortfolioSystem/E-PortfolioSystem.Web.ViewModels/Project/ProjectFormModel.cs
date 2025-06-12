@@ -25,5 +25,7 @@ namespace E_PortfolioSystem.Web.ViewModels.Project
         public string? DocumentType { get; set; }
 
         public string? DocumentDescription { get; set; }
+
+        public Guid StudentId { get; set; }
     }
 }

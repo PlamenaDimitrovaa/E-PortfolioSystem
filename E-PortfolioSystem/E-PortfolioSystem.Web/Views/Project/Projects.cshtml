@@ -24,23 +24,21 @@
                 {
                     @foreach (var project in Model)
                     {
-                        <div class="card overflow-hidden shadow rounded-4 border-0 mb-5">
-                            <div class="card-body p-0">
-                                <div class="d-flex align-items-center">
-                                    <div class="p-5">
+                        <div class="card overflow-hidden shadow rounded-4 border-0 mb-5" style="height: 260px;">
+                            <div class="card-body p-0 h-100">
+                                <div class="row h-100 align-items-center g-0">
+                                    <div class="col-auto" style="width: 250px;">
+                                        <img src="@(string.IsNullOrEmpty(project.ImageUrl) ? "https://dummyimage.com/600x600/343a40/6c757d" : project.ImageUrl)"
+                                             class="img-fluid rounded h-100 w-100"
+                                             style="object-fit: cover; height: 100%; width: 100%;" alt="Project image" />
+                                    </div>
+                                    <div class="col ps-4">
                                         <h2 class="fw-bolder">@project.Title</h2>
                                         <p>@project.Description</p>
+                                        <a class="btn btn-outline-primary mt-3" asp-controller="Project" asp-action="Details" asp-route-id="@project.Id">
+                                            <i class="bi bi-info-circle"></i> Детайли
+                                        </a>
                                     </div>
-                                    <div class="ratio ratio-1x1" style="width: 350px;">
-                                        <img src="@(string.IsNullOrEmpty(project.ImageUrl) ? "https://dummyimage.com/600x600/343a40/6c757d" : project.ImageUrl)"
-                                             class="img-fluid rounded object-fit-cover"
-                                             alt="Project image" />
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-center px-4 pb-4 mt-3">
-                                    <a class="btn btn-outline-primary" asp-controller="Project" asp-action="Details" asp-route-id="@project.Id">
-                                        <i class="bi bi-info-circle"></i> Детайли
-                                    </a>
                                 </div>
                             </div>
                         </div>

@@ -11,5 +11,7 @@ namespace E_PortfolioSystem.Services.Data.Interfaces
         Task MarkNotificationAsReadAsync(Guid notificationId);
         
         Task<int> GetUnreadNotificationsCountAsync(Guid userId);
+        
+        Task CreateNotificationAsync(Guid userId, string title, string content);
     }
 }

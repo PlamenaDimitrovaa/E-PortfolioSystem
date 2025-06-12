@@ -45,20 +45,19 @@ namespace E_PortfolioSystem.Services.Data.Services
 
         public async Task<IEnumerable<ProjectFormModel>> GetAllByUserIdAsync(Guid userId)
         {
-            return await dbContext
-            .Projects
-            .Where(p => p.UserId == userId)
-            .OrderByDescending(p => p.CreatedAt)
-            .Select(p => new ProjectFormModel
-            {
-                Id = p.Id.ToString(),
-                Title = p.Title,
-                Description = p.Description,
-                ImageUrl = p.ImageUrl,
-                Link = p.Link,
-                CreatedAt = p.CreatedAt
-            })
-            .ToListAsync();
+            return await dbContext.Projects
+                .Where(p => p.UserId == userId && p.ImageUrl != null && p.ImageUrl != "")
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new ProjectFormModel
+                {
+                    Id = p.Id.ToString(),
+                    Title = p.Title,
+                    Description = p.Description,
+                    ImageUrl = p.ImageUrl,
+                    Link = p.Link,
+                    CreatedAt = p.CreatedAt
+                })
+                .ToListAsync();
         }
 
         public async Task<ProjectDetailsViewModel?> GetByIdAsync(Guid id)

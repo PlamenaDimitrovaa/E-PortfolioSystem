@@ -25,6 +25,13 @@
                         <div class="list-group">
                             @foreach (var user in Model)
                             {
+                                string roleBg = user.UserRole switch
+                                {
+                                    "Student" => "Студент",
+                                    "Teacher" => "Учител",
+                                    "HR" => "HR Специалист",
+                                    _ => user.UserRole
+                                };
                                 <a href="@Url.Action("Chat", new { userId = user.UserId })" 
                                    class="list-group-item list-group-item-action @(user.UnreadMessagesCount > 0 ? "fw-bold" : "")">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -32,7 +39,7 @@
                                             <h6 class="mb-1">@user.UserName</h6>
                                             @if (!string.IsNullOrEmpty(user.UserRole))
                                             {
-                                                <small class="text-muted">@user.UserRole</small>
+                                                <small class="text-muted">@roleBg</small>
                                             }
                                         </div>
                                         <div class="text-end">

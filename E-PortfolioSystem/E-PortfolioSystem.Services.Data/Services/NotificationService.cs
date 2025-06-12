@@ -17,18 +17,33 @@ namespace E_PortfolioSystem.Services.Data.Services
 
         public async Task<IEnumerable<NotificationViewModel>> GetUnreadNotificationsAsync(Guid userId)
         {
-            return await _dbContext.Notifications
+            var notifications = await _dbContext.Notifications
                 .Where(n => n.UserId == userId && !n.IsRead)
                 .OrderByDescending(n => n.CreatedAt)
-                .Select(n => new NotificationViewModel
+                .ToListAsync();
+
+            var result = new List<NotificationViewModel>();
+            foreach (var n in notifications)
+            {
+                DateTime? deadline = null;
+                // Опит за намиране на deadline по subject name
+                var subject = await _dbContext.Subjects.Include(s => s.Project)
+                    .FirstOrDefaultAsync(s => s.Name == n.Title || ("Записване в предмет: " + s.Name) == n.Title);
+                if (subject?.Project?.Deadline != null)
+                {
+                    deadline = subject.Project.Deadline;
+                }
+                result.Add(new NotificationViewModel
                 {
                     Id = n.Id,
                     Message = n.Content,
                     CreatedOn = n.CreatedAt ?? DateTime.UtcNow,
                     IsRead = n.IsRead,
-                    SubjectName = n.Title
-                })
-                .ToListAsync();
+                    SubjectName = n.Title,
+                    ProjectDeadline = deadline
+                });
+            }
+            return result;
         }
 
         public async Task GenerateDeadlineNotificationsAsync()
@@ -91,6 +106,20 @@ namespace E_PortfolioSystem.Services.Data.Services
         {
             return await _dbContext.Notifications
                 .CountAsync(n => n.UserId == userId && !n.IsRead);
+        }
+
+        public async Task CreateNotificationAsync(Guid userId, string title, string content)
+        {
+            var notification = new Notification
+            {
+                UserId = userId,
+                Title = title,
+                Content = content,
+                CreatedAt = DateTime.UtcNow,
+                IsRead = false
+            };
+            await _dbContext.Notifications.AddAsync(notification);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

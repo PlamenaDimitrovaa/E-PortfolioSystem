@@ -14,6 +14,6 @@ namespace E_PortfolioSystem.Web.ViewModels.Notification
 
         public string SubjectName { get; set; } = null!;
 
-        public DateTime ProjectDeadline { get; set; }
+        public DateTime? ProjectDeadline { get; set; }
     }
 } 

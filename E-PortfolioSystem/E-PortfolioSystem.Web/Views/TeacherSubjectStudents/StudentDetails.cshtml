@@ -39,7 +39,7 @@
                 {
                     <p>
                         <strong>Прикачен документ:</strong>
-                        <a href="@Model.DocumentFilePath" target="_blank">@Model.DocumentFileName</a>
+                        <a href="@Url.Content("~/" + Model.DocumentFilePath)" target="_blank">@Model.DocumentFileName</a>
                     </p>
                 }
             </div>

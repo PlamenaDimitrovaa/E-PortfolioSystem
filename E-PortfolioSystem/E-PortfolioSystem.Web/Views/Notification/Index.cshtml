@@ -24,7 +24,10 @@
                         <small>@notification.CreatedOn.ToString("dd.MM.yyyy HH:mm")</small>
                     </div>
                     <p class="mb-1">@notification.Message</p>
-                    <small>Краен срок: @notification.ProjectDeadline.ToString("dd.MM.yyyy")</small>
+                    @if (notification.ProjectDeadline.HasValue)
+                    {
+                        <small>Краен срок: @notification.ProjectDeadline.Value.ToString("dd.MM.yyyy")</small>
+                    }
                     @if (!notification.IsRead)
                     {
                         <button class="btn btn-sm btn-primary mark-as-read float-end" data-id="@notification.Id">
