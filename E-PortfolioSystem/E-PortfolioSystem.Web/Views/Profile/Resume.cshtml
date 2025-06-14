@@ -1,16 +1,20 @@
 ﻿@model E_PortfolioSystem.Web.ViewModels.Profile.ResumeViewModel
 @using static E_PortfolioSystem.Common.GeneralApplicationConstants
+@using E_PortfolioSystem.Web.Infrastructure.Extensions
 
 <div class="container px-5 my-5">
     <div class="text-center mb-5">
         <h1 class="display-5 fw-bolder mb-0"><span class="text-gradient d-inline">@Resume на</span></h1>
         <h1 class="display-5 fw-bolder mb-0"><span class="text-gradient d-inline">@Model.FullName</span></h1>
 
-        <a class="btn btn-primary px-4 py-3 mt-4"
-           asp-controller="Profile"
-           asp-action="DownloadCV">
-            <i class="bi bi-download me-2"></i> @CVDownload
-        </a>
+        @if (User.GetId() == Model.UserId)
+        {
+            <a class="btn btn-primary px-4 py-3 mt-4"
+               asp-controller="Profile"
+               asp-action="DownloadCV">
+                <i class="bi bi-download me-2"></i> @CVDownload
+            </a>
+        }
     </div>
 
     <div class="row gx-5 justify-content-center">
@@ -19,9 +23,12 @@
             <section>
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="text-primary fw-bolder mb-0">@Experience</h2>
-                    <a asp-controller="Experience" asp-action="Add" class="btn btn-outline-success">
-                        Добави
-                    </a>
+                    @if (User.GetId() == Model.UserId)
+                    {
+                        <a asp-controller="Experience" asp-action="Add" class="btn btn-outline-success">
+                            Добави
+                        </a>
+                    }
                 </div>
 
                 @if (Model.Experiences.Any())
@@ -39,7 +46,10 @@
                                             <div class="small fw-bolder">@exp.Profession</div>
                                             <div class="small text-muted">@exp.Company</div>
                                             <div class="small text-muted">@exp.Location</div>
-                                            <a asp-controller="Experience" asp-action="Details" asp-route-id="@exp.Id" class="btn btn-outline-primary mt-2">Детайли</a>
+                                            @if (User.GetId() == Model.UserId)
+                                            {
+                                                <a asp-controller="Experience" asp-action="Details" asp-route-id="@exp.Id" class="btn btn-outline-primary mt-2">Детайли</a>
+                                            }
                                         </div>
                                     </div>
                                     <div class="col-lg-8"><div>@exp.Description</div></div>
@@ -64,9 +74,12 @@
             <section>
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="text-secondary fw-bolder mb-0">Образование</h2>
-                    <a asp-controller="Education" asp-action="Add" class="btn btn-outline-success">
-                        Добави
-                    </a>
+                    @if (User.GetId() == Model.UserId)
+                    {
+                        <a asp-controller="Education" asp-action="Add" class="btn btn-outline-success">
+                            Добави
+                        </a>
+                    }
                 </div>
                 @if (Model.Educations.Any())
                 {
@@ -88,7 +101,10 @@
                                                 <div class="small text-muted">@edu.Degree</div>
                                                 <div class="small text-muted">@edu.Specialty</div>
                                             </div>
-                                            <a asp-controller="Education" asp-action="Details" asp-route-id="@edu.Id" class="btn btn-outline-secondary mt-2">Детайли</a>
+                                            @if (User.GetId() == Model.UserId)
+                                            {
+                                                <a asp-controller="Education" asp-action="Details" asp-route-id="@edu.Id" class="btn btn-outline-secondary mt-2">Детайли</a>
+                                            }
                                         </div>
                                     </div>
                                     <div class="col-lg-8">
@@ -125,9 +141,12 @@
                                         <span class="text-gradient d-inline">Умения</span>
                                     </h3>
                                 </div>
-                                <a asp-controller="Skill" asp-action="Add" class="btn btn-outline-success">
-                                    Добави
-                                </a>
+                                @if (User.GetId() == Model.UserId)
+                                {
+                                    <a asp-controller="Skill" asp-action="Add" class="btn btn-outline-success">
+                                        Добави
+                                    </a>
+                                }
                             </div>
                             <div class="row row-cols-1 row-cols-md-3">
                                 @if (Model.Skills.Any())
@@ -137,7 +156,10 @@
                                         <div class="col mb-4">
                                             <div class="d-flex align-items-center bg-light rounded-4 p-3 h-100">
                                                 @skill.Name (@skill.Level)
-                                                <a asp-controller="Skill" asp-action="Details" asp-route-id="@skill.Id" class="btn btn-sm btn-outline-primary ms-4">Детайли</a>
+                                                @if (User.GetId() == Model.UserId)
+                                                {
+                                                    <a asp-controller="Skill" asp-action="Details" asp-route-id="@skill.Id" class="btn btn-sm btn-outline-primary ms-4">Детайли</a>
+                                                }
                                             </div>
                                         </div>
                                     }
@@ -166,9 +188,12 @@
                                         <span class="text-gradient d-inline">Сертификати</span>
                                     </h3>
                                 </div>
-                                <a asp-controller="Certificate" asp-action="Add" class="btn btn-outline-success">
-                                    Добави
-                                </a>
+                                @if (User.GetId() == Model.UserId)
+                                {
+                                    <a asp-controller="Certificate" asp-action="Add" class="btn btn-outline-success">
+                                        Добави
+                                    </a>
+                                }
                             </div>
 
                             @if (Model.Certificates.Any())
@@ -185,8 +210,10 @@
                                                         </div>
                                                         <div class="small text-muted">Издаден от: @cert.Issuer</div>
                                                         <div class="small text-muted">Дата: @(cert.IssuedDate?.ToString("dd.MM.yyyy") ?? "Неизвестна")</div>
-
-                                                        <a asp-controller="Certificate" asp-action="Details" asp-route-id="@cert.Id" class="btn btn-sm btn-outline-secondary mt-2">Детайли</a>
+                                                        @if (User.GetId() == Model.UserId)
+                                                        {
+                                                            <a asp-controller="Certificate" asp-action="Details" asp-route-id="@cert.Id" class="btn btn-sm btn-outline-secondary mt-2">Детайли</a>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
@@ -202,8 +229,6 @@
                     </div>
                 </div>
             </section>
-
-
         </div>
     </div>
 </div>

@@ -5,6 +5,7 @@
 }
 
 <div class="container mt-4">
+    @Html.AntiForgeryToken()
     <h2>@ViewData["Title"]</h2>
 
     @if (!Model.Any())
@@ -46,11 +47,12 @@
             $('.mark-as-read').click(function () {
                 var button = $(this);
                 var notificationId = button.data('id');
+                var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
                 
                 $.ajax({
                     url: '@Url.Action("MarkAsRead")',
                     type: 'POST',
-                    data: { id: notificationId },
+                    data: { id: notificationId, __RequestVerificationToken: antiForgeryToken },
                     success: function (response) {
                         if (response.success) {
                             button.closest('.notification-item').addClass('read');

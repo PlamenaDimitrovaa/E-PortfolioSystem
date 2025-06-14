@@ -28,5 +28,9 @@ namespace E_PortfolioSystem.Web.ViewModels.HRContact
         [MaxLength(MessageMaxLength)]
         [Display(Name = "Съобщение")]
         public string Message { get; set; } = null!;
+
+        public string ToUserId { get; set; } = null!;
+        
+        public DateTime? SentAt { get; set; }
     }
 }

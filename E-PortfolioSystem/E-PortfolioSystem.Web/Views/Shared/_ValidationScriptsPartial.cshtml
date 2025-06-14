@@ -1,2 +1,14 @@
 ﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $(function () {
+        $("input[type='file']").on('change', function () {
+            var file = this.files[0];
+            if (file && file.size > 2 * 1024 * 1024) { // 2MB
+                alert('Файлът трябва да е под 2MB!');
+                this.value = '';
+            }
+        });
+    });
+</script>

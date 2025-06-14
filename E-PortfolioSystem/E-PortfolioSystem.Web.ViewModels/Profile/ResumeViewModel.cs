@@ -8,6 +8,7 @@ namespace E_PortfolioSystem.Web.ViewModels.Profile
     public class ResumeViewModel
     {
         public string? Id { get; set; }
+        public string UserId { get; set; } = null!;
         public string FullName { get; set; } = null!;
         public string FacultyNumber { get; set; } = null!;
         public string? CvDownloadLink { get; set; }

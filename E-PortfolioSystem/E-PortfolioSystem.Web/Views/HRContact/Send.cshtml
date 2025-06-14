@@ -4,16 +4,21 @@
 <section class="py-5">
     <div class="container px-5">
         <div class="bg-light rounded-4 py-5 px-4 px-md-5">
+            <div class="mb-4">
+                <a asp-controller="HR" asp-action="PublicProfiles" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Назад към профили
+                </a>
+            </div>
             <div class="text-center mb-5">
                 <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3 mb-3"><i class="bi bi-envelope"></i></div>
-                <h1 class="fw-bolder">Свържи се с мен</h1>
-                <p class="lead fw-normal text-muted mb-0">Ако имаш въпроси, не се колебай да ги зададеш!</p>
+                <h1 class="fw-bolder">Свържи се с кандидат</h1>
+                <p class="lead fw-normal text-muted mb-0">Изпратете съобщение до потенциалния кандидат</p>
             </div>
             <div class="row gx-5 justify-content-center">
                 <div class="col-lg-8 col-xl-6">
-
                     <form asp-action="Send" asp-controller="HRContact" method="post">
                         @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ToUserId" value="@Model.ToUserId" />
 
                         <div class="form-floating mb-3">
                             <input asp-for="Name" class="form-control" placeholder="Въведи име..." />
@@ -34,16 +39,15 @@
                         </div>
 
                         <div class="form-floating mb-3">
-                            <textarea asp-for="Message" class="form-control" style="height: 10rem" placeholder="Напиши съобщението си тук..."></textarea>
+                            <textarea asp-for="Message" class="form-control" style="height: 150px" placeholder="Въведете вашето съобщение..."></textarea>
                             <label asp-for="Message"></label>
                             <span asp-validation-for="Message" class="text-danger small"></span>
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">Изпрати</button>
+                            <button class="btn btn-primary btn-lg" type="submit">Изпрати съобщение</button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>

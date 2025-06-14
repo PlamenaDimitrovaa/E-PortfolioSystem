@@ -8,101 +8,144 @@
     ViewData["Title"] = "Начало";
 }
 
-<div class="container px-5">
-    <div class="row gx-5 align-items-center">
-        <div class="col-xxl-5">
-            <div class="text-center text-xxl-start">
-                <div class="badge bg-gradient-primary-to-secondary text-white mb-4">
-                    <div class="text-uppercase">
-                        @if (User.IsInRole(TeacherRoleName))
+@if (User.IsInRole(HRRoleName))
+{
+    <div class="container px-5 py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center mb-5">
+                <h1 class="display-4 fw-bolder mb-3">Добре дошли в HR портала</h1>
+                <p class="lead text-muted">Вашият инструмент за управление на таланти и набиране на персонал</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3 mb-3 p-3">
+                            <i class="bi bi-people-fill fs-1"></i>
+                        </div>
+                        <h3 class="card-title">Публични профили</h3>
+                        <p class="card-text">Разгледайте публичните профили на кандидатите и намерете подходящи таланти за вашата организация.</p>
+                        <a asp-controller="HR" asp-action="PublicProfiles" class="btn btn-primary">Разгледай профили</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3 mb-3 p-3">
+                            <i class="bi bi-star-fill fs-1"></i>
+                        </div>
+                        <h3 class="card-title">Препоръки</h3>
+                        <p class="card-text">Прегледайте и добавяйте препоръки за кандидати, за да помогнете на други HR специалисти.</p>
+                        <a asp-controller="HR" asp-action="PublicProfiles" class="btn btn-primary">Прегледай препоръки</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!User.IsInRole(HRRoleName))
+{
+    <div class="container px-5">
+        <div class="row gx-5 align-items-center">
+            <div class="col-xxl-5">
+                <div class="text-center text-xxl-start">
+                    <div class="badge bg-gradient-primary-to-secondary text-white mb-4">
+                        <div class="text-uppercase">
+                            @if (User.IsInRole(TeacherRoleName))
+                            {
+                                @($"{TeacherCVMaker} · {TeacherProjects} · {TeacherCommunication} · {TeacherUniversity}")
+                            }
+                            else
+                            {
+                                @($"{CVMaker} · {Projects} · {Communication} · {University}")
+                            }
+                        </div>
+                    </div>
+                    <div class="fs-3 fw-light text-muted">
+                        @(User.IsInRole(TeacherRoleName) ? TeacherYourPlaceTo : YourPlaceTo)
+                    </div>
+                    <h1 class="display-3 fw-bolder mb-5">
+                        <span class="text-gradient d-inline">
+                            @(User.IsInRole(TeacherRoleName) ? TeacherPortfolioManagement : EPortfolioManagement)
+                        </span>
+                    </h1>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
+                        @if (User.Identity?.IsAuthenticated ?? false)
                         {
-                            @($"{TeacherCVMaker} · {TeacherProjects} · {TeacherCommunication} · {TeacherUniversity}")
+                            if (User.IsInRole(StudentRoleName))
+                            {
+                                <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="Profile" asp-action="Resume">@Resume</a>
+                                <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="Project" asp-action="Projects">@Projects</a>
+                            }
+                            else if (User.IsInRole(TeacherRoleName))
+                            {
+                                <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="Teacher" asp-action="Subjects">
+                                    <i class="bi bi-book"></i> @TeacherUniversity
+                                </a>
+                                <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="Teacher" asp-action="All">
+                                    <i class="bi bi-people"></i> Студенти
+                                </a>
+                            }
                         }
                         else
                         {
-                            @($"{CVMaker} · {Projects} · {Communication} · {University}")
+                            <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="User" asp-action="Login">@Login</a>
+                            <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="User" asp-action="Register">@Registration</a>
                         }
                     </div>
                 </div>
-                <div class="fs-3 fw-light text-muted">
-                    @(User.IsInRole(TeacherRoleName) ? TeacherYourPlaceTo : YourPlaceTo)
-                </div>
-                <h1 class="display-3 fw-bolder mb-5">
-                    <span class="text-gradient d-inline">
-                        @(User.IsInRole(TeacherRoleName) ? TeacherPortfolioManagement : EPortfolioManagement)
-                    </span>
-                </h1>
-                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
-                    @if (User.Identity?.IsAuthenticated ?? false)
+            </div>
+            <div class="col-xxl-7">
+                <div class="d-flex justify-content-center mt-5 mt-xxl-0">
+                    @if (User.IsInRole(TeacherRoleName))
                     {
-                        if (User.IsInRole(StudentRoleName))
-                        {
-                            <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="Profile" asp-action="Resume">@Resume</a>
-                            <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="Project" asp-action="Projects">@Projects</a>
-                        }
-                        else if (User.IsInRole(TeacherRoleName))
-                        {
-                            <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="Teacher" asp-action="Subjects">
-                                <i class="bi bi-book"></i> @TeacherUniversity
-                            </a>
-                            <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="Teacher" asp-action="All">
-                                <i class="bi bi-people"></i> Студенти
-                            </a>
-                        }
+                        <div class="profile bg-gradient-primary-to-secondary">
+                            <img class="profile-img" src="~/assets/teacher.jpg" alt="..." />
+                        </div>
                     }
                     else
                     {
-                        <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" asp-area="" asp-controller="User" asp-action="Login">@Login</a>
-                        <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" asp-area="" asp-controller="User" asp-action="Register">@Registration</a>
+                        <div class="profile bg-gradient-primary-to-secondary">
+                            <img class="profile-img" src="~/assets/student.jpg" alt="..." />
+                        </div>
                     }
                 </div>
             </div>
         </div>
-        <div class="col-xxl-7">
-            <div class="d-flex justify-content-center mt-5 mt-xxl-0">
-                @if (User.IsInRole(TeacherRoleName))
-                {
-                    <div class="profile bg-gradient-primary-to-secondary">
-                        <img class="profile-img" src="~/assets/teacher.jpg" alt="..." />
-                    </div>
-                }
-                else
-                {
-                    <div class="profile bg-gradient-primary-to-secondary">
-                        <img class="profile-img" src="~/assets/student.jpg" alt="..." />
-                    </div>
-                }
-            </div>
-        </div>
     </div>
-</div>
 
-<section class="bg-light py-5">
-    <div class="container px-5">
-        <div class="row gx-5 justify-content-center">
-            <div class="col-xxl-8">
-                @if (User.IsInRole(StudentRoleName))
-                {
-                    <div class="text-center my-5">
-                        <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">Студент</span></h2>
-                        <p class="lead fw-light mb-4">Добре дошъл в твоя дигитален свят на постижения!</p>
-                        <p class="text-muted">
-                            Управлявай своето електронно портфолио с лекота.
-                            Добавяй проекти, умения, сертификати и документи, за да представиш най-доброто от себе си пред преподаватели и бъдещи работодатели.
-                        </p>
-                    </div>
-                }
-                else if (User.IsInRole(TeacherRoleName))
-                {
-                    <div class="text-center my-5">
-                        <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">Преподавател</span></h2>
-                        <p class="lead fw-light mb-4">Подкрепи развитието на своите студенти чрез персонализирана обратна връзка.</p>
-                        <p class="text-muted">
-                            Преглеждай и оценявай студентски портфолиа, следи напредъка и помагай в изграждането на реални компетентности.
-                        </p>
-                    </div>
-                }
+    <section class="bg-light py-5">
+        <div class="container px-5">
+            <div class="row gx-5 justify-content-center">
+                <div class="col-xxl-8">
+                    @if (User.IsInRole(StudentRoleName))
+                    {
+                        <div class="text-center my-5">
+                            <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">Студент</span></h2>
+                            <p class="lead fw-light mb-4">Добре дошъл в твоя дигитален свят на постижения!</p>
+                            <p class="text-muted">
+                                Управлявай своето електронно портфолио с лекота.
+                                Добавяй проекти, умения, сертификати и документи, за да представиш най-доброто от себе си пред преподаватели и бъдещи работодатели.
+                            </p>
+                        </div>
+                    }
+                    else if (User.IsInRole(TeacherRoleName))
+                    {
+                        <div class="text-center my-5">
+                            <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">Преподавател</span></h2>
+                            <p class="lead fw-light mb-4">Подкрепи развитието на своите студенти чрез персонализирана обратна връзка.</p>
+                            <p class="text-muted">
+                                Преглеждай и оценявай студентски портфолиа, следи напредъка и помагай в изграждането на реални компетентности.
+                            </p>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+}

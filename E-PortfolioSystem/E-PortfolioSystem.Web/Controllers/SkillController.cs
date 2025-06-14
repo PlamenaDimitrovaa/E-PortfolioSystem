@@ -103,6 +103,7 @@ namespace E_PortfolioSystem.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(SkillEditViewModel model)
         {
             if (!ModelState.IsValid)
@@ -132,6 +133,7 @@ namespace E_PortfolioSystem.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
             try

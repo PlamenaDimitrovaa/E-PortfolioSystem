@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Добави препоръка";
+    var toUserId = ViewBag.ToUserId as string;
+}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="mb-4"><i class="bi bi-star"></i> Добави препоръка</h3>
+                    <form asp-action="AddRecommendation" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="toUserId" value="@toUserId" />
+                        <div class="mb-3">
+                            <label for="text" class="form-label">Текст на препоръката</label>
+                            <textarea name="text" class="form-control" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100"><i class="bi bi-check-circle"></i> Запази</button>
+                        <a asp-action="Recommendations" asp-route-userId="@toUserId" class="btn btn-link w-100 mt-2">Назад към препоръките</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

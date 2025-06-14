@@ -13,5 +13,9 @@ namespace E_PortfolioSystem.Services.Data.Interfaces
         Task<int> GetUnreadNotificationsCountAsync(Guid userId);
         
         Task CreateNotificationAsync(Guid userId, string title, string content);
+
+        // Добавени методи за HR контакти
+        Task CreateHRContactNotificationAsync(Guid userId, Guid hrContactId);
+        Task<IEnumerable<NotificationViewModel>> GetHRContactNotificationsAsync(Guid userId);
     }
 }

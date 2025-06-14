@@ -17,8 +17,16 @@
                         <input type="hidden" asp-for="ImageUrl" />
 
                         <div class="text-center mb-4">
-                            <img src="@Model.ImageUrl" alt="@Model.FullName"
-                                 class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="@Url.Content(Model.ImageUrl)" alt="@Model.FullName"
+                                     class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <img src="@Url.Content("~/assets/profile.png")" alt="@Model.FullName"
+                                     class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                            }
                             <div class="mb-3">
                                 <label class="form-label">Промени снимка</label>
                                 <input type="file" name="imageFile" class="form-control" accept="image/*">

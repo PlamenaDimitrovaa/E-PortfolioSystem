@@ -32,6 +32,7 @@ namespace E_PortfolioSystem.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterFormModel model)
         {
             if (!ModelState.IsValid)
@@ -82,6 +83,7 @@ namespace E_PortfolioSystem.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginFormModel model)
         {
             if (!ModelState.IsValid)

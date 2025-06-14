@@ -19,6 +19,7 @@ namespace E_PortfolioSystem.Services.Data.Services
         {
             var profile = await dbContext.Profiles
                 .FirstOrDefaultAsync(p => p.UserId.ToString() == id);
+            var student = await dbContext.Students.FirstOrDefaultAsync(s => s.UserId.ToString() == id);
 
             if (profile == null)
             {
@@ -75,6 +76,64 @@ namespace E_PortfolioSystem.Services.Data.Services
 
                 await dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<ProfileViewModel>> GetAllPublicProfilesAsync(string? searchTerm = null, string? location = null, int page = 1, int pageSize = 9)
+        {
+            var query = dbContext.Profiles
+                .Where(p => p.IsPublic);
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.ToLower();
+                query = query.Where(p => 
+                    p.FullName.ToLower().Contains(searchTerm) || 
+                    p.Bio.ToLower().Contains(searchTerm));
+            }
+
+            if (!string.IsNullOrWhiteSpace(location))
+            {
+                location = location.ToLower();
+                query = query.Where(p => p.Location.ToLower().Contains(location));
+            }
+
+            return await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new ProfileViewModel
+                {
+                    Id = p.Id.ToString(),
+                    UserId = p.UserId.ToString(),
+                    FullName = p.FullName,
+                    Phone = p.Phone,
+                    Bio = p.Bio,
+                    Location = p.Location,
+                    ImageUrl = p.ImageUrl,
+                    IsPublic = p.IsPublic
+                })
+                .ToListAsync();
+        }
+
+        public async Task<int> GetTotalPublicProfilesCountAsync(string? searchTerm = null, string? location = null)
+        {
+            var query = dbContext.Profiles
+                .Where(p => p.IsPublic);
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.ToLower();
+                query = query.Where(p => 
+                    p.FullName.ToLower().Contains(searchTerm) || 
+                    p.Bio.ToLower().Contains(searchTerm));
+            }
+
+            if (!string.IsNullOrWhiteSpace(location))
+            {
+                location = location.ToLower();
+                query = query.Where(p => p.Location.ToLower().Contains(location));
+            }
+
+            return await query.CountAsync();
         }
     }
 }

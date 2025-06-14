@@ -24,9 +24,8 @@ namespace E_PortfolioSystem.Web.ViewModels.Profile
         [Display(Name = "За мен")]
         public string Bio { get; set; } = null!;
 
-        [Required(ErrorMessage = "Полето 'Снимка' е задължително.")]
         [Display(Name = "Снимка")]
-        public string ImageUrl { get; set; } = null!;
+        public string? ImageUrl { get; set; }
 
         [Display(Name = "Публичен профил")]
         public bool IsPublic { get; set; }

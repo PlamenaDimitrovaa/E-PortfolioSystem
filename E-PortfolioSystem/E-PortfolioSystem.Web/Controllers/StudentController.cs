@@ -6,6 +6,8 @@ namespace E_PortfolioSystem.Web.Controllers
     [Authorize]
     public class StudentController : Controller
     {
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index()
         {
             return View();

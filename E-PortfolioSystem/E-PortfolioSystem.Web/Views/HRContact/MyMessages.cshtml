@@ -1,0 +1,65 @@
+@model IEnumerable<E_PortfolioSystem.Web.ViewModels.HRContact.HRContactViewModel>
+
+@{
+    ViewData["Title"] = "Моите HR съобщения";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-envelope"></i> Моите HR съобщения</h2>
+        <div>
+            <a asp-controller="HR" asp-action="PublicProfiles" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Назад към профили
+            </a>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Все още нямате получени съобщения от HR специалисти.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var message in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">@message.Name</h5>
+                                <small class="text-muted">@message.SentAt?.ToString("dd.MM.yyyy HH:mm")</small>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <strong><i class="bi bi-envelope"></i> Имейл:</strong>
+                                <p class="mb-0">@message.Email</p>
+                            </div>
+                            <div class="mb-3">
+                                <strong><i class="bi bi-telephone"></i> Телефон:</strong>
+                                <p class="mb-0">@message.PhoneNumber</p>
+                            </div>
+                            <div>
+                                <strong><i class="bi bi-chat-left-text"></i> Съобщение:</strong>
+                                <p class="mb-0">@message.Message</p>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <div class="d-flex justify-content-end">
+                                <a href="mailto:@message.Email" class="btn btn-outline-primary btn-sm me-2">
+                                    <i class="bi bi-envelope"></i> Отговори по имейл
+                                </a>
+                                <a href="tel:@message.PhoneNumber" class="btn btn-outline-success btn-sm">
+                                    <i class="bi bi-telephone"></i> Обади се
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div> 

@@ -10,6 +10,8 @@
     using Microsoft.AspNetCore.Identity;
     using E_PortfolioSystem.Data.Models;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using System.IO;
 
     [Authorize]
     public class ProfileController : Controller
@@ -40,26 +42,28 @@
             this.webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IActionResult> Resume()
+        public async Task<IActionResult> Resume(string? userId = null)
         {
             try
             {
-                var id = this.User.GetId();
+                var id = userId ?? this.User.GetId();
 
                 var profile = await profileService.GetProfileByUserIdAsync(id);
+                if (profile == null || (!profile.IsPublic && userId != null))
+                {
+                    TempData[ErrorMessage] = "Профилът не е публичен или не съществува.";
+                    return RedirectToAction("Index", "Home");
+                }
+
                 var experiences = await experienceService.GetAllByUserIdAsync(id);
                 var skills = await skillService.GetAllByUserIdAsync(id);
                 var education = await educationService.GetAllByUserIdAsync(id);
                 var certificates = await certificateService.GetAllByUserIdAsync(id);
-                if (profile == null)
-                {
-                    TempData[ErrorMessage] = "Възникна грешка при зареждането на резюмето.";
-                    return RedirectToAction("Index", "Home");
-                }
 
                 var model = new ResumeViewModel
                 {
                     Id = profile.Id,
+                    UserId = id,
                     FullName = profile.FullName,
                     Experiences = experiences,
                     Skills = skills,
@@ -171,7 +175,8 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(ProfileViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(ProfileViewModel model, IFormFile? imageFile)
         {
             if (!ModelState.IsValid)
             {
@@ -186,13 +191,45 @@
                 return NotFound();
             }
 
-            var names = model.FullName
-                .Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
+            var names = model.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             user.FirstName = names.Length > 0 ? names[0] : string.Empty;
-            user.LastName = names.Length > 1 ? names[^1] : string.Empty; // Последният елемент
-
+            user.LastName = names.Length > 1 ? names[^1] : string.Empty;
             await userManager.UpdateAsync(user);
+
+            // Обработка на новата снимка
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                // Проверка за валиден тип файл
+                var allowedTypes = new[] { "image/jpeg", "image/png", "image/gif" };
+                if (!allowedTypes.Contains(imageFile.ContentType.ToLower()))
+                {
+                    ModelState.AddModelError("imageFile", "Моля, качете валиден файл (JPEG, PNG или GIF).");
+                    return View(model);
+                }
+
+                // Проверка за размер на файла (макс. 5MB)
+                if (imageFile.Length > 5 * 1024 * 1024)
+                {
+                    ModelState.AddModelError("imageFile", "Размерът на файла не може да надвишава 5MB.");
+                    return View(model);
+                }
+
+                var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "uploads", "profile-images");
+                Directory.CreateDirectory(uploadsFolder);
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                model.ImageUrl = $"/uploads/profile-images/{fileName}";
+            }
+            else if (string.IsNullOrEmpty(model.ImageUrl))
+            {
+                model.ImageUrl = "/assets/profile.png";
+            }
 
             await profileService.UpdateProfileAsync(
                 Guid.Parse(userId),

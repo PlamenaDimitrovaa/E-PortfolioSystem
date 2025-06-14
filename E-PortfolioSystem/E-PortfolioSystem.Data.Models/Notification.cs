@@ -7,6 +7,7 @@
         public Notification()
         {
             this.Id = Guid.NewGuid();
+            this.IsRead = false;
         }
 
         [Key]

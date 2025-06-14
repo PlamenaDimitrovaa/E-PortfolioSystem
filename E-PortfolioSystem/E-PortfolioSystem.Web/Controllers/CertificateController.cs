@@ -55,6 +55,7 @@ namespace E_PortfolioSystem.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(CertificateEditViewModel model)
         {
             if (!ModelState.IsValid)
@@ -98,6 +99,7 @@ namespace E_PortfolioSystem.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(CertificateEditViewModel model)
         {
             if (!ModelState.IsValid)

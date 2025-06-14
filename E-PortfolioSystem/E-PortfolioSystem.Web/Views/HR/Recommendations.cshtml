@@ -1,0 +1,79 @@
+@using E_PortfolioSystem.Web.Infrastructure.Extensions
+@model IEnumerable<E_PortfolioSystem.Web.ViewModels.Recommendation.RecommendationViewModel>
+@inject E_PortfolioSystem.Services.Data.Interfaces.IRecommendationService RecommendationService
+@{
+    ViewData["Title"] = "Препоръки";
+    var toUserId = ViewBag.ToUserId as string;
+    var currentUserId = User.GetId();
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a asp-controller="HR" asp-action="PublicProfiles" class="btn btn-outline-secondary mb-3">
+                <i class="bi bi-arrow-left"></i> Назад към профили
+            </a>
+            <h2><i class="bi bi-star"></i> Препоръки</h2>
+        </div>
+        <a asp-action="AddRecommendation" asp-route-userId="@toUserId" class="btn btn-outline-success">
+            <i class="bi bi-plus-circle"></i> Добави препоръка
+        </a>
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Все още няма препоръки за този потребител.</div>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var rec in Model)
+            {
+                <div class="list-group-item mb-3 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold"><i class="bi bi-person-badge"></i> @rec.FromUserFullName</span>
+                        <div class="d-flex align-items-center">
+                            <span class="text-muted small me-3">@rec.CreatedAt?.ToString("dd.MM.yyyy HH:mm")</span>
+                            @if (await RecommendationService.IsOwnerAsync(rec.Id, currentUserId))
+                            {
+                                <div class="btn-group">
+                                    <a asp-action="EditRecommendation" asp-route-id="@rec.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteModal-@rec.Id">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal-@rec.Id" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Потвърждение за изтриване</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Сигурни ли сте, че искате да изтриете тази препоръка?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+                                                <form asp-action="DeleteRecommendation" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@rec.Id" />
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-danger">Изтрий</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div>@rec.Text</div>
+                </div>
+            }
+        </div>
+    }
+</div> 

@@ -1,0 +1,27 @@
+@model E_PortfolioSystem.Web.ViewModels.HRContact.HRContactViewModel
+
+@{
+    ViewData["Title"] = "Изпрати HR съобщение";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="mb-4"><i class="bi bi-envelope"></i> Изпрати HR съобщение</h3>
+                    <form asp-action="Send" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ToUserId" />
+                        <div class="mb-3">
+                            <label asp-for="Message" class="form-label">Съобщение</label>
+                            <textarea asp-for="Message" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Message" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-send"></i> Изпрати</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -26,6 +26,7 @@ namespace E_PortfolioSystem.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadDocument(IFormFile uploadedFile, [FromForm] AttachedDocumentFormModel model)
         {
             if (uploadedFile != null && uploadedFile.Length > 0)

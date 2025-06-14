@@ -84,12 +84,6 @@
                                         <a class="nav-link" asp-area="" asp-controller="Project" asp-action="Projects">Проекти</a>
                                     </li>
                                 }
-                                else if (User.IsInRole(HRRoleName))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-area="" asp-controller="HRContact" asp-action="Send">Контакт</a>
-                                    </li>
-                                }
                                 else if (User.IsInRole(TeacherRoleName))
                                 {
                                     <li class="nav-item">

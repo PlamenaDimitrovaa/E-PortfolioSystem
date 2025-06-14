@@ -8,58 +8,38 @@ namespace E_PortfolioSystem.Services.Data.Services
 {
     public class NotificationService : INotificationService
     {
-        private readonly EPortfolioDbContext _dbContext;
+        private readonly EPortfolioDbContext dbContext;
 
         public NotificationService(EPortfolioDbContext dbContext)
         {
-            _dbContext = dbContext;
+            this.dbContext = dbContext;
         }
 
         public async Task<IEnumerable<NotificationViewModel>> GetUnreadNotificationsAsync(Guid userId)
         {
-            var notifications = await _dbContext.Notifications
+            return await dbContext.Notifications
                 .Where(n => n.UserId == userId && !n.IsRead)
                 .OrderByDescending(n => n.CreatedAt)
-                .ToListAsync();
-
-            var result = new List<NotificationViewModel>();
-            foreach (var n in notifications)
-            {
-                DateTime? deadline = null;
-                // Опит за намиране на deadline по subject name
-                var subject = await _dbContext.Subjects.Include(s => s.Project)
-                    .FirstOrDefaultAsync(s => s.Name == n.Title || ("Записване в предмет: " + s.Name) == n.Title);
-                if (subject?.Project?.Deadline != null)
-                {
-                    deadline = subject.Project.Deadline;
-                }
-                result.Add(new NotificationViewModel
+                .Select(n => new NotificationViewModel
                 {
                     Id = n.Id,
                     Message = n.Content,
                     CreatedOn = n.CreatedAt ?? DateTime.UtcNow,
                     IsRead = n.IsRead,
-                    SubjectName = n.Title,
-                    ProjectDeadline = deadline
-                });
-            }
-            return result;
+                    SubjectName = n.Title
+                })
+                .ToListAsync();
         }
 
         public async Task GenerateDeadlineNotificationsAsync()
         {
-            var now = DateTime.UtcNow;
-            var fiveDaysFromNow = now.AddDays(5);
+            var fiveDaysFromNow = DateTime.UtcNow.AddDays(5);
 
-            // Намираме всички предмети с проекти, чийто краен срок е след 5 дни
-            var subjectsWithDeadlines = await _dbContext.Subjects
+            var subjectsWithDeadlines = await dbContext.Subjects
                 .Include(s => s.Project)
                 .Include(s => s.StudentSubjects)
-                    .ThenInclude(ss => ss.Student)
-                .Where(s => s.Project != null &&
-                           s.Project.Deadline.HasValue &&
-                           s.Project.Deadline.Value.Date == fiveDaysFromNow.Date &&
-                           s.Project.AttachedDocument == null)
+                .ThenInclude(ss => ss.Student)
+                .Where(s => s.Project != null && s.Project.Deadline <= fiveDaysFromNow)
                 .ToListAsync();
 
             foreach (var subject in subjectsWithDeadlines)
@@ -67,44 +47,46 @@ namespace E_PortfolioSystem.Services.Data.Services
                 foreach (var studentSubject in subject.StudentSubjects)
                 {
                     // Проверяваме дали вече няма създадена нотификация за този студент и предмет
-                    var existingNotification = await _dbContext.Notifications
+                    var existingNotification = await dbContext.Notifications
                         .AnyAsync(n => n.UserId == studentSubject.Student.UserId &&
                                      n.Title == subject.Name &&
-                                     n.CreatedAt.HasValue &&
-                                     n.CreatedAt.Value.Date == now.Date);
+                                     n.CreatedAt >= DateTime.UtcNow.AddDays(-1));
 
                     if (!existingNotification)
                     {
                         var notification = new Notification
                         {
-                            UserId = studentSubject.Student.UserId,
+                            Id = Guid.NewGuid(),
                             Title = subject.Name,
-                            Content = $"Наближава крайният срок за предаване на проект по предмет {subject.Name}! Остават 5 дни до крайния срок ({subject.Project!.Deadline:dd.MM.yyyy}). Моля, прикачете документ към проекта.",
-                            CreatedAt = now,
-                            IsRead = false
+                            Content = $"Краен срок за проект по {subject.Name}: {subject.Project.Deadline:dd.MM.yyyy}",
+                            CreatedAt = DateTime.UtcNow,
+                            IsRead = false,
+                            UserId = studentSubject.Student.UserId
                         };
 
-                        await _dbContext.Notifications.AddAsync(notification);
+                        await dbContext.Notifications.AddAsync(notification);
                     }
                 }
             }
 
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task MarkNotificationAsReadAsync(Guid notificationId)
         {
-            var notification = await _dbContext.Notifications.FindAsync(notificationId);
+            var notification = await dbContext.Notifications
+                .FirstOrDefaultAsync(n => n.Id == notificationId);
+
             if (notification != null)
             {
                 notification.IsRead = true;
-                await _dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
             }
         }
 
         public async Task<int> GetUnreadNotificationsCountAsync(Guid userId)
         {
-            return await _dbContext.Notifications
+            return await dbContext.Notifications
                 .CountAsync(n => n.UserId == userId && !n.IsRead);
         }
 
@@ -112,14 +94,48 @@ namespace E_PortfolioSystem.Services.Data.Services
         {
             var notification = new Notification
             {
-                UserId = userId,
+                Id = Guid.NewGuid(),
                 Title = title,
                 Content = content,
                 CreatedAt = DateTime.UtcNow,
-                IsRead = false
+                IsRead = false,
+                UserId = userId
             };
-            await _dbContext.Notifications.AddAsync(notification);
-            await _dbContext.SaveChangesAsync();
+
+            await dbContext.Notifications.AddAsync(notification);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task CreateHRContactNotificationAsync(Guid userId, Guid hrContactId)
+        {
+            var notification = new Notification
+            {
+                Id = Guid.NewGuid(),
+                Title = "Ново съобщение от HR",
+                Content = "Получихте ново съобщение от HR специалист. Моля, проверете вашите съобщения.",
+                CreatedAt = DateTime.UtcNow,
+                IsRead = false,
+                UserId = userId
+            };
+
+            await dbContext.Notifications.AddAsync(notification);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<NotificationViewModel>> GetHRContactNotificationsAsync(Guid userId)
+        {
+            return await dbContext.Notifications
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .Select(n => new NotificationViewModel
+                {
+                    Id = n.Id,
+                    Message = n.Content,
+                    CreatedOn = n.CreatedAt ?? DateTime.UtcNow,
+                    IsRead = n.IsRead,
+                    SubjectName = n.Title
+                })
+                .ToListAsync();
         }
     }
 }

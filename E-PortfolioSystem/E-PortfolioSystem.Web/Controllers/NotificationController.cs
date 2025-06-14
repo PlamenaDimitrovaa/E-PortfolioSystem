@@ -32,6 +32,7 @@ namespace E_PortfolioSystem.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAsRead(Guid id)
         {
             try
