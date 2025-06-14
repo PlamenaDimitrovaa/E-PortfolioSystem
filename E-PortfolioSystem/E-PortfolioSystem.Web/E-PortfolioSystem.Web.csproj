@@ -40,6 +40,8 @@
     <Folder Include="Views\Notification\" />
     <Folder Include="Views\Recommendation\" />
     <Folder Include="Views\Student\" />
+    <Folder Include="Views\TeacherSubjectStudents\" />
+    <Folder Include="Views\TeacherSubject\" />
   </ItemGroup>
 
 </Project>

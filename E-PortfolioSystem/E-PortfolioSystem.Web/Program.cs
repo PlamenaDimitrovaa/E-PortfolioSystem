@@ -1,21 +1,17 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using E_PortfolioSystem.Data;
 namespace E_PortfolioSystem.Web
 {
     using E_PortfolioSystem.Data;
     using E_PortfolioSystem.Data.Models;
     using E_PortfolioSystem.Services.Data.Interfaces;
-    using E_PortfolioSystem.Web.Infrastructure.Extensions;
-    using E_PortfolioSystem.Web.Infrastructure.ModelBinders;
-    using E_PortfolioSystem.Web.Infrastructure.Middlewares;
-    using Microsoft.EntityFrameworkCore;
-    using Hangfire;
-    using Hangfire.Dashboard;
-    using E_PortfolioSystem.Web.Infrastructure.Filters;
     using E_PortfolioSystem.Web.Hubs;
-    using Microsoft.AspNetCore.Identity;
+    using E_PortfolioSystem.Web.Infrastructure.Extensions;
+    using E_PortfolioSystem.Web.Infrastructure.Filters;
+    using E_PortfolioSystem.Web.Infrastructure.Middlewares;
+    using Hangfire;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using static E_PortfolioSystem.Common.GeneralApplicationConstants;
 
@@ -54,11 +50,10 @@ namespace E_PortfolioSystem.Web
             builder.Services.AddApplicationServices(typeof(IProfileService));
 
             builder.Services.ConfigureApplicationCookie(cfg =>
-            { 
+            {
                 cfg.LoginPath = "/User/Login";
             });
 
-            // Add Hangfire services
             builder.Services.AddHangfire(config => config
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -68,10 +63,10 @@ namespace E_PortfolioSystem.Web
             builder.Services.AddHangfireServer();
 
             builder.Services.AddControllersWithViews();
-                //.AddMvcOptions(options =>
-                //{
-                //    options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
-                //});
+            //.AddMvcOptions(options =>
+            //{
+            //    options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
+            //});
 
             // Add SignalR
             builder.Services.AddSignalR();
@@ -96,7 +91,18 @@ namespace E_PortfolioSystem.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Add OnlineUsersMiddleware after authentication but before endpoints
+            app.Use(async (context, next) =>
+            {
+                try
+                {
+                    await next();
+                }
+                catch (Exception ex)
+                {
+                    context.Response.Redirect("/Home/Error");
+                }
+            });
+
             app.UseMiddleware<OnlineUsersMiddleware>();
 
             app.SeedAdministrator(DevelopmentAdminEmail);
@@ -115,14 +121,12 @@ namespace E_PortfolioSystem.Web
                 Authorization = new[] { new HangfireAuthorizationFilter() }
             });
 
-            // Schedule recurring job to check for upcoming deadlines
             RecurringJob.AddOrUpdate<INotificationService>(
                 "CheckProjectDeadlines",
                 service => service.GenerateDeadlineNotificationsAsync(),
-                Cron.Daily(9) // Изпълнява се всеки ден в 9:00 часа
+                Cron.Daily(9)
             );
 
-            // Add SignalR endpoint
             app.MapHub<ChatHub>("/chatHub");
 
             app.Run();

@@ -17,7 +17,6 @@ namespace E_PortfolioSystem.Web.Areas.Admin.Controllers
         {
             this.userManager = userManager;
         }
-
         public async Task<IActionResult> Index()
         {
             var statistics = new

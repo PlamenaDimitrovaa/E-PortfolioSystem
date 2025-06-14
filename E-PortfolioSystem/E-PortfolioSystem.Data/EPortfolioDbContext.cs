@@ -21,7 +21,6 @@
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Notification> Notifications { get; set; }
-        public DbSet<Email> Emails { get; set; }
         public DbSet<HRContact> HRContacts { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<Recommendation> Recommendations { get; set; }
