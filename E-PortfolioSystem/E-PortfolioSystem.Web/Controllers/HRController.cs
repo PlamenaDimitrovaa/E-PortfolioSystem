@@ -33,7 +33,9 @@ namespace E_PortfolioSystem.Web.Controllers
         public async Task<IActionResult> PublicProfiles(string searchTerm, string location, int page = 1)
         {
             const int pageSize = 9;
-            var profiles = await profileService.GetAllPublicProfilesAsync(searchTerm, location, page, pageSize);
+            var currentUserId = User.GetId();
+            var profiles = await profileService.GetAllPublicProfilesAsync(searchTerm, location, page, pageSize, currentUserId);
+
             var totalProfiles = await profileService.GetTotalPublicProfilesCountAsync(searchTerm, location);
             var totalPages = (int)Math.Ceiling(totalProfiles / (double)pageSize);
 

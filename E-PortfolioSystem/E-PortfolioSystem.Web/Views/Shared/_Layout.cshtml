@@ -83,6 +83,11 @@
                                     <li class="nav-item">
                                         <a class="nav-link" asp-area="" asp-controller="Project" asp-action="Projects">Проекти</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-controller="HRContact" asp-action="Messages">
+                                            <i class="bi bi-envelope"></i> HR съобщения
+                                        </a>
+                                    </li>
                                 }
                                 else if (User.IsInRole(TeacherRoleName))
                                 {

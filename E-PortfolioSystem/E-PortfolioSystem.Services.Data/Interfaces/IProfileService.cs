@@ -4,7 +4,7 @@ namespace E_PortfolioSystem.Services.Data.Interfaces
 {
     public interface IProfileService
     {
-        Task<IEnumerable<ProfileViewModel>> GetAllPublicProfilesAsync(string? searchTerm = null, string? location = null, int page = 1, int pageSize = 9);
+        Task<IEnumerable<ProfileViewModel>> GetAllPublicProfilesAsync(string? searchTerm = null, string? location = null, int page = 1, int pageSize = 9, string? excludeUserId = null);
         Task<int> GetTotalPublicProfilesCountAsync(string? searchTerm = null, string? location = null);
         Task<ProfileViewModel?> GetProfileByUserIdAsync(string userId);
         Task CreateProfileAsync(Guid userId, string fullName);

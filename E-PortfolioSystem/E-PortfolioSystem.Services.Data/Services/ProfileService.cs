@@ -78,7 +78,7 @@ namespace E_PortfolioSystem.Services.Data.Services
             }
         }
 
-        public async Task<IEnumerable<ProfileViewModel>> GetAllPublicProfilesAsync(string? searchTerm = null, string? location = null, int page = 1, int pageSize = 9)
+        public async Task<IEnumerable<ProfileViewModel>> GetAllPublicProfilesAsync(string? searchTerm = null, string? location = null, int page = 1, int pageSize = 9, string? excludeUserId = null)
         {
             var query = dbContext.Profiles
                 .Where(p => p.IsPublic);
@@ -86,8 +86,8 @@ namespace E_PortfolioSystem.Services.Data.Services
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 searchTerm = searchTerm.ToLower();
-                query = query.Where(p => 
-                    p.FullName.ToLower().Contains(searchTerm) || 
+                query = query.Where(p =>
+                    p.FullName.ToLower().Contains(searchTerm) ||
                     p.Bio.ToLower().Contains(searchTerm));
             }
 
@@ -95,6 +95,11 @@ namespace E_PortfolioSystem.Services.Data.Services
             {
                 location = location.ToLower();
                 query = query.Where(p => p.Location.ToLower().Contains(location));
+            }
+
+            if (!string.IsNullOrEmpty(excludeUserId))
+            {
+                query = query.Where(p => p.UserId.ToString() != excludeUserId);
             }
 
             return await query
