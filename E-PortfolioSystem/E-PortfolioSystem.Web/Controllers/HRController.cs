@@ -1,12 +1,10 @@
 using E_PortfolioSystem.Services.Data.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System;
 using E_PortfolioSystem.Web.Infrastructure.Extensions;
 using E_PortfolioSystem.Web.ViewModels.Profile;
-using static E_PortfolioSystem.Common.NotificationMessagesConstants;
 using E_PortfolioSystem.Web.ViewModels.Recommendation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using static E_PortfolioSystem.Common.NotificationMessagesConstants;
 
 namespace E_PortfolioSystem.Web.Controllers
 {
@@ -32,7 +30,6 @@ namespace E_PortfolioSystem.Web.Controllers
             this.webHostEnvironment = webHostEnvironment;
         }
 
-        // Списък с публични профили
         public async Task<IActionResult> PublicProfiles(string searchTerm, string location, int page = 1)
         {
             const int pageSize = 9;
@@ -132,7 +129,6 @@ namespace E_PortfolioSystem.Web.Controllers
                 return RedirectToAction("Recommendations", new { userId = recommendation.ToUserId });
             }
 
-            // Get the target user's profile
             var targetUserProfile = await profileService.GetProfileByUserIdAsync(recommendation.ToUserId);
             if (targetUserProfile != null)
             {
@@ -198,4 +194,4 @@ namespace E_PortfolioSystem.Web.Controllers
             }
         }
     }
-} 
+}

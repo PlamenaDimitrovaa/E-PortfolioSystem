@@ -46,7 +46,6 @@ namespace E_PortfolioSystem.Services.Data.Services
             {
                 foreach (var studentSubject in subject.StudentSubjects)
                 {
-                    // Проверяваме дали вече няма създадена нотификация за този студент и предмет
                     var existingNotification = await dbContext.Notifications
                         .AnyAsync(n => n.UserId == studentSubject.Student.UserId &&
                                      n.Title == subject.Name &&

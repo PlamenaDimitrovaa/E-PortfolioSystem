@@ -66,7 +66,7 @@
     </div>
 </div>
 
-<!-- Modal за нов чат -->
+
 <div class="modal fade" id="newChatModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -79,7 +79,7 @@
                     <label for="userSelect" class="form-label">Изберете потребител</label>
                     <select class="form-select" id="userSelect">
                         <option value="">Изберете...</option>
-                        <!-- Тук ще добавим опциите чрез AJAX -->
+
                     </select>
                 </div>
             </div>
@@ -94,7 +94,7 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Зареждане на потребителите при отваряне на модала
+
             $('#newChatModal').on('show.bs.modal', function () {
                 $.get('@Url.Action("GetAvailableUsers", "Chat")', function(users) {
                     const select = $('#userSelect');
@@ -106,7 +106,7 @@
                 });
             });
 
-            // Започване на нов чат
+
             $('#startChatBtn').click(function() {
                 const selectedUserId = $('#userSelect').val();
                 if (selectedUserId) {

@@ -1,7 +1,6 @@
 ﻿namespace E_PortfolioSystem.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
-
     using static Common.EntityValidationConstants.Subject;
     public class Subject
     {

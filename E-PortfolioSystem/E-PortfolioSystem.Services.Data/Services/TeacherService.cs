@@ -44,7 +44,6 @@ namespace E_PortfolioSystem.Services.Data.Services
 
         public async Task CreateTeacherAsync(Guid userId)
         {
-            // Проверяваме дали вече няма създаден преподавател за този потребител
             var existingTeacher = await dbContext.Teachers
                 .FirstOrDefaultAsync(t => t.UserId == userId);
 
@@ -53,7 +52,6 @@ namespace E_PortfolioSystem.Services.Data.Services
                 throw new InvalidOperationException($"Вече съществува преподавател с потребителско ID: {userId}");
             }
 
-            // Създаваме нов преподавател
             var teacher = new Teacher
             {
                 Id = Guid.NewGuid(),

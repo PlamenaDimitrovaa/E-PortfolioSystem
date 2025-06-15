@@ -8,7 +8,6 @@ namespace E_PortfolioSystem.Web.Infrastructure.Filters
         {
             var httpContext = context.GetHttpContext();
 
-            // Само администратори имат достъп до Hangfire dashboard
             return httpContext.User.IsInRole("Administrator");
         }
     }

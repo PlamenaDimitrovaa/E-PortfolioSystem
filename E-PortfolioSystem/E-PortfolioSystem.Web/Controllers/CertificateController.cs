@@ -1,10 +1,8 @@
 ﻿using E_PortfolioSystem.Services.Data.Interfaces;
-using E_PortfolioSystem.Services.Data.Services;
 using E_PortfolioSystem.Web.Infrastructure.Extensions;
 using E_PortfolioSystem.Web.ViewModels.Certificate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using static E_PortfolioSystem.Common.NotificationMessagesConstants;
 
 namespace E_PortfolioSystem.Web.Controllers
@@ -75,7 +73,7 @@ namespace E_PortfolioSystem.Web.Controllers
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                var fileName = Path.GetFileName(model.File.FileName); // You can sanitize if needed
+                var fileName = Path.GetFileName(model.File.FileName);
                 var filePath = Path.Combine(uploadsFolder, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))

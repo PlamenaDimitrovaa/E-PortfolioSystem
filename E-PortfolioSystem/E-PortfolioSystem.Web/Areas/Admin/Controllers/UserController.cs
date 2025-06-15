@@ -1,14 +1,13 @@
 using E_PortfolioSystem.Data.Models;
 using E_PortfolioSystem.Services.Data.Interfaces;
+using E_PortfolioSystem.Web.Infrastructure.Extensions;
+using E_PortfolioSystem.Web.Infrastructure.Middlewares;
 using E_PortfolioSystem.Web.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using static E_PortfolioSystem.Common.GeneralApplicationConstants;
-using E_PortfolioSystem.Web.Infrastructure.Middlewares;
-using E_PortfolioSystem.Web.Infrastructure.Extensions;
 
 namespace E_PortfolioSystem.Web.Areas.Admin.Controllers
 {
@@ -64,7 +63,6 @@ namespace E_PortfolioSystem.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            // Проверяваме дали ролята съществува
             if (!await roleManager.RoleExistsAsync(role))
             {
                 return BadRequest("Невалидна роля!");
@@ -72,19 +70,15 @@ namespace E_PortfolioSystem.Web.Areas.Admin.Controllers
 
             try
             {
-                // Премахваме всички текущи роли на потребителя
                 var currentRoles = await userManager.GetRolesAsync(user);
                 await userManager.RemoveFromRolesAsync(user, currentRoles);
 
-                // Задаваме новата роля
                 await userManager.AddToRoleAsync(user, role);
 
-                // Ако ролята е Студент, създаваме запис в таблицата Students
                 if (role == StudentRoleName)
                 {
                     await studentService.CreateStudentAsync(user.Id);
                 }
-                // Ако ролята е Преподавател, създаваме запис в таблицата Teachers
                 else if (role == TeacherRoleName)
                 {
                     await teacherService.CreateTeacherAsync(user.Id);
@@ -94,7 +88,6 @@ namespace E_PortfolioSystem.Web.Areas.Admin.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                // Ако възникне грешка при създаването на студент или преподавател, връщаме съобщение за грешка
                 TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction(nameof(Manage));
             }
@@ -122,4 +115,4 @@ namespace E_PortfolioSystem.Web.Areas.Admin.Controllers
             return View(userViewModels);
         }
     }
-} 
+}

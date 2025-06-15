@@ -1,16 +1,16 @@
 ﻿using E_PortfolioSystem.Data.Models;
+using E_PortfolioSystem.Services.Data.Interfaces;
 using E_PortfolioSystem.Web.ViewModels.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using static E_PortfolioSystem.Common.NotificationMessagesConstants;
 using static E_PortfolioSystem.Common.GeneralApplicationConstants;
-using E_PortfolioSystem.Services.Data.Interfaces;
+using static E_PortfolioSystem.Common.NotificationMessagesConstants;
 
 namespace E_PortfolioSystem.Web.Controllers
 {
     public class UserController : Controller
-    {   
+    {
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IProfileService profileService;
@@ -52,9 +52,8 @@ namespace E_PortfolioSystem.Web.Controllers
 
             if (result.Succeeded)
             {
-                // Create profile with basic info
                 await profileService.CreateProfileAsync(
-                    user.Id, 
+                    user.Id,
                     $"{model.FirstName} {model.LastName}");
 
                 await signInManager.SignInAsync(user, isPersistent: false);
@@ -100,7 +99,6 @@ namespace E_PortfolioSystem.Web.Controllers
                 return View(model);
             }
 
-            // Проверяваме дали потребителят е администратор
             var user = await userManager.FindByEmailAsync(model.Email);
             if (await userManager.IsInRoleAsync(user, AdminRoleName))
             {

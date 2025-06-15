@@ -30,7 +30,7 @@
         [MaxLength(EvaluationTypeMaxLength)]
         public string EvaluationType { get; set; } = null!;
 
-        public DateTime? CreatedAt { get; set; } 
+        public DateTime? CreatedAt { get; set; }
 
         public Project? Project { get; set; }
 

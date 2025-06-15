@@ -36,7 +36,7 @@
 
         public DateTime? Deadline { get; set; }
 
-        public DateTime? CreatedAt { get; set; } 
+        public DateTime? CreatedAt { get; set; }
 
         public bool IsApproved { get; set; }
 

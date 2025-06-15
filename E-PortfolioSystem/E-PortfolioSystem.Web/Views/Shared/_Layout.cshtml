@@ -171,14 +171,12 @@
                 });
             }
 
-            // Обновяване при зареждане на страницата
             $(document).ready(function () {
                 updateNotificationCount();
                 updateMessagesCount();
 
-                // Обновяване на всеки 10 секунди за съобщения и 5 минути за нотификации
-                setInterval(updateNotificationCount, 300000); // 5 минути
-                setInterval(updateMessagesCount, 10000);     // 10 секунди
+                setInterval(updateNotificationCount, 300000);
+                setInterval(updateMessagesCount, 10000);     
             });
         </script>
     }

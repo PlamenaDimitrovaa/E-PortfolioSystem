@@ -68,7 +68,6 @@ namespace E_PortfolioSystem.Web
             //    options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
             //});
 
-            // Add SignalR
             builder.Services.AddSignalR();
 
             WebApplication app = builder.Build();

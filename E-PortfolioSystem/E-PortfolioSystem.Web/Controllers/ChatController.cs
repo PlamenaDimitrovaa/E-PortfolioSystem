@@ -1,7 +1,6 @@
 ﻿using E_PortfolioSystem.Data.Models;
 using E_PortfolioSystem.Services.Data.Interfaces;
 using E_PortfolioSystem.Web.Infrastructure.Extensions;
-using E_PortfolioSystem.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -35,11 +34,10 @@ namespace E_PortfolioSystem.Web.Controllers
             var currentUserId = User.GetId();
             var chatHistory = await chatService.GetChatHistoryAsync(currentUserId, userId);
             ViewBag.OtherUserId = userId;
-            
-            // Добавяме името на потребителя, с когото чатим
+
             var otherUser = await userManager.FindByIdAsync(userId);
             ViewBag.OtherUserName = otherUser?.FirstName + " " + otherUser?.LastName ?? "Потребител";
-            
+
             return View(chatHistory);
         }
 

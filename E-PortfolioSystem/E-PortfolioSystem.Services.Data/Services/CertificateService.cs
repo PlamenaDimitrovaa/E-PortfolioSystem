@@ -39,6 +39,7 @@ namespace E_PortfolioSystem.Services.Data.Services
             var bgCulture = new CultureInfo("bg-BG");
 
             return await dbContext.Certificates
+                 .Include(c => c.AttachedDocument)
                  .Where(s => s.Id.ToString() == id)
                  .Select(s => new CertificateDetailsViewModel
                  {
@@ -69,6 +70,7 @@ namespace E_PortfolioSystem.Services.Data.Services
                 Title = cert.Title,
                 Issuer = cert.Issuer,
                 IssuedDate = cert.IssuedDate,
+                FilePath = cert.FilePath,
                 DocumentDescription = cert.AttachedDocument?.Description,
                 DocumentType = cert.AttachedDocument?.DocumentType,
                 AttachedDocument = cert.AttachedDocument == null ? null : new AttachedDocumentFormModel
@@ -117,7 +119,7 @@ namespace E_PortfolioSystem.Services.Data.Services
                 {
                     Id = Guid.NewGuid(),
                     FileName = uniqueFileName,
-                    FileContent = "File Content", // Може да се премахне, ако не се използва
+                    FileContent = "File Content",
                     UploadDate = DateTime.UtcNow,
                     FileLocation = $"Uploaded/Files/{uniqueFileName}",
                     DocumentType = model.DocumentType ?? "Сертификат",
@@ -126,9 +128,7 @@ namespace E_PortfolioSystem.Services.Data.Services
 
                 certificate.AttachedDocumentId = document.Id;
                 certificate.AttachedDocument = document;
-                certificate.FilePath = document.FileLocation;
-
-                dbContext.AttachedDocuments.Add(document);
+                certificate.FilePath = document.FileLocation; // Only update FilePath if a file is uploaded
             }
 
             dbContext.Certificates.Add(certificate);
@@ -192,7 +192,6 @@ namespace E_PortfolioSystem.Services.Data.Services
 
             await dbContext.SaveChangesAsync();
 
-            // Изтрий стария документ, ако вече не се използва
             if (oldDocId != null && oldDocId != cert.AttachedDocumentId)
             {
                 var stillUsed = await dbContext.Projects.AnyAsync(p => p.AttachedDocumentId == oldDocId)
@@ -235,7 +234,5 @@ namespace E_PortfolioSystem.Services.Data.Services
             dbContext.Certificates.Remove(cert);
             await dbContext.SaveChangesAsync();
         }
-
-
     }
 }

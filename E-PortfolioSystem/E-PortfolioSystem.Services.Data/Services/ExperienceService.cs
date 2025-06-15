@@ -26,7 +26,6 @@ namespace E_PortfolioSystem.Services.Data.Services
                     Id = e.Id.ToString(),
                     Company = e.Company,
                     Profession = e.Profession,
-                    // Location = e.Location,
                     StartDate = e.StartDate,
                     EndDate = e.EndDate,
                     Description = e.Description

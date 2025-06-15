@@ -27,7 +27,6 @@ namespace E_PortfolioSystem.Services.Data.Services
                 throw new InvalidOperationException("Студентът не е намерен.");
             }
 
-            // Вземи StudentSubject и ProjectId
             var studentSubject = await dbContext.StudentsSubjects
                 .FirstOrDefaultAsync(ss => ss.StudentId == studentId && ss.SubjectId == subjectId);
 
@@ -68,7 +67,6 @@ namespace E_PortfolioSystem.Services.Data.Services
             var subjectId = Guid.Parse(model.SubjectId);
             var studentId = Guid.Parse(model.StudentId);
 
-            // Вземи StudentSubject
             var studentSubject = await dbContext.StudentsSubjects.FirstOrDefaultAsync(ss => ss.StudentId == studentId && ss.SubjectId == subjectId);
             if (studentSubject == null || studentSubject.ProjectId == null)
             {
@@ -91,13 +89,12 @@ namespace E_PortfolioSystem.Services.Data.Services
                 EvaluationType = model.EvaluationType,
                 CreatedAt = DateTime.UtcNow
             };
+
             dbContext.Evaluations.Add(evaluation);
             project.EvaluationId = evaluation.Id;
-            // Запиши EvaluationId в StudentSubject
             studentSubject.EvaluationId = evaluation.Id;
             await dbContext.SaveChangesAsync();
 
-            // Изпрати Notification на студента
             var student = await dbContext.Students.Include(s => s.User).FirstOrDefaultAsync(s => s.Id == studentId);
             var subject = await dbContext.Subjects.FirstOrDefaultAsync(s => s.Id == subjectId);
             if (student != null && subject != null)

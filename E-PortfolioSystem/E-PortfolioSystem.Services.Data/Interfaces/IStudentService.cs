@@ -1,5 +1,4 @@
-﻿using E_PortfolioSystem.Data.Models;
-using E_PortfolioSystem.Web.ViewModels.Student;
+﻿using E_PortfolioSystem.Web.ViewModels.Student;
 
 namespace E_PortfolioSystem.Services.Data.Interfaces
 {

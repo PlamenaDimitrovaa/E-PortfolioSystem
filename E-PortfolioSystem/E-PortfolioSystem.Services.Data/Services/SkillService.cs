@@ -2,10 +2,7 @@
 using E_PortfolioSystem.Data.Models;
 using E_PortfolioSystem.Services.Data.Interfaces;
 using E_PortfolioSystem.Web.ViewModels.Skill;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using static E_PortfolioSystem.Common.EntityValidationConstants;
 
 namespace E_PortfolioSystem.Services.Data.Services
 {

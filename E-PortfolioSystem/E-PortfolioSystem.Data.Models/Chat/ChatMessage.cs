@@ -27,4 +27,4 @@ namespace E_PortfolioSystem.Data.Models
 
         public bool IsRead { get; set; }
     }
-} 
+}

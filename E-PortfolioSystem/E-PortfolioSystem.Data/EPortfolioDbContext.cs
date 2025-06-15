@@ -1,10 +1,9 @@
 ﻿namespace E_PortfolioSystem.Data
 {
+    using E_PortfolioSystem.Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
-
-    using E_PortfolioSystem.Data.Models;
     using System.Reflection;
 
     public class EPortfolioDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>

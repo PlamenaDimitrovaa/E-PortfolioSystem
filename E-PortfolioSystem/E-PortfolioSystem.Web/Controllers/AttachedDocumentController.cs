@@ -2,7 +2,6 @@
 using E_PortfolioSystem.Web.ViewModels.AttachedDocument;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using static E_PortfolioSystem.Common.NotificationMessagesConstants;
 
 namespace E_PortfolioSystem.Web.Controllers

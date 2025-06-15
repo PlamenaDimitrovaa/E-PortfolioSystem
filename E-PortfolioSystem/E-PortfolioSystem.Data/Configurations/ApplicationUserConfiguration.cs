@@ -178,7 +178,7 @@
                 user.PasswordHash = hasher.HashPassword(user, "Password@123");
             }
 
-           // builder.HasData(users);
+            // builder.HasData(users);
         }
     }
 }

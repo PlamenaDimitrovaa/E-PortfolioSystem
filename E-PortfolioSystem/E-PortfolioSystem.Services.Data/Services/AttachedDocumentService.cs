@@ -2,7 +2,6 @@
 using E_PortfolioSystem.Data.Models;
 using E_PortfolioSystem.Services.Data.Interfaces;
 using E_PortfolioSystem.Web.ViewModels.AttachedDocument;
-using E_PortfolioSystem.Web.ViewModels.Project;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,7 +44,7 @@ namespace E_PortfolioSystem.Services.Data.Services
             return await dbContext
            .AttachedDocuments
            .Where(p => p.Id == id)
-           .Select(p => new AttachedDocumentFormModel 
+           .Select(p => new AttachedDocumentFormModel
            {
                Id = p.Id.ToString(),
                DocumentType = p.DocumentType,

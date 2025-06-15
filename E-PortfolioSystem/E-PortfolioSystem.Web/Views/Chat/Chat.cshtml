@@ -52,7 +52,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/@@microsoft/signalr@7.0.12/dist/browser/signalr.min.js"></script>
     <script>
-        // Функция за обновяване на брояча на непрочетени съобщения
+
         function updateMessagesCount() {
             $.get('@Url.Action("GetUnreadCount", "Chat")', function (response) {
                 const count = response.count;
@@ -69,7 +69,7 @@
 
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/chatHub")
-            .withAutomaticReconnect([0, 2000, 5000, 10000, 20000]) // Retry intervals in milliseconds
+            .withAutomaticReconnect([0, 2000, 5000, 10000, 20000]) 
             .configureLogging(signalR.LogLevel.Information)
             .build();
 
@@ -78,12 +78,10 @@
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
 
-        // Актуализиране на заглавието с името на получателя
         function updateChatTitle(userName) {
             document.getElementById('chatTitle').textContent = 'Чат с ' + userName;
         }
 
-        // Добавяне на съобщение в чата
         function appendMessage(senderId, message, timestamp, isFromCurrentUser) {
             const messageHtml = `
                 <div class="message ${isFromCurrentUser ? 'text-end' : ''}">
@@ -103,8 +101,6 @@
             const isFromCurrentUser = senderId === '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
             appendMessage(senderId, message, timestamp, isFromCurrentUser);
 
-            // Ако съобщението е от другия потребител и чат прозорецът не е на фокус,
-            // обновяваме брояча на непрочетените съобщения
             if (!isFromCurrentUser && !document.hasFocus()) {
                 updateMessagesCount();
             }
@@ -130,11 +126,9 @@
             }
         });
 
-        // Маркиране на съобщенията като прочетени
         async function markMessagesAsRead() {
             try {
                 await connection.invoke("MarkAsRead", otherUserId);
-                // Обновяваме брояча след маркиране като прочетени
                 updateMessagesCount();
             } catch (err) {
                 console.error(err);
@@ -157,7 +151,6 @@
             }
         });
 
-        // Свързване към хъба
         connection.start()
             .then(function () {
                 console.log("Успешно свързване с чат сървъра");
@@ -169,10 +162,8 @@
                 toastr.error('Грешка при свързване с чат сървъра');
             });
 
-        // Автоматично маркиране като прочетено при фокус върху прозореца
         window.addEventListener('focus', markMessagesAsRead);
 
-        // Фокусиране върху полето за въвеждане при зареждане
         messageInput.focus();
     </script>
 }

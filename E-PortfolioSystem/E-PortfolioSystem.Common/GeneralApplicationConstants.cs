@@ -5,7 +5,6 @@
         public const int ReleaseYear = 2025;
         public const string Title = "Система за управление на електронно портфолио";
         
-        // Student constants
         public const string CVMaker = "Създаване на CV";
         public const string CVDownload = "Свали CV";
         public const string Communication = "Комуникация";
@@ -19,7 +18,6 @@
         public const string Projects = "Проекти";
         public const string Experience = "Опит";
 
-        // Teacher constants
         public const string TeacherCVMaker = "Оценяване";
         public const string TeacherCommunication = "Обратна връзка";
         public const string TeacherYourPlaceTo = "Вашето място за";

@@ -1,9 +1,7 @@
 ﻿using E_PortfolioSystem.Services.Data.Interfaces;
-using E_PortfolioSystem.Services.Data.Services;
 using E_PortfolioSystem.Web.Infrastructure.Extensions;
 using E_PortfolioSystem.Web.ViewModels.Subject;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static E_PortfolioSystem.Common.NotificationMessagesConstants;
 
@@ -170,7 +168,6 @@ namespace E_PortfolioSystem.Web.Controllers
                     var fileName = Path.GetFileName(model.NewFile.FileName);
                     var uploadDirectory = Path.Combine(_environment.WebRootPath, "Uploaded", "Files");
 
-                    // Създаваме директорията, ако не съществува
                     if (!Directory.Exists(uploadDirectory))
                     {
                         Directory.CreateDirectory(uploadDirectory);

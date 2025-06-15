@@ -1,5 +1,4 @@
 ﻿using E_PortfolioSystem.Web.ViewModels.Skill;
-using System.Security.Claims;
 
 namespace E_PortfolioSystem.Services.Data.Interfaces
 {

@@ -2,7 +2,6 @@
 using E_PortfolioSystem.Data.Models;
 using E_PortfolioSystem.Services.Data.Interfaces;
 using E_PortfolioSystem.Web.ViewModels.Subject;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_PortfolioSystem.Services.Data.Services
@@ -108,7 +107,7 @@ namespace E_PortfolioSystem.Services.Data.Services
                     FileName = fileName,
                     FileLocation = filePath,
                     UploadDate = DateTime.UtcNow,
-                    DocumentType = "Проект", // или от логиката
+                    DocumentType = "Проект",
                     Description = "Качен от студент"
                 };
 
@@ -251,7 +250,6 @@ namespace E_PortfolioSystem.Services.Data.Services
             var studentId = await GetStudentIdByUserIdAsync(userId);
             var student = await dbContext.Students.Include(s => s.User).FirstOrDefaultAsync(s => s.Id == studentId);
 
-            // Създай проекта
             var project = new Project
             {
                 UserId = Guid.Parse(userId),
@@ -272,7 +270,6 @@ namespace E_PortfolioSystem.Services.Data.Services
             dbContext.Projects.Add(project);
             await dbContext.SaveChangesAsync();
 
-            // Запиши ProjectId в StudentSubject
             var studentSubject = await dbContext.StudentsSubjects.FirstOrDefaultAsync(ss => ss.StudentId == studentId && ss.SubjectId == subjectId);
             if (studentSubject != null)
             {
@@ -280,7 +277,6 @@ namespace E_PortfolioSystem.Services.Data.Services
                 await dbContext.SaveChangesAsync();
             }
 
-            // Изпрати Notification на преподавателя
             if (subject.Teacher != null && subject.Teacher.User != null && student?.User != null)
             {
                 string title = $"Нов проект по предмет: {subject.Name}";
@@ -341,7 +337,6 @@ namespace E_PortfolioSystem.Services.Data.Services
                 return null;
             }
 
-            // Вземи проекта на студента за този предмет
             Project? studentProject = null;
             if (studentSubject.ProjectId != null)
             {
@@ -350,7 +345,6 @@ namespace E_PortfolioSystem.Services.Data.Services
                     .FirstOrDefaultAsync(p => p.Id == studentSubject.ProjectId);
             }
 
-            // Вземи индивидуалната оценка за този студент и предмет
             Evaluation? evaluation = null;
             if (studentSubject.EvaluationId != null)
             {
@@ -381,7 +375,7 @@ namespace E_PortfolioSystem.Services.Data.Services
         {
             if (!Guid.TryParse(model.SubjectId, out var subjectId))
             {
-                throw new ArgumentException("SubjectId is invalid.");
+                throw new ArgumentException("Невалиден идентификатор!");
             }
             await AddProjectToSubjectAsync(subjectId, model, userId);
         }

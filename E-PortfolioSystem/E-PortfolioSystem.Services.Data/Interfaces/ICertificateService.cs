@@ -1,5 +1,4 @@
-﻿
-using E_PortfolioSystem.Web.ViewModels.Certificate;
+﻿using E_PortfolioSystem.Web.ViewModels.Certificate;
 
 namespace E_PortfolioSystem.Services.Data.Interfaces
 {

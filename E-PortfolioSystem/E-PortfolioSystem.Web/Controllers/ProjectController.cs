@@ -67,7 +67,7 @@
                         Directory.CreateDirectory(uploadsFolder);
                     }
 
-                    var fileName = Path.GetFileName(model.File.FileName); // You can sanitize if needed
+                    var fileName = Path.GetFileName(model.File.FileName);
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))

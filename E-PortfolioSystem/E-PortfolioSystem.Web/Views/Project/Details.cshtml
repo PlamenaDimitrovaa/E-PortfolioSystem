@@ -44,7 +44,6 @@
             </div>
         }
 
-        @* Включваме partial view за качване на документ *@
         <h4 class="text-secondary mb-3 mt-5">Прикачени документи към проекта</h4>
         @await Html.PartialAsync("_AttachedDocumentDetails", Model.AttachedDocuments)
 
@@ -53,7 +52,6 @@
         </div>
     </div>
 
-    <!-- Confirmation Modal -->
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow rounded-4">

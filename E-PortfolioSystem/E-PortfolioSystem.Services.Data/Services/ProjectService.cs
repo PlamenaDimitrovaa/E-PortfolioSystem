@@ -4,7 +4,6 @@ using E_PortfolioSystem.Services.Data.Interfaces;
 using E_PortfolioSystem.Web.ViewModels.AttachedDocument;
 using E_PortfolioSystem.Web.ViewModels.Project;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace E_PortfolioSystem.Services.Data.Services
 {
@@ -23,21 +22,21 @@ namespace E_PortfolioSystem.Services.Data.Services
             .Include(p => p.AttachedDocument)
             .FirstOrDefaultAsync(p => p.Id == id);
 
-                if (project == null)
+            if (project == null)
+            {
+                throw new InvalidOperationException("Проектът не е намерен.");
+            }
+
+            if (project.AttachedDocument != null)
+            {
+                var filePath = Path.Combine("wwwroot", project.AttachedDocument.FileLocation.Replace('/', Path.DirectorySeparatorChar));
+                if (File.Exists(filePath))
                 {
-                    throw new InvalidOperationException("Проектът не е намерен.");
+                    File.Delete(filePath);
                 }
 
-                if (project.AttachedDocument != null)
-                {
-                    var filePath = Path.Combine("wwwroot", project.AttachedDocument.FileLocation.Replace('/', Path.DirectorySeparatorChar));
-                    if (File.Exists(filePath))
-                    {
-                        File.Delete(filePath);
-                    }
-
-                    dbContext.AttachedDocuments.Remove(project.AttachedDocument);
-                }
+                dbContext.AttachedDocuments.Remove(project.AttachedDocument);
+            }
 
             dbContext.Projects.Remove(project);
             await dbContext.SaveChangesAsync();
@@ -205,7 +204,6 @@ namespace E_PortfolioSystem.Services.Data.Services
                     ProjectId = project.Id
                 };
 
-                // Remove old document if exists
                 if (project.AttachedDocument != null)
                 {
                     dbContext.AttachedDocuments.Remove(project.AttachedDocument);
@@ -218,7 +216,6 @@ namespace E_PortfolioSystem.Services.Data.Services
             }
             else if (project.AttachedDocument != null)
             {
-                // Обновяване на мета данни при липса на нов файл
                 project.AttachedDocument.Description = model.DocumentDescription;
                 project.AttachedDocument.DocumentType = model.DocumentType ?? "Документ";
             }

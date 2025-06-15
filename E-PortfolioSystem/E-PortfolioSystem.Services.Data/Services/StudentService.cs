@@ -24,7 +24,7 @@ namespace E_PortfolioSystem.Services.Data.Services
 
             if (student == null)
             {
-                throw new InvalidOperationException("Student not found");
+                throw new InvalidOperationException("Студентът не е намерен!");
             }
 
             return student.Id.ToString();
@@ -37,7 +37,7 @@ namespace E_PortfolioSystem.Services.Data.Services
 
             if (student == null)
             {
-                throw new InvalidOperationException("Student not found");
+                throw new InvalidOperationException("Студентът не е намерен!");
             }
 
             return student.Id.ToString();
@@ -83,7 +83,6 @@ namespace E_PortfolioSystem.Services.Data.Services
             await dbContext.StudentsSubjects.AddAsync(studentSubject);
             await dbContext.SaveChangesAsync();
 
-            // Изпрати Notification на студента
             var student = await dbContext.Students.Include(s => s.User).FirstOrDefaultAsync(s => s.Id == studentSubject.StudentId);
             var subject = await dbContext.Subjects.FirstOrDefaultAsync(s => s.Id == studentSubject.SubjectId);
             if (student != null && subject != null)
@@ -103,14 +102,12 @@ namespace E_PortfolioSystem.Services.Data.Services
 
             if (studentSubject != null)
             {
-                // Вземи студента и предмета за нотификация
                 var student = await dbContext.Students.Include(s => s.User).FirstOrDefaultAsync(s => s.Id == studentSubject.StudentId);
                 var subject = await dbContext.Subjects.FirstOrDefaultAsync(s => s.Id == studentSubject.SubjectId);
 
                 dbContext.StudentsSubjects.Remove(studentSubject);
                 await dbContext.SaveChangesAsync();
 
-                // Изпрати Notification на студента
                 if (student != null && subject != null)
                 {
                     string title = $"Отписване от предмет: {subject.Name}";
@@ -160,7 +157,7 @@ namespace E_PortfolioSystem.Services.Data.Services
                     Id = s.Id.ToString(),
                     FullName = s.User.FirstName + " " + s.User.LastName,
                     FacultyNumber = s.FacultyNumber,
-                    IsEnrolled = true 
+                    IsEnrolled = true
                 })
                 .ToListAsync();
         }

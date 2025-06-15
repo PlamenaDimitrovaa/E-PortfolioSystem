@@ -75,7 +75,6 @@ namespace E_PortfolioSystem.Web.Controllers
                 Guid hrUserId = Guid.Parse(User.GetId()!);
                 await _hrContactService.CreateAsync(model, hrUserId, Guid.Parse(model.ToUserId));
 
-                // Създаване на нотификация за получателя
                 await _notificationService.CreateHRContactNotificationAsync(
                     Guid.Parse(model.ToUserId),
                     Guid.Parse(model.ToUserId));

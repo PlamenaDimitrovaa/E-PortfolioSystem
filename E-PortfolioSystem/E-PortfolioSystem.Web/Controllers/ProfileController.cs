@@ -1,17 +1,17 @@
 ﻿namespace E_PortfolioSystem.Web.Controllers
 {
+    using E_PortfolioSystem.Data.Models;
     using E_PortfolioSystem.Services.Data.Interfaces;
     using E_PortfolioSystem.Web.Infrastructure.Extensions;
     using E_PortfolioSystem.Web.ViewModels.Profile;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using static E_PortfolioSystem.Web.Infrastructure.Extensions.ClaimsPrincipalExtensions;
-    using static E_PortfolioSystem.Common.NotificationMessagesConstants;
-    using Microsoft.AspNetCore.Identity;
-    using E_PortfolioSystem.Data.Models;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
     using System.IO;
+    using static E_PortfolioSystem.Common.NotificationMessagesConstants;
+    using static E_PortfolioSystem.Web.Infrastructure.Extensions.ClaimsPrincipalExtensions;
 
     [Authorize]
     public class ProfileController : Controller
@@ -196,10 +196,8 @@
             user.LastName = names.Length > 1 ? names[^1] : string.Empty;
             await userManager.UpdateAsync(user);
 
-            // Обработка на новата снимка
             if (imageFile != null && imageFile.Length > 0)
             {
-                // Проверка за валиден тип файл
                 var allowedTypes = new[] { "image/jpeg", "image/png", "image/gif" };
                 if (!allowedTypes.Contains(imageFile.ContentType.ToLower()))
                 {
@@ -207,7 +205,6 @@
                     return View(model);
                 }
 
-                // Проверка за размер на файла (макс. 5MB)
                 if (imageFile.Length > 5 * 1024 * 1024)
                 {
                     ModelState.AddModelError("imageFile", "Размерът на файла не може да надвишава 5MB.");

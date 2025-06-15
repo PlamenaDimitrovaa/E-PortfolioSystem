@@ -1,8 +1,8 @@
 ﻿namespace E_PortfolioSystem.Data.Configurations
 {
+    using E_PortfolioSystem.Data.Models;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using E_PortfolioSystem.Data.Models;
     public class AttachedDocumentEntityConfiguration : IEntityTypeConfiguration<AttachedDocument>
     {
         public void Configure(EntityTypeBuilder<AttachedDocument> builder)
