@@ -2,7 +2,7 @@
 Electronic Portfolio Management System – ASP.NET MVC + Bootstrap + Entity Framework
 
 # **Description:**
-- A web application for managing student portfolios, featuring:
+A web application for managing student portfolios, featuring:
 - Students and Teachers
 - Projects with attached documents
 - Teacher evaluations
