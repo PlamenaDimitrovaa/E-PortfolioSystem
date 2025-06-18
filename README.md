@@ -1,4 +1,102 @@
 # E-PortfolioSystem
+Electronic Portfolio Management System – ASP.NET MVC + Bootstrap + Entity Framework
+
+# **Description:**
+- A web application for managing student portfolios, featuring:
+- Students and Teachers
+- Projects with attached documents
+- Teacher evaluations
+- Notifications system
+- Roles: Administrator, Teacher, Student, HR
+- Public profiles, CVs, recommendations, certificates, experience, and skills
+- Communication module between HR and students
+
+# **Technologies Used:**
+-   ASP.NET Core MVC (.NET 9) – backend
+-   Entity Framework Core – ORM and database handling (SQL Server)
+-   Identity – user and role management
+-   Bootstrap – responsive design and UI
+-   JavaScript/jQuery – modals, notifications, AJAX
+-   Services – layered architecture (Controller → Service → DbContext)
+-   Dependency Injection for managing service dependencies
+-   File Upload – storing attached documents in wwwroot/Uploaded/Files
+-   PDF generation for CV export
+-   Notifications – deadline alerts, evaluation updates, HR messages
+
+# **Useful Links:**
+- ASP.NET Core Documentation - https://learn.microsoft.com/en-us/aspnet/core
+- Entity Framework Core - https://learn.microsoft.com/en-us/ef/core
+- Bootstrap - https://getbootstrap.com
+- Bootstrap Template Used - https://startbootstrap.com/theme/personal
+- MS SQL Server - https://learn.microsoft.com/en-us/sql/sql-server
+- ASP.NET Identity & Roles - https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity
+- https://dotnet.microsoft.com/en-us/download/dotnet/9.0 - installing .NET 9 SDK
+- https://www.microsoft.com/en-us/sql-server/sql-server-downloads - installing SQL Server
+
+# **Main Features:**
+1. Roles & Users
+   - Administrator – manages roles and users
+   - Teacher – creates subjects, evaluates students, manages enrollment
+   - Student – adds projects to subjects, views evaluations and CV
+   - HR – browses public profiles, sends messages
+     
+2. Subjects
+   - CRUD operations
+   - Students can enroll/unenroll from subjects
+   - Uploading and editing of documents
+     
+3. Projects & Evaluation
+   - Teachers add evaluations (SubjectGrade, ProjectGrade), feedback, and evaluation type
+   - Evaluations are saved in the Evaluation table and linked to Projects and Subjects
+     
+4. Notifications
+   - Students and teachers receive alerts for deadlines, evaluations, and HR messages
+   - AJAX methods for marking as read and checking unread count
+     
+5. Public Profiles & CV Generation
+   - HR users can view student public profiles
+   - PDF CVs are generated dynamically (bio, experience, education, skills, certificates)
+     
+6. HR Contact Module
+   - HR users can send messages to students, who receive notifications
+   - CRUD operations for messages
+     
+7. Recommendations
+  - HR can add recommendations to a student's public profile, including name and feedback
+  - All recommendations are visible in the student’s profile
+  - HR can only edit or delete their own recommendations
+  - Recommendations are available only for public profiles
+    
+8. Integrated Chat
+  - Allows users (e.g. students and HR, teachers and students) to communicate directly
+  - All messages are stored in the database and accessible in chat history
+  - Users can view all conversations, sorted by date and participants
+
+# **Project Structure:**
+- Controllers/ – MVC controllers per module: Admin, Teacher, Student, HR, Notifications..
+- Services/ – Business logic layer handling requests and DB operations
+- Data/ – Data models and EPortfolioDbContext
+- ViewModels/ – DTOs for passing data to the views
+- Views/ – Razor pages
+- wwwroot/Uploaded/Files – File storage for uploaded documents
+
+# **How to Run::**
+1. Clone the repository:
+```
+git clone https://github.com/PlamenaDimitrovaa/E-PortfolioSystem.git
+cd E-PortfolioSystem
+```
+2. Configure appsettings.json with your SQL Server connection string
+3. Apply migrations and update database:
+```
+dotnet ef database update
+```
+4. Run the application:
+```
+dotnet run
+```
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# E-PortfolioSystem
 Система за управление на електронно портфолио – ASP.NET MVC + Bootstrap + Entity Framework
 
 # **Описание:**
@@ -94,4 +192,4 @@ dotnet ef database update
 4. Стартиране:
 ```
 dotnet run
-```
+``` 
