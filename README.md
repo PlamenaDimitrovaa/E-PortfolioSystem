@@ -27,6 +27,7 @@
 - ASP.NET Core документация - https://learn.microsoft.com/en-us/aspnet/core
 - Entity Framework Core - https://learn.microsoft.com/en-us/ef/core
 - Bootstrap - https://getbootstrap.com
+- Използван Bootstrap Template - https://startbootstrap.com/theme/personal
 - MS SQL Server - https://learn.microsoft.com/en-us/sql/sql-server
 - ASP.NET Identity & Roles - https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity
 - https://dotnet.microsoft.com/en-us/download/dotnet/9.0 - installing .NET 9 SDK
