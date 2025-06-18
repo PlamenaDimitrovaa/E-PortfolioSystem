@@ -1,7 +1,7 @@
 # E-PortfolioSystem
 Система за управление на електронно портфолио – ASP.NET MVC + Bootstrap + Entity Framework
 
-**Описание:**
+# **Описание:**
 Уеб приложение за управление на студентски портфолиа, включващо:
 - Студенти и преподаватели
 - Проекти с прикачени документи
@@ -11,7 +11,7 @@
 - Публични профили, CV, препоръки, сертификати, опит и умения
 - Модул за комуникация между HR и студенти
 
-**Технологии:**
+# **Технологии:**
 -   ASP.NET Core MVC (.NET 9) – backend
 -   Entity Framework Core – ORM и работа с база (SQL Server)
 -   Identity – управление на потребители/роли
@@ -23,7 +23,7 @@
 -   PDF генериране за CV
 -   Нотификации – съобщения при крайни срокове, оценки, HR контакти
 
-**Полезни линкове:**
+# **Полезни линкове:**
 - ASP.NET Core документация - https://learn.microsoft.com/en-us/aspnet/core
 - Entity Framework Core - https://learn.microsoft.com/en-us/ef/core
 - Bootstrap - https://getbootstrap.com
@@ -32,7 +32,7 @@
 - https://dotnet.microsoft.com/en-us/download/dotnet/9.0 - installing .NET 9 SDK
 - https://www.microsoft.com/en-us/sql-server/sql-server-downloads - installing SQL Server
 
-**Основни функционалности:**
+# **Основни функционалности:**
 1. Роли & потребители
    - Администратор – управление на роли и потребители
    - Преподавател – създава предмети, оценява студенти, управлява записването им
@@ -71,7 +71,7 @@
   - Всяко съобщение се записва в базата и е достъпно в историята на чата
   - Възможност за преглед на всички разговори, сортирани по дата и участници
 
-**Структура на проекта:**
+# **Структура на проекта:**
 - Controllers/ – MVC контролери по модули: Admin, Teacher, Student, HR, Notifications
 - Services/ – бизнес логика, обработва заявки и взаимодействие с БД
 - Data/ – модели и EPortfolioDbContext
@@ -79,7 +79,7 @@
 - Views/ – Razor страници
 - wwwroot/Uploaded/Files – съхранение на файлове
 
-**Как да стартирате:**
+# **Как да стартирате:**
 1. Клониране:
 ```
 git clone https://github.com/PlamenaDimitrovaa/E-PortfolioSystem.git
