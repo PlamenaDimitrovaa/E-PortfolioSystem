@@ -19,6 +19,7 @@ namespace E_PortfolioSystem.Web.ViewModels.Evaluation
         [Required(ErrorMessage = "Полето 'Заглавие на проект' е задължително!")]
         public string? ProjectTitle { get; set; }
         public string? AttachedDocumentUrl { get; set; }
+        public string? AttachedDocumentId { get; set; }
 
         public string? SubjectId { get; set; }
 

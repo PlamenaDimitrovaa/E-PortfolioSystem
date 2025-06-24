@@ -39,7 +39,12 @@
                 {
                     <p>
                         <strong>Прикачен документ:</strong>
-                        <a href="@Url.Content("~/" + Model.DocumentFilePath)" target="_blank">@Model.DocumentFileName</a>
+                        <a class="btn btn-outline-secondary btn-sm"
+                           asp-controller="AttachedDocument"
+                           asp-action="Download"
+                           asp-route-id="@Model.DocumentId">
+                            @Model.DocumentFileName
+                        </a>
                     </p>
                 }
             </div>

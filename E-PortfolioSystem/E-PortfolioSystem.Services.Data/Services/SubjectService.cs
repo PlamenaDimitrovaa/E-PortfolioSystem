@@ -363,6 +363,7 @@ namespace E_PortfolioSystem.Services.Data.Services
                 ProjectLink = studentProject?.Link,
                 DocumentFileName = studentProject?.AttachedDocument?.FileName,
                 DocumentFilePath = studentProject?.AttachedDocument?.FileLocation,
+                DocumentId = studentProject?.AttachedDocument?.Id.ToString(),
                 SubjectGrade = evaluation?.SubjectGrade,
                 ProjectGrade = evaluation?.ProjectGrade,
                 Feedback = evaluation?.Feedback,

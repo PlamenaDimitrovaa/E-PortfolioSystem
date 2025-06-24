@@ -45,7 +45,8 @@ namespace E_PortfolioSystem.Services.Data.Services
                 StudentName = student.User.FirstName + " " + student.User.LastName,
                 FacultyNumber = student.FacultyNumber,
                 ProjectTitle = studentProject?.Title,
-                AttachedDocumentUrl = studentProject?.AttachedDocument?.FileLocation
+                AttachedDocumentUrl = studentProject?.AttachedDocument?.FileLocation,
+                AttachedDocumentId = studentProject?.AttachedDocument?.Id.ToString()
             };
         }
 

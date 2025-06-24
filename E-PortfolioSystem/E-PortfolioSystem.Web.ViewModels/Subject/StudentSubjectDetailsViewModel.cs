@@ -23,6 +23,8 @@ namespace E_PortfolioSystem.Web.ViewModels.Subject
 
         public string? DocumentFilePath { get; set; }
 
+        public string? DocumentId { get; set; }
+
         // Оценка
         public int? SubjectGrade { get; set; }
 
