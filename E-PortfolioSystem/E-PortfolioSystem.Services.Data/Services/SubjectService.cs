@@ -80,19 +80,38 @@ namespace E_PortfolioSystem.Services.Data.Services
             return vm;
         }
 
-        public async Task UpdateSubjectAttachedDocumentAsync(Guid subjectId, string fileName, string filePath)
+        public async Task UpdateSubjectAttachedDocumentAsync(Guid subjectId, Guid studentId, string fileName, string filePath)
         {
             var subject = await dbContext.Subjects
-                .Include(s => s.Project)
-                .ThenInclude(p => p.AttachedDocument)
+                .Include(s => s.StudentSubjects)
                 .FirstOrDefaultAsync(s => s.Id == subjectId);
 
-            if (subject?.Project == null)
+            if (subject == null)
             {
-                return;
+                throw new InvalidOperationException("Предметът не е намерен.");
             }
 
-            var existingDoc = subject.Project.AttachedDocument;
+            var studentSubject = subject.StudentSubjects.FirstOrDefault(ss => ss.StudentId == studentId);
+            if (studentSubject == null)
+            {
+                throw new InvalidOperationException("Студентът не е записан за този предмет.");
+            }
+
+            if (studentSubject.ProjectId == null)
+            {
+                throw new InvalidOperationException("Няма проект свързан с този предмет.");
+            }
+
+            var project = await dbContext.Projects
+                .Include(p => p.AttachedDocument)
+                .FirstOrDefaultAsync(p => p.Id == studentSubject.ProjectId);
+
+            if (project == null)
+            {
+                throw new InvalidOperationException("Проектът не е намерен.");
+            }
+
+            var existingDoc = project.AttachedDocument;
 
             if (existingDoc != null)
             {
@@ -104,27 +123,48 @@ namespace E_PortfolioSystem.Services.Data.Services
             {
                 var newDoc = new AttachedDocument
                 {
+                    Id = Guid.NewGuid(),
                     FileName = fileName,
                     FileLocation = filePath,
                     UploadDate = DateTime.UtcNow,
                     DocumentType = "Проект",
-                    Description = "Качен от студент"
+                    Description = "Качен от студент",
+                    ProjectId = project.Id
                 };
 
-                subject.Project.AttachedDocument = newDoc;
+                project.AttachedDocument = newDoc;
+                project.AttachedDocumentId = newDoc.Id;
+                dbContext.AttachedDocuments.Add(newDoc);
             }
 
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<Subject?> GetSubjectWithDocumentAsync(Guid subjectId)
+        public async Task<Subject?> GetSubjectWithDocumentAsync(Guid subjectId, Guid studentId)
         {
-            return await dbContext.Subjects
-                .Include(s => s.Project)
-                .ThenInclude(p => p.AttachedDocument)
+            var subject = await dbContext.Subjects
+                .Include(s => s.StudentSubjects)
                 .Include(s => s.Teacher)
                 .ThenInclude(t => t.User)
                 .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
+            {
+                return null;
+            }
+
+            var studentSubject = subject.StudentSubjects.FirstOrDefault(ss => ss.StudentId == studentId);
+            if (studentSubject?.ProjectId != null)
+            {
+                var project = await dbContext.Projects
+                    .Include(p => p.AttachedDocument)
+                    .FirstOrDefaultAsync(p => p.Id == studentSubject.ProjectId);
+                
+                // Временно задаваме проекта на subject за съвместимост
+                subject.Project = project;
+            }
+
+            return subject;
         }
 
         public async Task<IEnumerable<TeacherSubjectViewModel>> GetSubjectsByTeacherAsync(string teacherId)

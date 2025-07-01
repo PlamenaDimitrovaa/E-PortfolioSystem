@@ -126,7 +126,7 @@ namespace E_PortfolioSystem.Web.Controllers
                 var userId = User.GetId();
                 var studentId = await studentService.GetStudentIdByUserIdAsync(userId);
 
-                var subject = await subjectService.GetSubjectWithDocumentAsync(id);
+                var subject = await subjectService.GetSubjectWithDocumentAsync(id, Guid.Parse(studentId));
 
                 if (subject == null)
                 {
@@ -181,7 +181,9 @@ namespace E_PortfolioSystem.Web.Controllers
                         await model.NewFile.CopyToAsync(stream);
                     }
 
-                    await subjectService.UpdateSubjectAttachedDocumentAsync(model.SubjectId, fileName, filePath);
+                    var userId = User.GetId();
+                    var studentId = await studentService.GetStudentIdByUserIdAsync(userId);
+                    await subjectService.UpdateSubjectAttachedDocumentAsync(model.SubjectId, Guid.Parse(studentId), fileName, filePath);
 
                     TempData[SuccessMessage] = "Документът беше успешно качен.";
                     return RedirectToAction("Details", new { id = model.SubjectId });

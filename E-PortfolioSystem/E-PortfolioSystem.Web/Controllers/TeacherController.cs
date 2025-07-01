@@ -152,7 +152,7 @@ namespace E_PortfolioSystem.Web.Controllers
                 var userId = User.GetId();
                 var teacherId = await teacherService.GetTeacherIdByUserIdAsync(userId);
 
-                var subject = await subjectService.GetSubjectWithDocumentAsync(id);
+                var subject = await subjectService.GetSubjectWithDocumentAsync(id, Guid.Empty);
 
                 if (subject == null)
                 {
